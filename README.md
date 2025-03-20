@@ -18,6 +18,6 @@
 
 ## Giấy phép
 
-## Contributors
+## Người đóng góp
 
 ## Tài liệu tham khảo
