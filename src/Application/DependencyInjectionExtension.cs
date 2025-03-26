@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Application.Behaviors;
 using Application.Interfaces.CQRS;
-using Application.Services.Test;
+using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,8 +16,11 @@ public static class DependencyInjectionExtension
     /// <returns></returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssembly(typeof(DependencyInjectionExtension).Assembly);
-        services.AddScoped<IHandler<CreateTestCommand, Guid>, CreateTestCommandHandler>();
+        var assembly = Assembly.GetExecutingAssembly();
+        services.AddHandler(assembly);
+        services.AddDomainEvents(assembly); 
+        services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         return services;
     }

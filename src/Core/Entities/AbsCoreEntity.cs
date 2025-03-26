@@ -2,7 +2,7 @@
 /// <summary>
 ///     Core entity inherit entity and additional property created, creation date and updated, update date
 /// </summary>
-public abstract class CoreBaseEntity : BaseEntity
+public abstract class AbsCoreEntity : AbsBaseEntity
 {
     /// <summary>
     /// 
@@ -24,7 +24,7 @@ public abstract class CoreBaseEntity : BaseEntity
     /// <summary>
     /// 
     /// </summary>
-    protected CoreBaseEntity() : base()
+    protected AbsCoreEntity() : base()
     {
         
     } 
@@ -32,7 +32,7 @@ public abstract class CoreBaseEntity : BaseEntity
     /// 
     /// </summary>
     /// <param name="createdBy"></param>
-    protected CoreBaseEntity(Guid createdBy) : base()
+    protected AbsCoreEntity(Guid createdBy) : base()
     {
         var dateUtcNow = DateTimeOffset.UtcNow;
         CreatedBy = createdBy;

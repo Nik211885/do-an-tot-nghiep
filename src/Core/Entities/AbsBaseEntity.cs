@@ -1,10 +1,11 @@
-﻿using Core.Interfaces;
+﻿using Core.Events;
+using Core.Interfaces;
 
 namespace Core.Entities;
 /// <summary>
 ///     Base entity in core just have id and event domain
 /// </summary>
-public abstract class BaseEntity
+public abstract class AbsBaseEntity
 {
     /// <summary>
     ///     Identity for entity it follows id is uuid7
@@ -13,12 +14,12 @@ public abstract class BaseEntity
     /// <summary>
     ///     
     /// </summary>
-    private List<IEventDomain>? _eventDomains;
+    private List<AbsDomainEvent>? _eventDomains;
     /// <summary>
     ///     
     /// </summary>
     /// <param name="eventDomain"></param>
-    public void RaiseDomainEvent(IEventDomain @eventDomain)
+    public void RaiseDomainEvent(AbsDomainEvent @eventDomain)
     {
         _eventDomains ??= [];
         _eventDomains.Add(@eventDomain);
@@ -26,7 +27,7 @@ public abstract class BaseEntity
     /// <summary>
     ///     
     /// </summary>
-    public IReadOnlyCollection<IEventDomain>? DomainEvents => _eventDomains;
+    public IReadOnlyCollection<AbsDomainEvent>? DomainEvents => _eventDomains;
     /// <summary>
     ///     
     /// </summary>

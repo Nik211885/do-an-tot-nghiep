@@ -2,7 +2,12 @@
 using FluentValidation;
 
 namespace Application.Behaviors;
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="validators"></param>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) 
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommand<TResponse>
