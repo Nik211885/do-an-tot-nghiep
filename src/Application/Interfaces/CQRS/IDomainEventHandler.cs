@@ -15,5 +15,5 @@ public interface IDomainEventHandler<in TDomainEvent>
     /// <param name="domainEvent"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task Publish(TDomainEvent domainEvent, CancellationToken cancellationToken);
+    Task Handler(TDomainEvent domainEvent, CancellationToken cancellationToken);
 }

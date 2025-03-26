@@ -1,15 +1,17 @@
-﻿namespace Application.Interfaces.CQRS;
+﻿using Core.Events;
+
+namespace Application.Interfaces.CQRS;
 /// <summary>
 /// 
 /// </summary>
-/// <typeparam name="TEvent"></typeparam>
-public interface IEventDispatcher<TEvent>
-    where TEvent : notnull
+public interface IEventDispatcher
 {
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="events"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task Dispatch(CancellationToken cancellationToken);
+    Task Dispatch<TEvent>(IReadOnlyCollection<TEvent> events, CancellationToken cancellationToken)
+        where TEvent : IEvent;
 }

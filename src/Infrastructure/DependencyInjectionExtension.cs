@@ -14,6 +14,7 @@ public static class DependencyInjectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IFactoryHandler, FactoryHandler>();
+        services.AddScoped<IEventDispatcher, DomainEventDispatcher>();
         return services;
     }
 }

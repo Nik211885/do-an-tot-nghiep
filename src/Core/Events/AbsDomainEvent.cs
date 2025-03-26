@@ -4,7 +4,7 @@ namespace Core.Events;
 /// <summary>
 ///     Domain event
 /// </summary>
-public abstract class AbsDomainEvent : AbsBaseEntity
+public abstract class AbsDomainEvent : AbsBaseEntity, IEvent
 {
     
 }

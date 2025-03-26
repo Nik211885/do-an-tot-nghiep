@@ -14,20 +14,20 @@ public abstract class AbsBaseEntity
     /// <summary>
     ///     
     /// </summary>
-    private List<AbsDomainEvent>? _eventDomains;
+    private List<IEvent>? _eventDomains;
     /// <summary>
     ///     
     /// </summary>
-    /// <param name="eventDomain"></param>
-    public void RaiseDomainEvent(AbsDomainEvent @eventDomain)
+    /// <param name="event"></param>
+    public void RaiseDomainEvent(IEvent @event)
     {
         _eventDomains ??= [];
-        _eventDomains.Add(@eventDomain);
+        _eventDomains.Add(@event);
     }
     /// <summary>
     ///     
     /// </summary>
-    public IReadOnlyCollection<AbsDomainEvent>? DomainEvents => _eventDomains;
+    public IReadOnlyCollection<IEvent>? DomainEvents => _eventDomains;
     /// <summary>
     ///     
     /// </summary>
