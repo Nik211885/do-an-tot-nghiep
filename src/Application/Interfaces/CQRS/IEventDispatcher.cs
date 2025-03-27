@@ -12,6 +12,5 @@ public interface IEventDispatcher
     /// <param name="events"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task Dispatch<TEvent>(IReadOnlyCollection<TEvent> events, CancellationToken cancellationToken)
-        where TEvent : IEvent;
+    Task Dispatch(IReadOnlyCollection<IEvent> events, CancellationToken cancellationToken);
 }

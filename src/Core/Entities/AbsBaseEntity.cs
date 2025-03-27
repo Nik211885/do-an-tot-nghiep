@@ -11,25 +11,28 @@ public abstract class AbsBaseEntity
     ///     Identity for entity it follows id is uuid7
     /// </summary>
     public Guid Id { get; private set; } = Guid.CreateVersion7();
+
     /// <summary>
     ///     
     /// </summary>
-    private List<IEvent>? _eventDomains;
+    private List<IEvent>? _events;
     /// <summary>
     ///     
     /// </summary>
     /// <param name="event"></param>
     public void RaiseDomainEvent(IEvent @event)
     {
-        _eventDomains ??= [];
-        _eventDomains.Add(@event);
+        _events ??= [];
+        _events.Add(@event);
     }
+
     /// <summary>
     ///     
     /// </summary>
-    public IReadOnlyCollection<IEvent>? DomainEvents => _eventDomains;
+    public IReadOnlyCollection<IEvent>? DomainEvents
+        => _events;
     /// <summary>
     ///     
     /// </summary>
-    public void ClearDomainEvents() => _eventDomains?.Clear();
+    public void ClearDomainEvents() => _events?.Clear();
 }

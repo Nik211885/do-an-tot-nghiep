@@ -7,7 +7,7 @@ namespace Infrastructure.Services.CQRS;
 /// </summary>
 /// <param name="serviceProvider"></param>
 
-public class DomainEventDispatcher(IServiceProvider serviceProvider) 
+public class EventDispatcher(IServiceProvider serviceProvider) 
     : IEventDispatcher
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
@@ -16,24 +16,18 @@ public class DomainEventDispatcher(IServiceProvider serviceProvider)
     /// </summary>
     /// <param name="events"></param>
     /// <param name="cancellationToken"></param>
-    /// <typeparam name="TEvent"></typeparam>
-    async Task IEventDispatcher.Dispatch<TEvent>(IReadOnlyCollection<TEvent> events, 
+    public async Task Dispatch(IReadOnlyCollection<IEvent> events, 
         CancellationToken cancellationToken)
     {
-        if (typeof(AbsDomainEvent).IsAssignableFrom(typeof(TEvent)) == false)
-        {
-            return;
-        }
-        
         await Parallel.ForEachAsync(events, cancellationToken, async (@event, ct) =>
         {
             var eventType = @event.GetType();
-            var eventHandlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
+            var eventHandlerType = typeof(IEventHandler<>).MakeGenericType(eventType);
 
             var eventHandlers = _serviceProvider.GetServices(eventHandlerType);
             foreach (var eventHandler in eventHandlers)
             {
-                var handleMethod = eventHandlerType.GetMethod("Handle");
+                var handleMethod = eventHandlerType.GetMethod("Handler");
                 if (handleMethod == null)
                 {
                     continue;

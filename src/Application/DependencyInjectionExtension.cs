@@ -17,8 +17,8 @@ public static class DependencyInjectionExtension
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
+        services.AddDomainEvents(assembly);
         services.AddHandler(assembly);
-        services.AddDomainEvents(assembly); 
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

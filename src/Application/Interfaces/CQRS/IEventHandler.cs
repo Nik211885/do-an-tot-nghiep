@@ -6,8 +6,8 @@ namespace Application.Interfaces.CQRS;
 /// 
 /// </summary>
 /// <typeparam name="TDomainEvent"></typeparam>
-public interface IDomainEventHandler<in TDomainEvent> 
-    where TDomainEvent : AbsDomainEvent
+public interface IEventHandler<in TDomainEvent> 
+    where TDomainEvent : IEvent
 {
     /// <summary>
     /// 
