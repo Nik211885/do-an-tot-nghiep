@@ -3,13 +3,16 @@ using Core.Events;
 using Microsoft.Extensions.DependencyInjection;
 namespace Infrastructure.Services.CQRS;
 /// <summary>
-/// /
+/// /   Dispatcher event
 /// </summary>
 /// <param name="serviceProvider"></param>
 
 public class EventDispatcher(IServiceProvider serviceProvider) 
     : IEventDispatcher
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     /// <summary>
     /// 

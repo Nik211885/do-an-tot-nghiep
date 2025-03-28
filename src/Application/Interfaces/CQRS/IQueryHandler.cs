@@ -1,7 +1,7 @@
 ﻿namespace Application.Interfaces.CQRS;
 
 /// <summary>
-/// 
+///     Handler for query
 /// </summary>
 /// <typeparam name="TQuery"></typeparam>
 /// <typeparam name="TResponse"></typeparam>

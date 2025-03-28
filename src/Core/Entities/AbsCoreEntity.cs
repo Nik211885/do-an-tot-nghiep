@@ -5,7 +5,7 @@
 public abstract class AbsCoreEntity : AbsBaseEntity
 {
     /// <summary>
-    /// 
+    ///     
     /// </summary>
     public DateTimeOffset CreateDateTimeOffset { get; private set; }
     /// <summary>

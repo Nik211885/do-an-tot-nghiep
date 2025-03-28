@@ -3,7 +3,8 @@ using FluentValidation;
 
 namespace Application.Behaviors;
 /// <summary>
-/// 
+///   Pipeline validation for data it just applies to request is in inherit command
+///   It compile with fluent validation 
 /// </summary>
 /// <param name="validators"></param>
 /// <typeparam name="TRequest"></typeparam>

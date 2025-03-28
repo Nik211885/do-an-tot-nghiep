@@ -1,4 +1,10 @@
 ﻿namespace Infrastructure.Configurations;
-
-internal record CacheConnectionConfiguration(string Master, string[] Slaves);
+/// <summary>
+/// 
+/// </summary>
+public class CacheConnectionConfiguration
+{
+    public string? Master { get; set; }
+    public string[]? Slaves { get; set; }
+}
 

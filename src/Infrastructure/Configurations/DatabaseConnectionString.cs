@@ -1,3 +1,9 @@
 ﻿namespace Infrastructure.Configurations;
-
-internal record DatabaseConnectionString(string Master, string[] Slaves);
+/// <summary>
+/// 
+/// </summary>
+public class DatabaseConnectionString
+{
+    public string? Master { get; set; }
+    public string[]? Slaves { get; set; }
+}

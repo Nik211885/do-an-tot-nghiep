@@ -8,16 +8,27 @@ namespace Infrastructure.Services.CQRS;
 /// <param name="serviceProvider"></param>
 public class FactoryHandler(IServiceProvider serviceProvider) : IFactoryHandler
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly IServiceProvider _serviceProvider = serviceProvider;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TRequest"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
+    /// <returns></returns>
     public async Task<TResponse> Handler<TRequest, TResponse>(TRequest request,
         CancellationToken cancellationToken) 
         where TRequest : IRequest<TResponse>
     {
+        var handler = _serviceProvider.GetService<IHandler<TRequest, TResponse>>();
+        ArgumentNullException.ThrowIfNull(handler);
         var pipeLineBehaviors = _serviceProvider
             .GetServices<IPipelineBehavior<TRequest, TResponse>>()
             .Reverse();
-        var handler = _serviceProvider.GetService<IHandler<TRequest, TResponse>>();
-        ArgumentNullException.ThrowIfNull(handler);
         RequestHandlerDelegate<TResponse> next = () => handler.Handle(request, cancellationToken);
         foreach (var pipeLineBehavior in pipeLineBehaviors)
         {

@@ -12,10 +12,9 @@ namespace Application;
 public static class DependencyInjectionExtension
 {
     /// <summary>
-    /// 
+    ///     
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="configuration"></param>
     /// <returns></returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {

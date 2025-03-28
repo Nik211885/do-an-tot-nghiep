@@ -8,7 +8,7 @@ namespace Application.Services;
 public static class AddCqrsExtension
 {
     /// <summary>
-    /// 
+    ///     Add all handler command and query with left time is scope and in base assembly
     /// </summary>
     /// <param name="services"></param>
     /// <param name="assembly"></param>
@@ -17,7 +17,7 @@ public static class AddCqrsExtension
     public static IServiceCollection AddHandler(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
         => services.AddScanService(typeof(IHandler<,>), assembly, leftTime);
     /// <summary>
-    /// 
+    ///     Add all domain event and query with left time is scope and in base assembly
     /// </summary>
     /// <param name="services"></param>
     /// <param name="assembly"></param>
@@ -26,7 +26,7 @@ public static class AddCqrsExtension
     public static IServiceCollection AddDomainEvents(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
         => services.AddScanService(typeof(IEventHandler<>), assembly, leftTime);
 
-    public static IServiceCollection AddScanService(this IServiceCollection services, Type typeInterface, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
+    private static IServiceCollection AddScanService(this IServiceCollection services, Type typeInterface, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
     {
         assembly = assembly ?? Assembly.GetCallingAssembly();
         var servicesScanTypes = assembly.GetTypes()

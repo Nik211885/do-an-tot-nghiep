@@ -1,6 +1,6 @@
 ﻿namespace Application.Helper;
 
-internal static class ThrowHelper
+public static class ThrowHelper
 {
     
 }
