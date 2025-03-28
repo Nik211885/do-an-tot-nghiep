@@ -15,7 +15,7 @@ public static class AddCqrsExtension
     /// <param name="leftTime"></param>
     /// <returns></returns>
     public static IServiceCollection AddHandler(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
-        => AddScanService(services, typeof(IHandler<,>), assembly, leftTime);
+        => services.AddScanService(typeof(IHandler<,>), assembly, leftTime);
     /// <summary>
     /// 
     /// </summary>
@@ -24,9 +24,9 @@ public static class AddCqrsExtension
     /// <param name="leftTime"></param>
     /// <returns></returns>
     public static IServiceCollection AddDomainEvents(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
-        => AddScanService(services, typeof(IEventHandler<>), assembly, leftTime);
+        => services.AddScanService(typeof(IEventHandler<>), assembly, leftTime);
 
-    private static IServiceCollection AddScanService(this IServiceCollection services, Type typeInterface, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
+    public static IServiceCollection AddScanService(this IServiceCollection services, Type typeInterface, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
     {
         assembly = assembly ?? Assembly.GetCallingAssembly();
         var servicesScanTypes = assembly.GetTypes()

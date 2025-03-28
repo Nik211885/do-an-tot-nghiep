@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.CQRS;
+﻿using Application.Interfaces.CQRS;  
 using Core.Entities.TestAggregate;
 using Core.Events;
 using Riok.Mapperly.Abstractions;

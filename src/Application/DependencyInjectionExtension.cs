@@ -3,7 +3,9 @@ using Application.Behaviors;
 using Application.Interfaces.CQRS;
 using Application.Services;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace Application;
 
@@ -13,6 +15,7 @@ public static class DependencyInjectionExtension
     /// 
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     /// <returns></returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {

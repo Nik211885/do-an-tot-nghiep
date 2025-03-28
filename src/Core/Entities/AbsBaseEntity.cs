@@ -30,7 +30,7 @@ public abstract class AbsBaseEntity
     ///     
     /// </summary>
     public IReadOnlyCollection<IEvent>? DomainEvents
-        => _events;
+        => _events?.AsReadOnly();
     /// <summary>
     ///     
     /// </summary>
