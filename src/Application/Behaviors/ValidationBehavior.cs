@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.CQRS;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Behaviors;
 /// <summary>
@@ -9,11 +10,27 @@ namespace Application.Behaviors;
 /// <param name="validators"></param>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) 
+public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators,
+    ILogger<ValidationBehavior<TRequest, TResponse>> logger) 
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommand<TResponse>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly ILogger<ValidationBehavior<TRequest, TResponse>> _logger = logger;
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="next"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ValidationException"></exception>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         if (!_validators.Any())

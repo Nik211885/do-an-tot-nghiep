@@ -1,26 +1,24 @@
 ﻿using System.Reflection;
-using Application.Interfaces.CQRS;
-using Core.Entities;
 using Core.Entities.TestAggregate;
-using Core.Events;
+using Core.Interfaces;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Data;
 /// <summary>
 /// 
 /// </summary>
-/// <param name="eventDispatcher"></param>
 /// <param name="options"></param>
 /// <param name="dbConnectionStringSelector"></param>
-public class ApplicationDbContext(IEventDispatcher eventDispatcher, 
-    DbContextOptions<ApplicationDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector) 
-    : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+    IDbConnectionStringSelector dbConnectionStringSelector)
+    : DbContext(options), IUnitOfWork
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly IEventDispatcher _eventDispatcher = eventDispatcher;
+    private IDbContextTransaction? _transaction;
     /// <summary>
     /// 
     /// </summary>
@@ -63,23 +61,58 @@ public class ApplicationDbContext(IEventDispatcher eventDispatcher,
         ArgumentNullException.ThrowIfNull(connectionString);
         optionsBuilder.UseNpgsql(connectionString);
     }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+        => _transaction = await base.Database.BeginTransactionAsync(cancellationToken);
     /// <summary>
     /// 
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public async Task<int> SaveChangeAsync(CancellationToken cancellationToken)
+        => await base.SaveChangesAsync(cancellationToken);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
-         var resultSaveChanges = await base.SaveChangesAsync(cancellationToken);
-         var eventBases = ChangeTracker.Entries<AbsBaseEntity>()
-             .Where(x => x.Entity.DomainEvents is not null 
-                         && x.Entity.DomainEvents.Any())
-             .SelectMany(x => x.Entity.DomainEvents 
-                              ?? Enumerable.Empty<IEvent>()).ToList().AsReadOnly();
-         if (eventBases.Any())
-         {
-             await _eventDispatcher.Dispatch(eventBases,cancellationToken);
-         }
-         return resultSaveChanges;
+        ArgumentNullException.ThrowIfNull(_transaction);
+        try
+        {
+            await base.SaveChangesAsync(cancellationToken);
+            await _transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
+        finally
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+            await _transaction.DisposeAsync();
+        }
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(_transaction);
+        await _transaction.RollbackAsync(cancellationToken);
+        await _transaction.DisposeAsync();
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
     }
 }

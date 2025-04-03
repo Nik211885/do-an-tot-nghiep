@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Application.Behaviors;
 using Application.Interfaces.CQRS;
+using Application.Middlewares;
 using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ public static class DependencyInjectionExtension
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient<ExceptionMiddlewareHandling>();
         return services;
     }
 }

@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Serilog;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+builder.Host.UseSerilog();
 
 
 var app = builder.Build();

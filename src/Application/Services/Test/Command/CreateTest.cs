@@ -15,7 +15,7 @@ public class CreateTestCommandHandler(ITestCaseRepository testCaseRepository)
     public async Task<TestCaseAggregate> Handle(CreateTestCommand request, CancellationToken cancellationToken)
     {
         var testCase = CreateTestCommandMapper.MapToTestCaseAggregate(request);
-        var testCaseAggregate = _testCaseRepository.CreateTestCase(testCase);
+        var testCaseAggregate = _testCaseRepository.AddEntity(testCase);
         await _testCaseRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         return testCaseAggregate;
     }
