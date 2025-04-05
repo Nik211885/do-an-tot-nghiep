@@ -11,7 +11,8 @@ public class TestCaseEndpoint : IEndpoints
     public void Map(IEndpointRouteBuilder endpoint)
     {
         var api = endpoint.MapGroup("api/test-case");
-        api.MapPost("create", TestCaseServicesEndpoints.CreateTestCase);
+        api.MapPost("create", TestCaseServicesEndpoints.CreateTestCase)
+            .RequireAuthorization();
     }
 }
 

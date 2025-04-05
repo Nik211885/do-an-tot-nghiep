@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using IdentityAPI.Data;
 using IdentityAPI.Identity;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
+using Serilog;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
-builder.Services.AddSwaggerGen(); ;
+builder.Services.AddSwaggerGen();
+builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
+builder.Host.UseSerilog();  
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -40,10 +44,11 @@ builder.Services.AddOpenIddict()
         options.UseAspNetCore()
             .EnableAuthorizationEndpointPassthrough()
             .EnableTokenEndpointPassthrough();
+        options.DisableAccessTokenEncryption();
         
         options.SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
         options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
-
+       
         options.AddSigningCertificate(X509CertificateLoader.LoadPkcs12FromFile("C:\\Windows\\System32\\certificate.pfx","211885"));
         options.AddEncryptionCertificate(X509CertificateLoader.LoadPkcs12FromFile("C:\\Windows\\System32\\certificate.pfx","211885"));
     });

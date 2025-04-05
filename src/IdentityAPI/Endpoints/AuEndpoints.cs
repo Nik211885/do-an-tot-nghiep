@@ -65,7 +65,8 @@ public static class AuEndpointServices
         identity.SetClaim(OpenIddictConstants.Claims.Subject, user.Id.ToString())
             .SetClaim(OpenIddictConstants.Claims.Name, user.UserName)
             .SetClaim(OpenIddictConstants.Claims.Email, user.Email)
-            .SetClaims(OpenIddictConstants.Claims.Role, [.. (await userManager.GetRolesAsync(user))]);
+            .SetClaims(OpenIddictConstants.Claims.Role, [.. (await userManager.GetRolesAsync(user))])
+            .SetAudiences("https://localhost:7098");
         identity.SetScopes(request.GetScopes());
         return Results.SignIn(new ClaimsPrincipal(identity), null, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }

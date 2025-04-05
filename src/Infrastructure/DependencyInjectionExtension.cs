@@ -5,7 +5,6 @@ using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
-using Infrastructure.Services.Logging;
 using Infrastructure.Services.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +29,6 @@ public static class DependencyInjectionExtension
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository(typeof(IRepository<>).Assembly, Assembly.GetExecutingAssembly());
         services.AddOptionConfigurations(configuration);
-        services.AddSerilogConfiguration(configuration);
         return services;
     }
 }
