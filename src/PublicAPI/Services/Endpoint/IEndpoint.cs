@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing;
-
-namespace Shared;
+﻿namespace PublicAPI.Services.Endpoint;
 /// <summary>
 ///     
 /// </summary>

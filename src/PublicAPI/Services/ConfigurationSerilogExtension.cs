@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 
-namespace Shared;
+namespace PublicAPI.Services;
 
 public static class ConfigurationSerilogExtension
 {

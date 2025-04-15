@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
-using Microsoft.AspNetCore.Routing;
 
-namespace Shared;
+namespace PublicAPI.Services.Endpoint;
 public static class EndpointsExtension
 {
     /// <summary>

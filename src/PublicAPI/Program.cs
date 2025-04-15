@@ -2,8 +2,8 @@ using System.Reflection;
 using Application;
 using Infrastructure;
 using PublicAPI.Services;
+using PublicAPI.Services.Endpoint;
 using Serilog;
-using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +13,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthenticationJwtBearer();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
 builder.Host.UseSerilog();
 

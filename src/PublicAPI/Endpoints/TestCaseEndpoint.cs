@@ -2,7 +2,7 @@
 using Application.Services.Test.Command;
 using Core.Entities.TestAggregate;
 using Microsoft.AspNetCore.Mvc;
-using Shared;
+using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
 

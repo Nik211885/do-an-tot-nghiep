@@ -1,4 +1,4 @@
-﻿using Shared;
+﻿using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
 
