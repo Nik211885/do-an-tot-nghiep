@@ -1,4 +1,6 @@
-﻿using PublicAPI.Services.Endpoint;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
 
@@ -13,7 +15,7 @@ public class WeatherForecast : IEndpoints
         var apis = endpoint.MapGroup("api/weather-forecast");
         apis.MapGet("/", GetWeatherForecast);
     }
-
+    [Authorize]
     public static IResult GetWeatherForecast()
     {
         var forecast =  Enumerable.Range(1, 5).Select(index =>

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthenticationJwtBearer();
+builder.Services.AddAuthenticationJwtBearer(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);

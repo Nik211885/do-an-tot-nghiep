@@ -6,7 +6,7 @@ namespace PublicAPI.Services;
 
 public static class AuthenticationExtension
 {
-    public static IServiceCollection AddAuthenticationJwtBearer(this IServiceCollection services)
+    public static IServiceCollection AddAuthenticationJwtBearer(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSwaggerGen(options =>
         {
@@ -39,16 +39,17 @@ public static class AuthenticationExtension
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = "https://localhost:7294";
-                options.RequireHttpsMetadata = true;
-                options.MetadataAddress = "https://localhost:7294/.well-known/openid-configuration";
+                options.Audience = configuration["JWTConfiguration:Audience"];
+                options.RequireHttpsMetadata = false;
+                options.MetadataAddress = configuration["KeyCloakAuthentication:MetadataAddress"]
+                                          ?? throw new Exception("KeyCloakAuthentication:MetadataAddress not set in configuration");
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
                     ValidateLifetime = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
-                    ValidAudience = "https://localhost:7098",
+                    ValidIssuer = configuration["KeyCloakAuthentication:ValidIssuer"],
                 };
             });
         return services;
