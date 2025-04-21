@@ -6,9 +6,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: keycloak_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 211885
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - 5434:5432 
     networks:
@@ -18,12 +18,12 @@ services:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev 
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: 211885
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
-      KC_DB_USERNAME: postgres
-      KC_DB_PASSWORD: 211885
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
     volumes:
@@ -34,9 +34,50 @@ services:
       - postgres
     networks:
       - keycloak_network
-
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - keycloak_network
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - keycloak_network
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.4
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - keycloak_network
+  rabbitmq:
+    image: rabbitmq:3-management-latest
+    ports:
+      - 5672:5672     
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - keycloak_network
 volumes:
   postgres_data:
+    driver: local
+  elasticsearch_data:
     driver: local
 
 networks:
