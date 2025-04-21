@@ -10,7 +10,7 @@ export class AuthKeyCloakService {
   constructor() { 
     this.keyCloak = new Keycloak({
       clientId: 'book_store_angular_client',
-      realm: 'book_store_realm',
+      realm: 'NikBook',
       url: 'http://localhost:8080'
     });
   }

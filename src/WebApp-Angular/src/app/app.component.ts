@@ -12,13 +12,11 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit{
-  token = signal("")
   constructor(@Inject(PLATFORM_ID) private readonly platFormId: object,
   private readonly authKeyCloakService: AuthKeyCloakService){}
   async ngOnInit(): Promise<void> {
     if(isPlatformBrowser(this.platFormId)){
       await this.authKeyCloakService.init()
-      this.token.set(this.authKeyCloakService.getToken() ?? "")
     }
   }
   

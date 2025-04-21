@@ -16,4 +16,7 @@ export class HeaderComponent {
   register(){
     this.authKeyCloackService.register()
   }
+  logout(){
+    this.authKeyCloackService.logout()
+  }
 }
