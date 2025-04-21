@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMemo } from "react";
 import type { LazyOrNot } from "keycloakify/tools/LazyOrNot";
 import { getKcClsx, type KcClsx } from "keycloakify/login/lib/kcClsx";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
@@ -8,13 +9,31 @@ import type { I18n } from "../i18n";
 import { Button, buttonVariants } from "../../components/ui/button";
 import { checkboxVariants } from "../../components/ui/checkbox";
 import { kcSanitize } from "keycloakify/lib/kcSanitize";
+import { Attribute } from "keycloakify/login";
 type RegisterProps = PageProps<Extract<KcContext, { pageId: "register.ftl" }>, I18n> & {
     UserProfileFormFields: LazyOrNot<(props: UserProfileFormFieldsProps) => JSX.Element>;
     doMakeUserConfirmPassword: boolean;
 };
 
 export default function Register(props: RegisterProps) {
-    const { kcContext, i18n, doUseDefaultCss, Template, classes, UserProfileFormFields, doMakeUserConfirmPassword } = props;
+    const { kcContext: rawKcContext, i18n, doUseDefaultCss, Template, classes, UserProfileFormFields, doMakeUserConfirmPassword } = props; 
+
+    const kcContext = useMemo(() => {
+        const profile = rawKcContext.profile;
+        if (!profile) return rawKcContext;
+    
+        const attributesByName = Object.fromEntries(
+            Object.entries(profile.attributesByName ?? {}).filter(([key]) => key !== "locale")
+        );
+    
+        return {
+            ...rawKcContext,
+            profile: {
+                ...profile,
+                attributesByName,
+            },
+        };
+    }, [rawKcContext]);
 
     const { kcClsx } = getKcClsx({
         doUseDefaultCss,
@@ -27,6 +46,7 @@ export default function Register(props: RegisterProps) {
 
     const [isFormSubmittable, setIsFormSubmittable] = useState(false);
     const [areTermsAccepted, setAreTermsAccepted] = useState(false);
+    
 
     return (
         <Template

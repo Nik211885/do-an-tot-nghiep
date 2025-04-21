@@ -21,22 +21,6 @@ export const WithEmailAlreadyExists: Story = {
     render: () => (
         <KcPageStory
             kcContext={{
-                profile: {
-                    attributesByName: {
-                        username: {
-                            value: "johndoe"
-                        },
-                        email: {
-                            value: "jhon.doe@gmail.com"
-                        },
-                        firstName: {
-                            value: "John"
-                        },
-                        lastName: {
-                            value: "Doe"
-                        }
-                    }
-                },
                 messagesPerField: {
                     // NOTE: The other functions of messagesPerField are derived from get() and
                     // existsError() so they are the only ones that need to mock.
@@ -79,40 +63,6 @@ export const WithRestrictedToMITStudents: Story = {
     )
 };
 
-export const WithFavoritePet: Story = {
-    render: () => (
-        <KcPageStory
-            kcContext={{
-                profile: {
-                    attributesByName: {
-                        favoritePet: {
-                            name: "favorite-pet",
-                            displayName: "${profile.attributes.favoritePet}",
-                            validators: {
-                                options: {
-                                    options: ["cat", "dog", "fish"]
-                                }
-                            },
-                            annotations: {
-                                inputOptionLabelsI18nPrefix: "profile.attributes.favoritePet.options"
-                            },
-                            required: false,
-                            readOnly: false
-                        } satisfies Attribute
-                    }
-                },
-                "x-keycloakify": {
-                    messages: {
-                        "profile.attributes.favoritePet": "Favorite Pet",
-                        "profile.attributes.favoritePet.options.cat": "Fluffy Cat",
-                        "profile.attributes.favoritePet.options.dog": "Loyal Dog",
-                        "profile.attributes.favoritePet.options.fish": "Peaceful Fish"
-                    }
-                }
-            }}
-        />
-    )
-};
 
 export const WithEmailAsUsername: Story = {
     render: () => (

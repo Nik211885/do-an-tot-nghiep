@@ -26,6 +26,8 @@ services:
       KC_DB_PASSWORD: 211885
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
+    volumes:
+      - ./keycloakify-custom/build_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/my-theme.jar
     ports:
       - 8080:8080
     depends_on:

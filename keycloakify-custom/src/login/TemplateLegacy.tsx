@@ -39,7 +39,6 @@ export function Template(props: TemplateProps<KcContext, I18n>) {
 
     const {
         realm,
-        locale,
         auth,
         url,
         message,
