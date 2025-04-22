@@ -1,18 +1,12 @@
-﻿namespace Application.Models;
+﻿using Core.Entities;
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="items"></param>
-/// <param name="count"></param>
-/// <param name="pageNumber"></param>
-/// <param name="pageSize"></param>
-/// <typeparam name="TEntity"></typeparam>
+namespace Core.Models;
+
 public class PaginationItem<TEntity>(
-    IReadOnlyCollection<TEntity> items,
-    int count,
-    int pageNumber,
-    int pageSize)
+    IReadOnlyCollection<TEntity> items, 
+    int pageNumber, 
+    int pageSize, 
+    int count)
 {
     /// <summary>
     /// 

@@ -10,19 +10,19 @@ public static class AuthenticationExtension
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo()
+            options.SwaggerDoc(configuration["ApiSwaggerDocs:Version"], new OpenApiInfo()
             {
-                Title = "Business app",
-                Version = "v1",
+                Title = configuration["ApiSwaggerDocs:Title"],
+                Version = configuration["ApiSwaggerDocs:Version"],
             });
             var securitySchema = new OpenApiSecurityScheme()
             {
-                Name = "JWT Authentication",
-                Description = "JWT Authentication Authorization header using the Bearer scheme.",
+                Name = configuration["ApiSwaggerDocs:OpenApiSecurityScheme:Name"],
+                Description = configuration["ApiSwaggerDocs:OpenApiSecurityScheme:Description"],
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
+                Scheme =  configuration["ApiSwaggerDocs:OpenApiSecurityScheme:Schema"],
+                BearerFormat = configuration["ApiSwaggerDocs:OpenApiSecurityScheme:BearerFormat"],
                 Reference = new OpenApiReference()
                 {
                     Id =  JwtBearerDefaults.AuthenticationScheme,

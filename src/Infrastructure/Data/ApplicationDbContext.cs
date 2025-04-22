@@ -32,7 +32,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// <summary>
     /// 
     /// </summary>
-    public DbSet<TestCaseAggregate> TestCases { get; set; }
+    public DbSet<TestCaseAggregate> TestCaseAggregate { get; set; }
     /// <summary>
     /// 
     /// </summary>
