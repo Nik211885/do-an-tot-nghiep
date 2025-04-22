@@ -4,5 +4,5 @@ namespace Core.Interfaces.Repositories;
 
 public interface ITestCaseRepository : IRepository<TestCaseAggregate>
 {
-    Task<IReadOnlyCollection<TestCaseAggregate>> GetAllTestCasesAsync();
+    Task<IReadOnlyCollection<TestCaseAggregate>?> GetAllTestCasesAsync();
 }

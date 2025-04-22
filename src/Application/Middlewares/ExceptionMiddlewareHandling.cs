@@ -28,6 +28,7 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
         }
         catch (Exception ex)
         {
+            _logger.LogError("[Error] in {request}, {ex}", context.Request.Form, ex);
             await HandlerExceptionAsync(context, ex);
         }
     }

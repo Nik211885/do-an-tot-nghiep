@@ -23,7 +23,8 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     /// <returns></returns>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Logging behavior");
+        _logger.LogInformation("Start logging behavior");
+        // In natural, you want to pass information about user and request for user
         return await next();
     }
 }
