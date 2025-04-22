@@ -1,9 +1,11 @@
-﻿using System.Reflection;
+﻿using System.Data;
+using System.Reflection;
 using Core.Entities.TestAggregate;
 using Core.Interfaces;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
 
 namespace Infrastructure.Data;
 /// <summary>
@@ -55,9 +57,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// <param name="optionsBuilder"></param>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _isReadOnly
-            ? _dbConnectionStringSelector.GetSlaveDbConnectionString()
-            : _dbConnectionStringSelector.GetMasterDbConnectionString();
+        var connectionString = GetConnectionString();
         ArgumentNullException.ThrowIfNull(connectionString);
         optionsBuilder.UseNpgsql(connectionString);
     }
@@ -94,8 +94,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         }
         finally
         {
-            await _transaction.RollbackAsync(cancellationToken);
             await _transaction.DisposeAsync();
+            _transaction = null;
         }
     }
     /// <summary>
@@ -111,6 +111,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// <summary>
     /// 
     /// </summary>
+    /// <returns></returns>
+    private string? GetConnectionString()
+    => _isReadOnly ? _dbConnectionStringSelector.GetSlaveDbConnectionString()
+            : _dbConnectionStringSelector.GetMasterDbConnectionString();
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();

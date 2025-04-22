@@ -1,4 +1,6 @@
-﻿namespace Core.Interfaces;
+﻿using System.Data;
+
+namespace Core.Interfaces;
 /// <summary>
 ///     Unit of work it make have one migration to db make performance to application 
 /// </summary>
