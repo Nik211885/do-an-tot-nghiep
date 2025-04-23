@@ -16,6 +16,7 @@ internal static class AddOptionConfigurationsExtension
     internal static IServiceCollection AddOptionConfigurations(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.Configure<CloudinaryUploadFileConfiguration>(configuration.GetSection("UploadFile:Cloudinary"));
         services.Configure<CacheConnectionConfiguration>(configuration.GetSection("Cache:RedisConnection"));
         services.Configure<DatabaseConnectionString>(configuration.GetSection("DatabaseConnectionString:Postgresql"));
         services.Configure<KeycloakConfiguration>(configuration.GetSection("KeyCloakAuthentication:BookStoreServer"));

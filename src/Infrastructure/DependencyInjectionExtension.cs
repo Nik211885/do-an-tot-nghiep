@@ -10,6 +10,7 @@ using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
 using Infrastructure.Services.Keycloak;
 using Infrastructure.Services.Repository;
+using Infrastructure.Services.UploadFile;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -27,8 +28,6 @@ public static class DependencyInjectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IFactoryHandler, FactoryHandler>();
-        services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
-        services.AddSingleton<ICache, RedisCache>();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
         services.AddDbContext<ApplicationDbContext>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
@@ -36,6 +35,8 @@ public static class DependencyInjectionExtension
         services.AddRepository(typeof(IRepository<>).Assembly, Assembly.GetExecutingAssembly());
         services.AddOptionConfigurations(configuration);
         services.AddHttpClientKeyCloak();
+        services.AddCache();
+        services.AddUploadFileWithCloudinary();
         return services;
     }
 }
