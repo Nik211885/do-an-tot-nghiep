@@ -22,9 +22,9 @@ public class RedisCache(IConnectionMultiplexer connectionMultiplexer) : ICache
     /// </summary>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    /// <param name="leftTime"></param>
-    public async Task SetAsync(string key, string value, TimeSpan leftTime)
-        => await  _db.StringSetAsync(key, value, leftTime);
+    /// <param name="expiresIn"></param>
+    public async Task SetAsync(string key, string value, int expiresIn)
+        => await  _db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiresIn));
     /// <summary>
     /// 
     /// </summary>

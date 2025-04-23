@@ -17,11 +17,11 @@ public interface ICache
     /// </summary>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    /// <param name="leftTime"></param>
+    /// <param name="expiresIn"></param>
     /// <returns>
     ///     
     /// </returns>
-    Task SetAsync(string key, string value, TimeSpan leftTime);
+    Task SetAsync(string key, string value, int expiresIn);
     /// <summary>
     ///     Remove value has key in cache
     /// </summary>

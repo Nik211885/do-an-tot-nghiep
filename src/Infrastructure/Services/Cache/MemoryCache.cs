@@ -17,17 +17,18 @@ public class MemoryCache(IMemoryCache memoryCache) : ICache
         var isValue = _memoryCache.TryGetValue(key, out string? value);
         return Task.FromResult(value);
     }
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    /// <param name="leftTime"></param>
+    /// <param name="expiresIn"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task SetAsync(string key, string value, TimeSpan leftTime)
+    public Task SetAsync(string key, string value, int expiresIn)
     {
-        _memoryCache.Set(key, value, leftTime);
+        _memoryCache.Set(key, value, TimeSpan.FromSeconds(expiresIn));
         return Task.CompletedTask;
     }
     /// <summary>

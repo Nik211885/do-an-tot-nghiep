@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Application.Interfaces.IdentityProvider;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PublicAPI.Services.Endpoint;
+using StackExchange.Redis;
 
 namespace PublicAPI.Endpoints;
 
@@ -13,6 +16,9 @@ public class WeatherForecast : IEndpoints
     public void Map(IEndpointRouteBuilder endpoint)
     {
         var apis = endpoint.MapGroup("api/weather-forecast");
+        apis.MapGet("users/{id}", async (string id,
+            [FromServices] IIdentityProviderServices identityServices) 
+            => Results.Ok(await identityServices.GetUserInfoAsync(id)));
         apis.MapGet("/", GetWeatherForecast);
     }
     [Authorize]
