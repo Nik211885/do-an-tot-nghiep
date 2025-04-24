@@ -1,6 +1,4 @@
-﻿using Core.Entities;
-
-namespace Core.Models;
+﻿namespace Application.Models;
 
 public class PaginationItem<TEntity>(
     IReadOnlyCollection<TEntity> items, 

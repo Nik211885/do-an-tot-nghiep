@@ -1,8 +1,6 @@
 ﻿using Core.Entities.TestAggregate;
 using Core.Interfaces.Repositories;
-using Core.Models;
 using Infrastructure.Data;
-using Infrastructure.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services.Repository;
@@ -21,7 +19,4 @@ public class TestCaseRepository(ApplicationDbContext dbContext)
        var result = await _dbContext.TestCaseAggregate.AsNoTracking().ToListAsync();
        return result;
     }
-
-    public async Task<PaginationItem<TestCaseAggregate>> GetTestCaseWithPaginationAsync(int pageNumber, int pageSize)
-        => await _dbContext.TestCaseAggregate.AsNoTracking().CreatePaginationAsync(pageNumber, pageSize);
 }

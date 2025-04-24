@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Core.Models;
+using Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Helper;
@@ -15,22 +15,26 @@ public static class PaginationHelperWithEfExtension
     ///     pagination models in application layer
     /// </summary>
     /// <param name="queryable"></param>
+    /// <param name="selector"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
-    public static async Task<PaginationItem<TEntity>> CreatePaginationAsync<TEntity>(
+    public static async Task<PaginationItem<TResponse>> CreatePaginationAsync<TEntity, TResponse>(
         this IQueryable<TEntity> queryable,
+            Expression<Func<TEntity, TResponse>> selector,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
         var countItems = await queryable.CountAsync(cancellationToken);
         var items = await queryable
+            .Select(selector)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-        return new PaginationItem<TEntity>(items, countItems, pageNumber, pageSize);
+        return new PaginationItem<TResponse>(items, countItems, pageNumber, pageSize);
     }
 }

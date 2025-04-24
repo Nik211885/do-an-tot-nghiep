@@ -4,12 +4,20 @@ using Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.UploadFile;
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="cloudinaryConfiguration"></param>
+/// <param name="cloudinary"></param>
 public class CloudinaryUploadFileServices(IOptions<CloudinaryUploadFileConfiguration> cloudinaryConfiguration,
     Cloudinary cloudinary)
     : IUploadFileServices
 {
+    /// <summary>
+    ///     Cloudinary account
+    /// </summary>
     private readonly Cloudinary _cloudinary = cloudinary;
+    
     private readonly CloudinaryUploadFileConfiguration
         _cloudinaryUploadFileConfiguration = cloudinaryConfiguration.Value ??
                                              throw new Exception("You can't configure Cloudinary upload configuration with key [UploadFile:Cloudinary]");

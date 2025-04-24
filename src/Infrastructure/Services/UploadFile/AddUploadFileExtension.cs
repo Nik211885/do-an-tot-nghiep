@@ -1,12 +1,22 @@
-﻿using CloudinaryDotNet;
+﻿using Application.Interfaces.UploadFile;
+using CloudinaryDotNet;
 using Infrastructure.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.UploadFile;
-
+/// <summary>
+///     
+/// </summary>
 public static class AddUploadFileExtension
 {
+    /// <summary>
+    ///     Add Cloudinary cloud make upload file with cloudinary account
+    ///     and upload file into cloudinary services 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public static IServiceCollection AddUploadFileWithCloudinary(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
@@ -20,6 +30,7 @@ public static class AddUploadFileExtension
         };
         var cloudinary = new Cloudinary(account);
         services.AddSingleton(cloudinary);
+        services.AddSingleton<IUploadFileServices, CloudinaryUploadFileServices>();
         return services;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Infrastructure.Configurations;
+﻿using Application.Interfaces.IdentityProvider;
+using Infrastructure.Configurations;
 using Infrastructure.Helper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,8 @@ public static class AddHttpClientKeyCloakExtension
 {
     public static IServiceCollection AddHttpClientKeyCloak(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        services.AddScoped<IIdentityProvider, IdentityProvider>();
         services.AddTransient<HttpClientKeyCloakInterceptor>(); 
         services.AddHttpClient(HttpClientKeyFactory.KeyCloak, (servicesProvider, client) =>
         {

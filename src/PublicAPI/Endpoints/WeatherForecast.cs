@@ -19,7 +19,8 @@ public class WeatherForecast : IEndpoints
         apis.MapGet("users/{id}", async (string id,
             [FromServices] IIdentityProviderServices identityServices) 
             => Results.Ok(await identityServices.GetUserInfoAsync(id)));
-        apis.MapGet("/", GetWeatherForecast);
+        apis.MapGet("/", GetWeatherForecast)
+            .Produces<WeatherForecastRecord[]>(200);
     }
     [Authorize]
     public static IResult GetWeatherForecast()
@@ -32,7 +33,7 @@ public class WeatherForecast : IEndpoints
                     _summaries[Random.Shared.Next(_summaries.Length)]
                 ))
             .ToArray();
-        return Results.Ok(forecast);
+        return TypedResults.Ok<WeatherForecastRecord[]>(forecast);
     }
 }
 record WeatherForecastRecord(DateOnly Date, int TemperatureC, string? Summary)
