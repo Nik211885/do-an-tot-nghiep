@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Services.Test.Command;
+namespace Application.Services.Test.Command.Created;
 
 public class CreateTestValidation : AbstractValidator<CreateTestCommand>
 {

@@ -32,9 +32,9 @@ public static class DependencyInjectionExtension
         services.AddDbContext<ApplicationDbContext>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
-        services.AddRepository(typeof(IRepository<>).Assembly, Assembly.GetExecutingAssembly());
+        services.AddRepository();
         services.AddOptionConfigurations(configuration);
-        services.AddHttpClientKeyCloak();
+        services.AddKeyCloakIdentityProvider();
         services.AddCache();
         services.AddUploadFileWithCloudinary();
         return services;

@@ -3,7 +3,7 @@ using Core.Interfaces.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Services.Repository;
+namespace Infrastructure.Services.Repository.Test;
 
 // Some time I want to use sql raw make query complex or in ef expression compile
 // it restrict with sql because it supports many dbms or use large case, so I have added Dapper

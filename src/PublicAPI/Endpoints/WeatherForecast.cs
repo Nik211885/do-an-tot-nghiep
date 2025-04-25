@@ -1,9 +1,8 @@
 ﻿using Application.Interfaces.IdentityProvider;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PublicAPI.Services.Endpoint;
-using StackExchange.Redis;
 
 namespace PublicAPI.Endpoints;
 

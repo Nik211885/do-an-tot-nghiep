@@ -3,7 +3,7 @@ using Core.Entities.TestAggregate;
 using Core.Interfaces.Repositories;
 using Riok.Mapperly.Abstractions;
 
-namespace Application.Services.Test.Command;
+namespace Application.Services.Test.Command.Created;
 
 public record CreateTestCommand(string Name, TestLevel TestLevel) : ICommand<TestCaseAggregate>;
 

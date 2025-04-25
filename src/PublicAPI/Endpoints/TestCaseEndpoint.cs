@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces.CQRS;
-using Application.Services.Test.Command;
+using Application.Services.Test.Command.Created;
 using Core.Entities.TestAggregate;
 using Microsoft.AspNetCore.Mvc;
 using PublicAPI.Services.Endpoint;

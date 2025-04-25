@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.Keycloak;
 
-public static class AddHttpClientKeyCloakExtension
+public static class AddKeyCloakIdentityProviderExtension
 {
-    public static IServiceCollection AddHttpClientKeyCloak(this IServiceCollection services)
+    public static IServiceCollection AddKeyCloakIdentityProvider(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
         services.AddScoped<IIdentityProvider, IdentityProvider>();

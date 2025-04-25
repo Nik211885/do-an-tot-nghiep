@@ -35,6 +35,6 @@ public static class PaginationHelperWithEfExtension
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-        return new PaginationItem<TResponse>(items, countItems, pageNumber, pageSize);
+        return new PaginationItem<TResponse>(items, pageNumber, pageSize, countItems);
     }
 }

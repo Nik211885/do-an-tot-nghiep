@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces.CQRS;
 using Core.Events;
 
-namespace Application.Services.Test.Command;
+namespace Application.Services.Test.Command.Created;
 
 public class CreatedTestCaseEventHandler : IEventHandler<CreatedTestCase>
 {

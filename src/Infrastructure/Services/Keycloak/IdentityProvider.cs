@@ -8,10 +8,16 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
     : IIdentityProvider
 {
     private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
-
-    public string UserId() 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public string UserIdentity() 
         => _contextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "Unknown";
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public string UserName()
         => _contextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "Unknown";
 }

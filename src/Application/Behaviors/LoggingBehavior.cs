@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.CQRS;
+using Application.Interfaces.IdentityProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Behaviors;
@@ -8,12 +9,14 @@ namespace Application.Behaviors;
 /// <param name="logger"></param>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest, TResponse>> logger) 
+public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest, TResponse>> logger,
+    IIdentityProvider identityProvider) 
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     // Log all request and has information about user and action 
     private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger = logger;
+    private readonly IIdentityProvider _identityProvider = identityProvider;
     /// <summary>
     /// 
     /// </summary>
@@ -23,7 +26,7 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     /// <returns></returns>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Start logging behavior");
+        _logger.LogInformation("Start logging request: {request}, userId: {userId}, userName {userName}", typeof(TRequest).Name, _identityProvider.UserIdentity(), _identityProvider.UserName());
         // In natural, you want to pass information about user and request for user
         return await next();
     }

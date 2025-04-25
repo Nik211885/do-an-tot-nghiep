@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.CQRS;
+using Application.Interfaces.IdentityProvider;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +12,7 @@ namespace Application.Behaviors;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators,
-    ILogger<ValidationBehavior<TRequest, TResponse>> logger) 
+    ILogger<ValidationBehavior<TRequest, TResponse>> logger, IIdentityProvider identityProvider) 
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommand<TResponse>
 {
@@ -23,6 +24,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
     /// 
     /// </summary>
     private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
+    private readonly IIdentityProvider _identityProvider = identityProvider;
     /// <summary>
     /// 
     /// </summary>
@@ -45,10 +47,12 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             .Where(v=> v.Errors.Count != 0)
             .SelectMany(v => v.Errors)
             .ToList();
-        if (failures.Count != 0)
+        if (failures.Count == 0)
         {
-            throw new ValidationException(failures);
+            return await next();
         }
-        return await next();
+
+        _logger.LogWarning("Validation failures bad request in request: {request} has userId: {userId} and userName {userName}", request, _identityProvider.UserIdentity(), _identityProvider.UserName());
+        throw new ValidationException(failures);
     }
 }
