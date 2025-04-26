@@ -13,6 +13,14 @@ public interface ICache
     /// </returns>
     Task<string?> GetAsync(string key);
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
+
+    Task<TValue?> GetAsync<TValue>(string key);
+    /// <summary>
     ///     Write value in cache has key and left time exits
     /// </summary>
     /// <param name="key"></param>
@@ -22,6 +30,14 @@ public interface ICache
     ///     
     /// </returns>
     Task SetAsync(string key, string value, int expiresIn);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <param name="expiresIn"></param>
+    /// <returns></returns>
+    Task SetAsync(string key, object value, int expiresIn);
     /// <summary>
     ///     Remove value has key in cache
     /// </summary>

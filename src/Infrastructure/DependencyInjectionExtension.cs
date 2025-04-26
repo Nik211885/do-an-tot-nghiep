@@ -33,6 +33,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository();
+        services.AddApplicationServicesExtension();
         services.AddOptionConfigurations(configuration);
         services.AddKeyCloakIdentityProvider();
         services.AddCache();

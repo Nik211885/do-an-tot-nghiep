@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Application.Services;
+using Application.Interfaces.Query;
 using Core.Interfaces.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,6 +7,8 @@ namespace Infrastructure.Services.Repository;
 
 public static class AddRepositoryExtension
 {
+    public static IServiceCollection AddApplicationServicesExtension(this IServiceCollection services)
+        => services.AddScanTypeToBaseAbstraction(typeof(IApplicationQueryServicesExtension));
     public static IServiceCollection AddRepository(this IServiceCollection services)
         => services.AddScanTypeToBaseAbstraction(typeof(IRepository<>));
     

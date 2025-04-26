@@ -16,3 +16,8 @@ but it makes simple design and easy test, and it makes not good for performance 
 
 I want to make don't have dependency redundant in between layer like in domain and application I don't expose queryable
 it dependency to linq and ef I know you convert expression to sql and still query in database but in my case I don't like make this
+
+
+## Concept about module
+
+It encapsulation to folder it makes to easy fun file release make edit

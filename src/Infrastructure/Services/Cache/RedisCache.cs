@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Cache;
+﻿using System.Text.Json;
+using Application.Interfaces.Cache;
 using StackExchange.Redis;
 
 namespace Infrastructure.Services.Cache;
@@ -17,6 +18,18 @@ public class RedisCache(IConnectionMultiplexer connectionMultiplexer) : ICache
     /// <returns></returns>
     public async Task<string?> GetAsync(string key)
         => await _db.StringGetAsync(key);
+
+    public Task<TValue?> GetAsync<TValue>(string key)
+    {
+        var value = _db.StringGet(key);
+        if (value.IsNullOrEmpty)
+        {
+            return Task.FromResult(default(TValue));
+        }
+        var valueObj = JsonSerializer.Deserialize<TValue>(value!);
+        return Task.FromResult(valueObj);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -25,6 +38,12 @@ public class RedisCache(IConnectionMultiplexer connectionMultiplexer) : ICache
     /// <param name="expiresIn"></param>
     public async Task SetAsync(string key, string value, int expiresIn)
         => await  _db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiresIn));
+
+    public async Task SetAsync(string key, object value, int expiresIn)
+    {
+        var jsonObject = JsonSerializer.Serialize(value);
+        await _db.StringSetAsync(key, jsonObject, TimeSpan.FromSeconds(expiresIn));
+    }
     /// <summary>
     /// 
     /// </summary>

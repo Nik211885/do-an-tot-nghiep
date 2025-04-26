@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Cache;
+﻿using System.Text.Json;
+using Application.Interfaces.Cache;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Infrastructure.Services.Cache;
@@ -14,7 +15,13 @@ public class MemoryCache(IMemoryCache memoryCache) : ICache
     /// <exception cref="NotImplementedException"></exception>
     public Task<string?> GetAsync(string key)
     {
-        var isValue = _memoryCache.TryGetValue(key, out string? value);
+        _ = _memoryCache.TryGetValue(key, out string? value);
+        return Task.FromResult(value);
+    }
+
+    public Task<TValue?> GetAsync<TValue>(string key)
+    {
+        _ = _memoryCache.TryGetValue(key, out TValue? value);
         return Task.FromResult(value);
     }
 
@@ -31,6 +38,13 @@ public class MemoryCache(IMemoryCache memoryCache) : ICache
         _memoryCache.Set(key, value, TimeSpan.FromSeconds(expiresIn));
         return Task.CompletedTask;
     }
+
+    public Task SetAsync(string key, object value, int expiresIn)
+    {
+        _memoryCache.Set(key, value, TimeSpan.FromSeconds(expiresIn));
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// 
     /// </summary>
