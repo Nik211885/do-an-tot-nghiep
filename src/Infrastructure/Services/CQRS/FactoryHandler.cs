@@ -21,7 +21,7 @@ public class FactoryHandler(IServiceProvider serviceProvider) : IFactoryHandler
     /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
     public async Task<TResponse> Handler<TRequest, TResponse>(TRequest request,
-        CancellationToken cancellationToken) 
+        CancellationToken cancellationToken = default) 
         where TRequest : IRequest<TResponse>
     {
         var handler = _serviceProvider.GetService<IHandler<TRequest, TResponse>>();

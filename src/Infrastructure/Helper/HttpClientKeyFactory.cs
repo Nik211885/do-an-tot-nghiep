@@ -8,4 +8,8 @@ public static class HttpClientKeyFactory
     ///  Key cloak get keycloak http client base
     /// </summary>
     public const string KeyCloak = nameof(KeyCloak);
+    /// <summary>
+    /// 
+    /// </summary>
+    public const string BankMomoKey = nameof(BankMomoKey);
 }

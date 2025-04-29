@@ -32,7 +32,7 @@ public class CloudinaryUploadFileServices(IOptions<CloudinaryUploadFileConfigura
         var stringSign = string.Join("&", parameters.Select(kvp => $"{kvp.Key}={kvp.Value}"));
         var signature = _cloudinary.Api.SignParameters(parameters);
         var urlWithSignature =
-            string.Concat(_cloudinaryUploadFileConfiguration.UploadFolder, 
+            string.Concat(_cloudinaryUploadFileConfiguration.UrlUpload, 
                 string.Format("/{0}/image/upload?api_key={1}&{2}&signature={3}",
                     _cloudinaryUploadFileConfiguration.CloudName, 
                     _cloudinaryUploadFileConfiguration.ApiKey, 

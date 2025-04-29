@@ -9,7 +9,7 @@ using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
 
-public class TestCaseEndpoint : IEndpoints
+public class TestCaseAggregateEndpoint : IEndpoints
 {
     public void Map(IEndpointRouteBuilder endpoint)
     {
@@ -24,7 +24,7 @@ public static class TestCaseServicesEndpoints
     public static async Task<IResult> CreateTestCase([FromBody] CreateTestCommand request,
         [FromServices] IFactoryHandler factoryHandler)
     {
-        var testCae = await factoryHandler.Handler<CreateTestCommand, TestCaseAggregate>(request, CancellationToken.None);
+        var testCae = await factoryHandler.Handler<CreateTestCommand, TestCaseAggregate>(request);
         return TypedResults.Ok(testCae);
     }
 
@@ -32,7 +32,7 @@ public static class TestCaseServicesEndpoints
         , [FromServices] IFactoryHandler factoryHandler)
     {
         var request = new GetTestWithPaginationQuery(name, pageNumber, pageSize);
-        var result = await factoryHandler.Handler<GetTestWithPaginationQuery, PaginationItem<TestPaginationResponse>>(request, CancellationToken.None);
+        var result = await factoryHandler.Handler<GetTestWithPaginationQuery, PaginationItem<TestPaginationResponse>>(request);
         return TypedResults.Ok(result);
     }
 }

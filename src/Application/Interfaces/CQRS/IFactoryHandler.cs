@@ -15,6 +15,6 @@ public interface IFactoryHandler
     /// <returns>
     ///     Throw argument exception null if services don't find handler
     /// </returns>
-    Task<TResponse> Handler<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+    Task<TResponse> Handler<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>;
 }
