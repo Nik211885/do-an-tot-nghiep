@@ -65,7 +65,7 @@ services:
     networks:
       - keycloak_network
   rabbitmq:
-    image: rabbitmq:3-management-latest
+    image: rabbitmq:4.1.0
     ports:
       - 5672:5672     
       - 15672:15672
