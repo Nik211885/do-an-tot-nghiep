@@ -23,21 +23,24 @@ export class ErrorInterceptor implements HttpInterceptor {
         switch (error.status) {
           case 401: // Unauthorized
             // Let AuthInterceptor handle token refresh
-            this.router.navigate(['/unauthorized']);
+            this.router.navigate(['error/unauthorized']);
             break;
 
           case 403: // Forbidden
-            this.router.navigate(['/forbidden']);
+            this.router.navigate(['error/forbidden']);
             break;
 
           case 404: // Not Found
             // Could navigate to a not-found page
-            this.router.navigate(['/not-found']);
+            this.router.navigate(['error/not-found']);
             break;
 
           case 500: // Server Error
             // Could show a server error notification
-            this.router.navigate(['/internal-server']);
+            this.router.navigate(['error/internal-server']);
+            break;
+          default: 
+            this.router.navigate([`error/${error.status}`]);
             break;
         }
 

@@ -8,6 +8,7 @@ import { AdminHeaderComponent } from '../../components/header/variants/admin-hea
 import { AdminFooterComponent } from '../../components/footer/variants/admin-footer/admin-footer.component';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar/sidebar.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin-layout',
@@ -16,7 +17,8 @@ import { SidebarComponent } from '../../components/sidebar/sidebar/sidebar.compo
      AdminHeaderComponent,
      AdminFooterComponent,
      SidebarComponent,
-     BreadcrumbComponent
+     BreadcrumbComponent,
+     RouterOutlet
     ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'
