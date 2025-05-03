@@ -1,0 +1,59 @@
+/* Thêm các animation và styles cho menu mobile */
+
+/* Hiệu ứng làm mịn cho các transition */
+.transition-transform, 
+.transition-opacity {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cải thiện trải nghiệm cho cảm ứng */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+/* Style cho thanh header */
+:host {
+  position: relative;
+  z-index: 100;
+}
+
+/* Style cho backdrop khi menu mobile mở */
+.bg-black.bg-opacity-50 {
+  backdrop-filter: blur(3px);
+}
+
+/* Hiệu ứng ripple khi click vào các link */
+a:active {
+  position: relative;
+  overflow: hidden;
+}
+
+a:active::after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background-color: rgba(0, 0, 0, 0.05);
+  animation: ripple 0.5s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+/* Styles cho thanh kéo indicator */
+.h-1.bg-gray-300 {
+  transition: width 0.2s;
+}
+
+.fixed.bottom-0:active .h-1.bg-gray-300 {
+  width: 2rem;
+}

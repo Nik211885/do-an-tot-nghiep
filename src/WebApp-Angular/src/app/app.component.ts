@@ -8,7 +8,7 @@ import { AuthService } from './core/auth/auth.service';
   imports: [RouterOutlet],
   standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
   constructor(@Inject(PLATFORM_ID) private readonly platFormId: object,
@@ -17,11 +17,5 @@ export class AppComponent implements OnInit{
     if(isPlatformBrowser(this.platFormId)){
       this.authService.initialize()
     }
-  }
-  Login(){
-    this.authService.login("/");
-  }
-  Logout(){
-    this.authService.logout();
   }
 }

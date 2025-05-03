@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+/* Base styles */
+/* Base styles */
+html, body {
+  @apply h-full antialiased;
+}
+
+body {
+  @apply font-sans text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 transition-colors duration-200;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-serif font-bold;
+}
+
+h1 { @apply text-3xl md:text-4xl lg:text-5xl; }
+h2 { @apply text-2xl md:text-3xl lg:text-4xl; }
+h3 { @apply text-xl md:text-2xl lg:text-3xl; }
+h4 { @apply text-lg md:text-xl lg:text-2xl; }
+h5 { @apply text-base md:text-lg lg:text-xl; }
+h6 { @apply text-sm md:text-base lg:text-lg; }
+
+/* Reading styles */
+.reader-container {
+  @apply max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 shadow-xl rounded-lg;
+  font-size: var(--reader-font-size, 1rem);
+  line-height: var(--reader-line-height, 1.8);
+}
+
+.reader-container p {
+  @apply mb-6 text-gray-700 dark:text-gray-300;
+}
+
+/* Custom components */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-primary-500/30;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 focus:ring-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 shadow-gray-500/20;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700;
+  }
+
+  .nav-link {
+    @apply px-4 py-2 text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary-500 after:transition-all hover:after:w-full;
+  }
+
+  .nav-link-active {
+    @apply text-primary-600 dark:text-primary-400 font-medium after:w-full;
+  }
+
+  .sidebar-link {
+    @apply flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 hover:translate-x-1;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400 font-medium;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}

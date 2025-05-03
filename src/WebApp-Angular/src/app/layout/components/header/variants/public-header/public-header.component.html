@@ -1,0 +1,133 @@
+<app-header variant="public">
+  <!-- Header chính - luôn hiển thị -->
+  <div class="header-start">
+    <div class="mx-auto flex items-center justify-between px-4 bg-white dark:bg-gray-800 relative z-20">
+      <!-- Menu chính - desktop -->
+      <div class="hidden lg:flex lg:items-center lg:space-x-8">
+        <a href="/categories" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Thể Loại Sách</a>
+        <a href="/books" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tất Cả Sách</a>
+        <a href="/free-books" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Miễn Phí</a>
+        <a href="/premium" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Trả Phí</a>
+      </div>
+      
+      <!-- Phần bên phải: tìm kiếm + đăng nhập -->
+      <div class="flex items-center space-x-4">
+        <!-- Nút tìm kiếm kiểu Apple -->
+        <button (click)="toggleSearchOverlay()" class="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      
+      
+        <!-- Nút hamburger menu mobile -->
+        <button (click)="toggleMobileMenu()" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 focus:outline-none">
+          <svg *ngIf="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg *ngIf="isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu Mobile - đẩy từ dưới lên trên kiểu Etsy -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-10 transition-opacity duration-300" 
+        [ngClass]="{'opacity-100': isMobileMenuOpen, 'opacity-0 pointer-events-none': !isMobileMenuOpen}">
+      <app-header variant="public">
+        <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-10 transition-transform duration-300 ease-out overflow-y-auto max-h-[80vh]"
+            [ngClass]="{'translate-y-0': isMobileMenuOpen, 'translate-y-full': !isMobileMenuOpen}">
+          <div class="flex flex-col space-y-3 p-6 pb-safe">
+            <!-- Thanh kéo UI/UX tốt hơn -->
+            <div class="flex justify-center -mt-2 mb-2">
+              <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+            </div>
+            
+            <a href="/categories" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Thể Loại Sách</a>
+            <a href="/books" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tất Cả Sách</a>
+            <a href="/free-books" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Miễn Phí</a>
+            <a href="/premium" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Trả Phí</a>
+            <a href="/login" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center">Đăng Nhập</a>
+          </div>
+        </div>
+      </app-header>
+    </div>
+    <div *ngIf="isSearchOverlayOpen" 
+        class="fixed inset-0 bg-white dark:bg-gray-900 z-50 transition-transform duration-300"
+        [ngClass]="{'translate-y-0': isSearchOverlayOpen, '-translate-y-full': !isSearchOverlayOpen}">
+      <div class="container mx-auto px-4 pt-16 pb-6">
+        <!-- Header tìm kiếm -->
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Tìm kiếm</h2>
+          <button (click)="toggleSearchOverlay()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Input tìm kiếm -->
+        <div class="relative">
+          <input 
+            type="text" 
+            placeholder="Tìm kiếm sách..." 
+            class="w-full py-3 px-4 pr-12 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            (input)="onSearchInput($event)"
+            #searchInput
+          >
+          <button class="absolute right-4 top-1/2 transform -translate-y-1/2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
+        <div *ngIf="searchResults.length > 0" class="mt-6">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">Kết quả tìm kiếm</h3>
+          <div class="space-y-4">
+            <div *ngFor="let result of searchResults" 
+                class="flex items-start p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                (click)="selectSearchResult(result)">
+              <!-- Preview hình ảnh -->
+              <div class="w-12 h-16 bg-gray-200 dark:bg-gray-700 rounded mr-3 flex-shrink-0"></div>
+              <!-- Thông tin sách -->
+              <div>
+                <h4 class="font-medium text-gray-800 dark:text-gray-200">{{ result.title }}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ result.author }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lịch sử tìm kiếm -->
+        <div *ngIf="searchHistory.length > 0 && !searchResults.length" class="mt-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tìm kiếm gần đây</h3>
+            <button class="text-sm text-blue-600 dark:text-blue-400" (click)="clearSearchHistory()">Xóa tất cả</button>
+          </div>
+          <div class="mt-3 space-y-2">
+            <div *ngFor="let item of searchHistory; let i = index" class="flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">{{ item }}</span>
+              </div>
+              <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" (click)="removeHistoryItem(i, $event)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Nút đăng nhập - hiển thị trên desktop -->
+  <div class="hidden lg:block header-end px-4">
+    <a href="/login" class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg whitespace-nowrap">Đăng Nhập</a>
+  </div>
+</app-header>
