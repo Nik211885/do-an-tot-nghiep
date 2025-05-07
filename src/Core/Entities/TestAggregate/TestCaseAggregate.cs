@@ -2,7 +2,7 @@
 
 namespace Core.Entities.TestAggregate;
 
-public class TestCaseAggregate : AbsBaseEntity, IAggregateRoot
+public class TestCaseAggregate : BaseEntity, IAggregateRoot
 {
     public string Name { get; private set; }
     public TestLevel TestLevel { get; private set; }

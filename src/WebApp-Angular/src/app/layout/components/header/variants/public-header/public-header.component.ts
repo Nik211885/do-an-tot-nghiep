@@ -1,20 +1,51 @@
-import { Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, Renderer2, signal, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../header.component';
 import { Router } from '@angular/router';
+import {
+  trigger,
+  transition,
+  style,
+  animate
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { UserModel } from '../../../../../core/models/user.model';
 
 @Component({
   standalone: true,
   selector: 'app-public-header',
+  animations: [
+    trigger('dropdownAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
+    ]),
+    trigger('overlayAnimation', [
+      // Animation khi element xuất hiện (enter)
+      transition(':enter', [
+        style({ transform: 'translateY(-100%)', opacity: 0 }), // Bắt đầu từ vị trí trên cùng và opacity bằng 0
+        animate('500ms ease-out', style({ transform: 'translateY(0)', opacity: 1 })) // Di chuyển xuống và opacity từ từ tăng lên
+      ]),
+      // Animation khi element biến mất (leave)
+      transition(':leave', [
+        animate('500ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })) // Trượt lên và giảm opacity
+      ])
+    ])
+  ],
   imports: [HeaderComponent, CommonModule],
   templateUrl: './public-header.component.html',
   styleUrl: './public-header.component.css'
 })
 export class PublicHeaderComponent implements OnInit {
   @ViewChild('searchInput') searchInput!: ElementRef;
-  
+  userModel = signal<UserModel | null>(null);
   isMobileMenuOpen: boolean = false;
   isSearchOverlayOpen: boolean = false;
+  isAuthenticated = false;
   searchResults: any[] = [];
   searchHistory: string[] = ['Harry Potter', 'Đắc Nhân Tâm', 'Sherlock Holmes'];
   searchQuery: string = '';
@@ -23,10 +54,11 @@ export class PublicHeaderComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(){
     // Thêm event listener để đóng menu khi click vào overlay
     this.renderer.listen('document', 'click', (event: Event) => {
       const target = event.target as HTMLElement;
@@ -40,6 +72,10 @@ export class PublicHeaderComponent implements OnInit {
 
     // Thêm event listener cho sự kiện vuốt lên để đóng mobile menu
     this.setupSwipeDetection();
+    await this.authService.initialize().then(async ()=>{
+      this.isAuthenticated = this.authService.isAuthenticated();
+      this.userModel.set(await this.authService.loadUserProfile());
+    });
   }
 
   // Thiết lập phát hiện cử chỉ vuốt để tăng UX cho mobile
@@ -151,5 +187,28 @@ export class PublicHeaderComponent implements OnInit {
   // Xóa tất cả lịch sử tìm kiếm
   clearSearchHistory(): void {
     this.searchHistory = [];
+  }
+  login(){
+    this.authService.login("");
+  }
+  logout(){
+    this.authService.logout();
+  }
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+  @HostListener('document:click', ['$event.target'])
+    onDocumentClick(target: HTMLElement) {
+    const clickedInsideDropdown = target.closest('.user-menu-wrapper');
+    const clickedInsideHeader = target.closest('app-header');
+
+    if (!clickedInsideDropdown && !clickedInsideHeader) {
+      this.isMenuOpen = false;
+    }
   }
 }

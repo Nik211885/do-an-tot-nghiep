@@ -3,10 +3,10 @@
 /// <summary>
 ///  Value object you can use record type make value object
 /// </summary>
-public abstract class AbsValueObject
+public abstract class ValueObject
 {
     // Compare object when it is null
-    private static bool EqualOperator(AbsValueObject left, AbsValueObject right)
+    private static bool EqualOperator(ValueObject left, ValueObject right)
     {
         if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
         {
@@ -15,7 +15,7 @@ public abstract class AbsValueObject
         return ReferenceEquals(left, null) || left.Equals(right);
     }
 
-    protected static bool NotEqualOperator(AbsValueObject left, AbsValueObject right)
+    protected static bool NotEqualOperator(ValueObject left, ValueObject right)
     {
         return !(EqualOperator(left, right));
     }
@@ -41,7 +41,7 @@ public abstract class AbsValueObject
             return false;
         }
 
-        var other = (AbsValueObject)obj;
+        var other = (ValueObject)obj;
 
         return this.GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
     }
@@ -61,6 +61,6 @@ public abstract class AbsValueObject
     ///     Get all object has copy
     /// </summary>
     /// <returns></returns>
-    public AbsValueObject? GetCopy()
-        => this.MemberwiseClone() as AbsValueObject;
+    public ValueObject? GetCopy()
+        => this.MemberwiseClone() as ValueObject;
 }

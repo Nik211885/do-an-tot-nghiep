@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
 import { UserModel } from '../models/user.model';
 import { KeyCloakService } from './key-cloak.service';
 import { AuthConfig } from './auth.config';
@@ -10,63 +10,51 @@ import { AuthConfig } from './auth.config';
 export class AuthService {
   private authConfig: AuthConfig = new AuthConfig()
   private currentUserSubject: BehaviorSubject<UserModel | null>;
-  public currentUser: Observable<UserModel | null>;
-  private initializing = false;
+  public currentUser: UserModel | null = null;
   private initialized = false;
   constructor(private keyCloakService: KeyCloakService,
   ) {
     this.currentUserSubject = new BehaviorSubject<UserModel | null>(null);
-    this.currentUser = this.currentUserSubject.asObservable();
   }
-  public initialize(): Observable<boolean> {
-    if (this.initialized) {
-      return of(true);
+  async initialize(): Promise<boolean> {
+    if (this.initialized) return true;
+  
+    try {
+      const authenticated = await firstValueFrom(this.keyCloakService.init());
+      this.initialized = true;
+  
+      if (authenticated) {
+        const user = await this.loadUserProfile(); // <-- Đợi cho xong
+        this.currentUser = user;
+      }
+  
+      return authenticated;
+    } catch (err) {
+      this.initialized = false;
+      console.error('Auth initialization error:', err);
+      return false;
     }
-
-    if (this.initializing) {
-      return of(false);
-    }
-
-    this.initializing = true;
-
-    return this.keyCloakService.init().pipe(
-      tap(authenticated => {
-        this.initialized = true;
-        this.initializing = false;
-
-        if (authenticated) {
-          this.loadUserProfile();
-        }
-      }),
-      catchError(err => {
-        this.initialized = false;
-        this.initializing = false;
-        console.error('Auth initialization error:', err);
-        return of(false);
-      })
-    );
   }
-  public loadUserProfile(): Observable<UserModel> {
-    return this.keyCloakService.loadProfile().pipe(
-      map(profile => {
-        const user: UserModel = {
-          id: profile.id || '',
-          username: profile.username || '',
-          email: profile.email || '',
-          firstName: profile.firstName || '',
-          lastName: profile.lastName || '',
-          roles: this.keyCloakService.getRoles()
-        };
-
-        this.currentUserSubject.next(user);
-        return user;
-      }),
-      catchError(error => {
-        console.error('Error loading user profile:', error);
-        this.currentUserSubject.next(null);
-        return of({} as UserModel);
-      })
-    );
+  public async loadUserProfile(): Promise<UserModel | null> {
+    try {
+      const profile = await firstValueFrom(this.keyCloakService.loadProfile());
+  
+      const user: UserModel = {
+        id: profile.id || '',
+        username: profile.username || '',
+        email: profile.email || '',
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        roles: this.keyCloakService.getRoles()
+      };
+  
+      this.currentUserSubject.next(user);
+      return user;
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+      this.currentUserSubject.next(null);
+      return null;
+    }
   }
   public getCurrentUser(): UserModel | null {
     return this.currentUserSubject.value;

@@ -49,7 +49,7 @@ public class DispatcherDomainEventInterceptors(IEventDispatcher eventDispatcher)
     {
         if (context == null) return;
         
-        var eventBases = context.ChangeTracker.Entries<AbsBaseEntity>()
+        var eventBases = context.ChangeTracker.Entries<BaseEntity>()
             .Where(x => x.Entity.DomainEvents is not null 
                         && x.Entity.DomainEvents.Any())
             .SelectMany(x => x.Entity.DomainEvents 

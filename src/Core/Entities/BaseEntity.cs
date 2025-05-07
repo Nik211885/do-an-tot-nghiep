@@ -4,7 +4,7 @@ namespace Core.Entities;
 /// <summary>
 ///     Base entity in core just have id and event domain
 /// </summary>
-public abstract class AbsBaseEntity
+public abstract class BaseEntity
 {
     /// <summary>
     ///     Identity for entity it follows id is uuid7
@@ -66,8 +66,8 @@ public abstract class AbsBaseEntity
         {
             return false;
         }
-        AbsBaseEntity absBaseEntity = (AbsBaseEntity)obj;
-        return absBaseEntity.Id == this.Id;
+        BaseEntity baseEntity = (BaseEntity)obj;
+        return baseEntity.Id == this.Id;
     }
     /// <summary>
     /// 
@@ -75,7 +75,7 @@ public abstract class AbsBaseEntity
     /// <param name="entity"></param>
     /// <param name="entityCompare"></param>
     /// <returns></returns>
-    public static bool operator == (AbsBaseEntity entity, AbsBaseEntity entityCompare)
+    public static bool operator == (BaseEntity entity, BaseEntity entityCompare)
     {
         if (Object.Equals(entity, null))
         {
@@ -90,7 +90,7 @@ public abstract class AbsBaseEntity
     /// <param name="entity"></param>
     /// <param name="entityCompare"></param>
     /// <returns></returns>
-    public static bool operator !=(AbsBaseEntity entity, AbsBaseEntity entityCompare)
+    public static bool operator !=(BaseEntity entity, BaseEntity entityCompare)
         => !(entity == entityCompare);
     /// <summary>
     ///  Hash entity to number it make compare entity faster
