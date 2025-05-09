@@ -3,17 +3,17 @@ using Core.Exception;
 using Core.Message;
 using Core.ValueObjects;
 
-namespace Core.BoundContext.BookManagement.BookAggregate;
-
+namespace Core.BoundContext.WriteBookContext.BookAggregate;
+/// <summary>
+///     Just apply policy free, paid, subscription
+///     if free read all book
+///     if subscription user need follow author
+///     paid money new has read book
+///     don't support policy in chapter 
+/// </summary>
 public class PolicyReadBook : ValueObject
 {
-    /// <summary>
-    ///  Make simple price is VND 
-    /// </summary>
     public decimal? Price { get; private set; }
-    /// <summary>
-    /// 
-    /// </summary>
     public BookPolicy Policy { get; private set; }
 
     private PolicyReadBook(BookPolicy policy, decimal? price)
@@ -21,7 +21,7 @@ public class PolicyReadBook : ValueObject
         Policy = policy;
         Price = price;
     }
-
+    
     public static PolicyReadBook CreatePolicy(BookPolicy policy, decimal? price)
     {
         if (policy == BookPolicy.Paid && price is null or < 0)
@@ -49,22 +49,10 @@ public class PolicyReadBook : ValueObject
         }
     }
 }
-/// <summary>
-/// 
-/// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum BookPolicy
 {
-    /// <summary>
-    /// 
-    /// </summary>
     Free = 1,
-    /// <summary>
-    /// 
-    /// </summary>
     Paid = 2,
-    /// <summary>
-    /// 
-    /// </summary>
     Subscription = 3,
 }

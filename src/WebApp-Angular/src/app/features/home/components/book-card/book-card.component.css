@@ -1,0 +1,36 @@
+/* book-card.component.css */
+/* Enhanced card styling - theme compatible */
+
+/* Line clamping for multi-line text truncation */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Media query for mobile optimization */
+  @media (max-width: 640px) {
+    :host {
+      width: 100%;
+    }
+  }
+  
+  /* Host element styling */
+  :host {
+    display: block;
+    height: 100%;
+  }
+  
+  /* Card highlight effect */
+  :host:hover .card-highlight {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }

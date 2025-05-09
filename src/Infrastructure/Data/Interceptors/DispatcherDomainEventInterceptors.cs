@@ -45,7 +45,7 @@ public class DispatcherDomainEventInterceptors(IEventDispatcher eventDispatcher)
     /// </summary>
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
-    private async Task DispatchDomainEvents(DbContext? context, CancellationToken cancellationToken)
+    private async Task DispatchDomainEvents(Microsoft.EntityFrameworkCore.DbContext? context, CancellationToken cancellationToken)
     {
         if (context == null) return;
         

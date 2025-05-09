@@ -1,21 +1,18 @@
-﻿using System.Data;
-using System.Reflection;
-using Core.Entities.TestAggregate;
+﻿using System.Reflection;
 using Core.Interfaces;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Npgsql;
 
-namespace Infrastructure.Data;
+namespace Infrastructure.Data.DbContext;
 /// <summary>
 /// 
 /// </summary>
 /// <param name="options"></param>
 /// <param name="dbConnectionStringSelector"></param>
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+public class BaseDbContext(DbContextOptions<BaseDbContext> options, 
     IDbConnectionStringSelector dbConnectionStringSelector)
-    : DbContext(options), IUnitOfWork
+    : Microsoft.EntityFrameworkCore.DbContext(options), IUnitOfWork
 {
     /// <summary>
     /// 
@@ -32,11 +29,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// <summary>
     /// 
     /// </summary>
-    public DbSet<TestCaseAggregate> TestCaseAggregate { get; set; }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -46,7 +38,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// 
     /// </summary>
     /// <returns></returns>
-    public ApplicationDbContext ReadOnly()
+    public BaseDbContext ReadOnly()
     {
         _isReadOnly = true;
         return this;

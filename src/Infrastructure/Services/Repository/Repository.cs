@@ -1,16 +1,17 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.Repositories;
 using Infrastructure.Data;
+using Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Services.Repository;
 
-public class Repository<T>(ApplicationDbContext dbContext) 
+public class Repository<T>(BaseDbContext dbContext) 
     : IRepository<T> where T : IAggregateRoot
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly ApplicationDbContext _dbContext = dbContext;
+    private readonly BaseDbContext _dbContext = dbContext;
     /// <summary>
     /// 
     /// </summary>

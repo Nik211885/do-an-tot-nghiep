@@ -6,6 +6,12 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      lineClamp: {
+        5: '5',
+      },
+      transitionProperty: {
+        'line-clamp': 'line-clamp'
+      },
       colors: {
         primary: {
           50: '#eff6ff',
@@ -86,5 +92,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+  ],
 }

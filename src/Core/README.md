@@ -12,3 +12,7 @@ It in heart ddd in software
 ## Domain Services
 
 ## Domain Event
+
+
+Why I don't use concept module encapsulation all information into bound context ??
+

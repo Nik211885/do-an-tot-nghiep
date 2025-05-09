@@ -73,9 +73,8 @@
           class="flex items-center space-x-2 cursor-pointer"
         >
           <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white">
-            <span>AK</span>
+            <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover">
           </div>
-          <span class="hidden md:inline-block text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</span>
           <svg 
             class="hidden md:block h-4 w-4 text-gray-400" 
             xmlns="http://www.w3.org/2000/svg" 
@@ -89,11 +88,11 @@
         <!-- User dropdown -->
         <div 
           *ngIf="showUserDropdown" 
-          class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700"
+          class="w-max absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700"
         >
           <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <p class="text-sm font-medium text-gray-900 dark:text-white">Admin User</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">admineexample.com</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">{{userModel()?.getFullName()}}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{userModel()?.email}}</p>
           </div>
           <a href="javascript:void(0)" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
             <div class="flex items-center">

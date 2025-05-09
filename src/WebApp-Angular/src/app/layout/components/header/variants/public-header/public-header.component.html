@@ -33,11 +33,11 @@
                 <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover">
               </div>
               <div>
-                <p class="font-medium text-gray-800 dark:text-gray-200">{{userModel()?.firstName}}</p>
+                <p class="font-medium text-gray-800 dark:text-gray-200">{{userModel()?.getFullName()}}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{userModel()?.email}}</p>
               </div>
             </div>
-            <a href="/account" class="block py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Quản lý tài khoản</a>
+            <a routerLink="/admin" class="block py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Quản lý tài khoản</a>
             <button (click)="logout()" class="block w-full text-left py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">Đăng xuất</button>
           </div>
         </div>        
@@ -91,11 +91,11 @@
                     <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover">
                   </div>
                   <div>
-                    <p class="font-semibold text-gray-800 dark:text-white">{{userModel()?.firstName}}</p>
+                    <p class="font-semibold text-gray-800 dark:text-white">{{userModel()?.getFullName()}}</p>
                     <p class="text-sm text-gray-500 dark:text-gray-300 truncate">{{userModel()?.email}}</p>
                   </div>
                 </div>
-                <a href="/account" class="block w-full text-left py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-t border-gray-200 dark:border-gray-600">Quản lý tài khoản</a>
+                <a routerLink="/admin" class="block w-full text-left py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-t border-gray-200 dark:border-gray-600">Quản lý tài khoản</a>
                 <button (click)="logout()" class="block w-full text-left py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-t border-gray-200 dark:border-gray-600">Đăng xuất</button>
               </div>
             </div>

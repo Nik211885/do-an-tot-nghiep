@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Host, HostListener, OnInit, signal } from '@angular/core';
 import { LayoutService } from '../../../../services/layout.service';
 import { HeaderComponent } from '../../header.component';
 import { CommonModule } from '@angular/common';
+import { UserModel } from '../../../../../core/models/user.model';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -13,6 +16,7 @@ import { CommonModule } from '@angular/common';
 export class AdminHeaderComponent implements OnInit {
   showNotifications = false;
   showUserDropdown = false;
+  userModel = signal<UserModel | null>(null);
   
   notifications = [
     {
@@ -38,9 +42,18 @@ export class AdminHeaderComponent implements OnInit {
     }
   ];
 
-  constructor(private layoutService: LayoutService) {}
+  constructor(private layoutService: LayoutService,
+    private authService: AuthService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.initialize().subscribe((authenticated) => {
+      if(authenticated){
+        this.authService.loadUserProfile().subscribe((user) => {
+          this.userModel.set(user);
+        });
+      }
+    });
+  }
 
   toggleSidebar(): void {
     this.layoutService.toggleSidebar();
@@ -59,7 +72,6 @@ export class AdminHeaderComponent implements OnInit {
       this.showNotifications = false;
     }
   }
-
   markAsRead(notification: any): void {
     notification.read = true;
   }
@@ -79,8 +91,7 @@ export class AdminHeaderComponent implements OnInit {
   }
 
   logout(): void {
-    // Implement logout logic here
-    console.log('Logging out...');
+    this.authService.logout();
   }
 
   // Close dropdowns when clicking outside

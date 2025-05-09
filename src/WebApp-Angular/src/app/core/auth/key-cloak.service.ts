@@ -10,7 +10,7 @@ import { catchError, from, map, Observable, throwError } from 'rxjs';
 export class KeyCloakService {
   private keyCloak: Keycloak
   private authConfig: AuthConfig = new AuthConfig()
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
     this.keyCloak = new Keycloak({
       clientId: this.authConfig.clientId,
       realm: this.authConfig.realm,
@@ -18,17 +18,12 @@ export class KeyCloakService {
     });
   }
   init(options?: KeycloakInitOptions): Observable<boolean> {
-    if(isPlatformBrowser(this.platformId)){
-      return from(this.keyCloak.init(options || {
-        onLoad: 'check-sso',
-        // silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
-        checkLoginIframe: false,
-        pkceMethod: 'S256'
-      }))
-    }
-    else{
-      return from(Promise.resolve(true));
-    }
+    return from(this.keyCloak.init(options || {
+      onLoad: 'check-sso',
+      // silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+      checkLoginIframe: false,
+      pkceMethod: 'S256'
+    }))
   }
   login(options?: any) : Observable<boolean>{
     return from(this.keyCloak.login(options || {
@@ -41,11 +36,17 @@ export class KeyCloakService {
       })
     );
   }
-  logout() : Observable<void>{
-    return from(this.keyCloak?.logout())
+  logout() : Observable<void> {
+    if(isPlatformBrowser(this.platformId)){
+      return from(this.keyCloak?.logout({
+        redirectUri: window.location.origin
+      }));
+    }
+    else{
+      return new Observable();
+    }
   }
   isAuthenticated(): boolean{
-    console.log(this.keyCloak);
     return this.keyCloak?.authenticated ?? false;
   }
   loadProfile() : Observable<KeycloakProfile>{

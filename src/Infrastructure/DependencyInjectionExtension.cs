@@ -5,6 +5,7 @@ using Application.Interfaces.IdentityProvider;
 using Core.Interfaces.Repositories;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
+using Infrastructure.Data.DbContext;
 using Infrastructure.Services.Cache;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
@@ -28,8 +29,8 @@ public static class DependencyInjectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IFactoryHandler, FactoryHandler>();
+        services.AddDbContext();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
-        services.AddDbContext<ApplicationDbContext>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository();

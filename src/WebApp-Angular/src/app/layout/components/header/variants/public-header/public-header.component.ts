@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, Input, OnInit, Renderer2, signal, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../header.component';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   trigger,
   transition,
@@ -36,16 +36,16 @@ import { UserModel } from '../../../../../core/models/user.model';
       ])
     ])
   ],
-  imports: [HeaderComponent, CommonModule],
+  imports: [HeaderComponent, CommonModule, RouterLink],
   templateUrl: './public-header.component.html',
   styleUrl: './public-header.component.css'
 })
 export class PublicHeaderComponent implements OnInit {
   @ViewChild('searchInput') searchInput!: ElementRef;
+  isAuthenticated = false;
   userModel = signal<UserModel | null>(null);
   isMobileMenuOpen: boolean = false;
   isSearchOverlayOpen: boolean = false;
-  isAuthenticated = false;
   searchResults: any[] = [];
   searchHistory: string[] = ['Harry Potter', 'Đắc Nhân Tâm', 'Sherlock Holmes'];
   searchQuery: string = '';
@@ -58,7 +58,7 @@ export class PublicHeaderComponent implements OnInit {
     private authService: AuthService
   ) {}
 
-  async ngOnInit(){
+  ngOnInit(){
     // Thêm event listener để đóng menu khi click vào overlay
     this.renderer.listen('document', 'click', (event: Event) => {
       const target = event.target as HTMLElement;
@@ -72,10 +72,14 @@ export class PublicHeaderComponent implements OnInit {
 
     // Thêm event listener cho sự kiện vuốt lên để đóng mobile menu
     this.setupSwipeDetection();
-    await this.authService.initialize().then(async ()=>{
-      this.isAuthenticated = this.authService.isAuthenticated();
-      this.userModel.set(await this.authService.loadUserProfile());
-    });
+    this.authService.initialize().subscribe((intialize)=>{
+      if(intialize){
+        this.isAuthenticated = this.authService.isAuthenticated();
+        this.authService.getCurrentUser().subscribe((user)=>{
+          this.userModel.set(user);
+        });
+      }
+    })
   }
 
   // Thiết lập phát hiện cử chỉ vuốt để tăng UX cho mobile

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { SidebarItem } from '../models/sidebar-item.interface';
 import { MenuPermission } from '../models/menu-permission.enum';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class SidebarService {
     MenuPermission.VIEW_STATISTICS
   ];
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   getUserSidebarItems(): Observable<SidebarItem[]> {
     // Filter items based on user permissions

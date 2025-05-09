@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
 import {erorRoutes} from "./features/error-pages/error-pages.routes";
-import { PublicLayoutComponent } from './layout/layouts/public-layout/public-layout.component';
-import { NotFoundComponent } from './features/error-pages/not-found/not-found.component';
+import { AdminLayoutComponent } from './layout/layouts/admin-layout/admin-layout.component';
+import { homeRoutes } from './features/home/home.routes';
 export const routes: Routes = [
     {
-        path:"",
-        component: PublicLayoutComponent,
+        path: "admin",
+        component: AdminLayoutComponent,
     },
-    { path: '**', redirectTo:"error/not-found"},
     ...erorRoutes,
+    ...homeRoutes,
+    { path: '**', redirectTo:"error/not-found"},
 ];
