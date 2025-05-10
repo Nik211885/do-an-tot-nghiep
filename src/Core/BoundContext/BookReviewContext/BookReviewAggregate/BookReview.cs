@@ -50,7 +50,7 @@ public class BookReview : BaseEntity, IAggregateRoot
 
     public void AddComment(Guid reviewerId, string commentContent)
     {
-        var comment = Comment.Create(Id, reviewerId, commentContent);
+        var comment = Comment.Create(Id, reviewerId, commentContent, null);
         _comments ??= [];
         _comments.Add(comment);
         RaiseDomainEvent(new CommentedBookDomainEvent(comment.Id, _bookId, commentContent));

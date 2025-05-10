@@ -2,7 +2,7 @@
 using Application.Behaviors;
 using Application.Interfaces.CQRS;
 using Application.Middlewares;
-using Application.Services;
+using Application;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

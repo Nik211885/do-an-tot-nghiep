@@ -1,4 +1,4 @@
-﻿using Core.BoundContext.AuthoringContext.ChapterAggregate;
+﻿using Core.BoundContext.WriteBookContext.ChapterAggregate;
 using Core.Interfaces.Repositories.WriteBookContext;
 using Infrastructure.Data.DbContext;
 

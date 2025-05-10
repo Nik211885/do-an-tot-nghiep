@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Core.BoundContext.AuthoringContext.ChapterAggregate;
+namespace Core.BoundContext.WriteBookContext.ChapterAggregate;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ChapterStatus
 {

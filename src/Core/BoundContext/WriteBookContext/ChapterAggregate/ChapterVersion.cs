@@ -3,7 +3,7 @@ using Core.Events.AuthoringContext;
 using Core.Exception;
 using Core.Message;
 
-namespace Core.BoundContext.AuthoringContext.ChapterAggregate;
+namespace Core.BoundContext.WriteBookContext.ChapterAggregate;
 
 public class ChapterVersion : BaseEntity
 {

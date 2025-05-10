@@ -1,5 +1,5 @@
 ﻿using Core.BoundContext.WriteBookContext.BookAggregate;
-using Core.BoundContext.AuthoringContext.ChapterAggregate;
+using Core.BoundContext.WriteBookContext.ChapterAggregate;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 

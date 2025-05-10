@@ -2,7 +2,7 @@
 using Application.Interfaces.CQRS;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application.Services;
+namespace Application;
 
 
 public static class AddCqrsExtension
@@ -14,7 +14,7 @@ public static class AddCqrsExtension
     /// <param name="assembly"></param>
     /// <param name="leftTime"></param>
     /// <returns></returns>
-    public static IServiceCollection AddHandler(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
+    internal static IServiceCollection AddHandler(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
         => services.AddScanService(typeof(IHandler<,>), assembly, leftTime);
     /// <summary>
     ///     Add all domain event and query with left time is scope and in base assembly
@@ -23,7 +23,7 @@ public static class AddCqrsExtension
     /// <param name="assembly"></param>
     /// <param name="leftTime"></param>
     /// <returns></returns>
-    public static IServiceCollection AddDomainEvents(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
+    internal static IServiceCollection AddDomainEvents(this IServiceCollection services, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)
         => services.AddScanService(typeof(IEventHandler<>), assembly, leftTime);
 
     private static IServiceCollection AddScanService(this IServiceCollection services, Type typeInterface, Assembly? assembly = null, ServiceLifetime leftTime = ServiceLifetime.Scoped)

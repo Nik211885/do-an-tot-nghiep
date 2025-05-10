@@ -4,7 +4,7 @@ using Core.Exception;
 using Core.Interfaces;
 using Core.Message;
 
-namespace Core.BoundContext.AuthoringContext.ChapterAggregate;
+namespace Core.BoundContext.WriteBookContext.ChapterAggregate;
 public class Chapter 
     : BaseEntity, IAggregateRoot
 {
