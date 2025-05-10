@@ -8,6 +8,6 @@ public class BookReviewConfiguration : IEntityTypeConfiguration<BookReview>
 {
     public void Configure(EntityTypeBuilder<BookReview> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("BookReviews", DbSchema.BookReviewContext);
     }
 }

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="BoundContext\ModerationContext\" />
+    <Folder Include="BoundContext\OrderContext\" />
+  </ItemGroup>
+
 </Project>

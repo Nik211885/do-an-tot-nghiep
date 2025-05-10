@@ -8,6 +8,6 @@ public class RatingConfiguration : IEntityTypeConfiguration<Rating>
 {
     public void Configure(EntityTypeBuilder<Rating> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("Ratings", DbSchema.BookReviewContext);
     }
 }

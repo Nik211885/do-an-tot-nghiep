@@ -7,7 +7,7 @@ export interface Book{
     genres: Genre[];
     avatarUrl: string;
     description: string;
-    chapterNumber?: Array<number>;
+    chapters?: Chapter[];
     slug: string;
     tagNames: string[];
     isCompeleted: boolean;
@@ -34,4 +34,10 @@ export enum BookReleaseType
 {
     Serialized = 1,
     Complete = 2
+}
+
+export interface Chapter{
+    id: string;
+    version: number;
+    title: string;
 }

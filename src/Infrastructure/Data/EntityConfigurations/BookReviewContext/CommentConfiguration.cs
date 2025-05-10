@@ -8,6 +8,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 {
     public void Configure(EntityTypeBuilder<Comment> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("Comments", DbSchema.BookReviewContext);
     }
 }

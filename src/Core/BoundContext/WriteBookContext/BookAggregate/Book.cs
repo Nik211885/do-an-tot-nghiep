@@ -16,6 +16,7 @@ public class Book
     public bool IsComplete { get; private set; }
     public int VersionNumber { get; private set; }
     public bool Visibility { get; private set; }
+    // public string Slug {get; private set;}
     public PolicyReadBook PolicyReadBook { get; private set; }
     public BookReleaseType BookReleaseType { get; private set; }
     

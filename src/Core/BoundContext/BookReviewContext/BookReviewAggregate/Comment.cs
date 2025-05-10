@@ -13,7 +13,7 @@ public class Comment : BaseEntity
     public DateTimeOffset DatetimeCommented { get; private set; }
     
     private Guid? _commentChildId;
-    private List<Comment>? _commentsChilds;
+    private List<Comment>? _commentChilds;
 
     private Comment(Guid bookReviewId, Guid reviewerId, string content)
     {
@@ -31,18 +31,18 @@ public class Comment : BaseEntity
     public void Reply(Guid replierId, string content)
     {
         var replyComment = Comment.Create(_bookReviewId, replierId, content);
-        _commentsChilds ??= [];
-        _commentsChilds.Add(replyComment);
+        _commentChilds ??= [];
+        _commentChilds.Add(replyComment);
         RaiseDomainEvent(new RepliedCommentDomainEvent(Id,ReviewerId,content));
     }
 
     public void RemoveReply(Guid replyId)
     {
-        var reply = _commentsChilds?.FirstOrDefault(c => c.Id == replyId);
+        var reply = _commentChilds?.FirstOrDefault(c => c.Id == replyId);
         if (reply is null)
         {
             throw new BadRequestException(BookReviewContextMessage.CanNotFindCommentId);
         }
-        _commentsChilds?.Remove(reply);
+        _commentChilds?.Remove(reply);
     }
 }

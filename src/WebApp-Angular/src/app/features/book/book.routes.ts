@@ -1,14 +1,14 @@
 import { Routes } from "@angular/router";
 import { PublicLayoutComponent } from "../../layout/layouts/public-layout/public-layout.component";
 
-export const homeRoutes: Routes = [
+export const bookRoutes: Routes = [
     {
         path:"",
         component: PublicLayoutComponent,
         children: [
             {
                 path: "",
-                loadComponent: () => import("../home/home.component").then(m => m.HomeComponent)
+                loadComponent: () => import("../book/book.component").then(m => m.HomeComponent)
             },
             {
                 path: "books/:slug",

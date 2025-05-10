@@ -1,0 +1,4 @@
+<div [ngClass]="getBadgeColor()" class="text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 hover:scale-105">
+    {{ getPolicyLabel() }}
+    <span *ngIf="policy === BookPolicy.Paid && price" class="ml-1">{{ price | number:'1.0-0' }}đ</span>
+</div>

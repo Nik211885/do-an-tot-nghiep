@@ -35,7 +35,15 @@ export class BookService{
       rating: 4.7,
       isCompeleted: true,
       bookReleaseType: BookReleaseType.Serialized,
-      chapterNumber: [1, 2, 3,4,5,6,7,8,9,10],
+      chapters: [{
+        id: '1',
+        version: 1,
+        title: 'Chapter 1'
+      }, {
+        id: '2',
+        version: 2,
+        title: 'Chapter 2'
+      }],
       coutRating: 18542,
       slug: 'project-hail-mary-efgh5678',
       author: 'Andy Weir',

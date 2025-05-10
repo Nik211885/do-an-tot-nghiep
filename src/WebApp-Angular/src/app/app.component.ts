@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthService } from './core/auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookService } from './features/home/services/book.service';
 import { DiffDOM } from 'diff-dom';
 import { getDelta, undoDiffJson } from './core/utils/diff-content.until';
 

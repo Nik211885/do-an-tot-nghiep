@@ -8,7 +8,7 @@ namespace Core.BoundContext.BookReviewContext.BookReviewAggregate;
 
 public class BookReview : BaseEntity, IAggregateRoot
 {
-    public Guid _bookId;
+    private Guid _bookId;
     private List<Rating>? _ratings;
     private List<Comment>? _comments;
     public IReadOnlyCollection<Rating> Ratings => _ratings ?? [];

@@ -8,6 +8,6 @@ public class ChapterVersionConfiguration : IEntityTypeConfiguration<ChapterVersi
 {
     public void Configure(EntityTypeBuilder<ChapterVersion> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("ChapterVersions", DbSchema.WriteBookContext);
     }
 }

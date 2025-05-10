@@ -7,8 +7,8 @@ import { BookService } from './services/book.service';
 @Component({
   selector: 'app-home',
   imports: [BookCardComponent, CommonModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  templateUrl: './book.component.html',
+  styleUrl: './book.component.css'
 })
 export class HomeComponent implements OnInit {
   books: Book[] = [];

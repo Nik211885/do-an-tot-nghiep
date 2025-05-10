@@ -1,0 +1,283 @@
+<div class="min-h-screen rounded-sm">
+      <!-- Hero Section with Backdrop -->
+      <div class="relative">
+        <div 
+          class="absolute inset-0 bg-cover bg-center blur-md opacity-30" 
+          [style.backgroundImage]="'url(' + book.avatarUrl + ')'" 
+        ></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-800/90 rounded-sm"></div>
+        
+        <div class="relative container mx-auto px-4 py-8 sm:py-12 lg:py-16">
+          <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Book Cover -->
+            <div class="flex-shrink-0 mx-auto lg:mx-0 relative">
+              <div class="relative w-56 h-80 sm:w-64 sm:h-96 rounded-lg overflow-hidden shadow-2xl transform transition-transform duration-300">
+                <img 
+                  [src]="book.avatarUrl || '/assets/images/default-book-cover.jpg'" 
+                  [alt]="book.title"
+                  class="w-full h-full object-cover"
+                />
+                
+                <!-- Favorite Button -->
+                <button 
+                  (click)="toggleFavorite($event)"
+                  class="absolute top-3 right-3 p-2 bg-white/90 rounded-full shadow-lg hover:shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" [attr.fill]="isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [ngClass]="isFavorite ? 'fill-rose-500 text-rose-500' : ''" class="h-5 w-5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
+                
+                <!-- Status Badge -->
+                <div class="absolute bottom-3 left-3">
+                  <span [ngClass]="getStatusColor()" class="text-xs font-bold px-3 py-1.5 rounded-full">
+                    {{ getStatusLabel() }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Policy Badge -->
+              <div class="absolute -bottom-4 -right-4">
+                <app-book-policy-badge 
+                  [policy]="book.policyReadBook.bookPolicy" 
+                  [price]="book.policyReadBook.price">
+                </app-book-policy-badge>
+              </div>
+            </div>
+            
+            <!-- Book Info -->
+            <div class="flex-1 text-white">
+              <h1 class="text-3xl sm:text-4xl font-bold mb-2">{{ book.title }}</h1>
+              <p class="text-lg mb-4">bởi <span class="font-medium">{{ book.author }}</span></p>
+              
+              <!-- Rating -->
+              <div class="flex items-center gap-3 mb-6">
+                <app-star-rating [rating]="book.rating"></app-star-rating>
+                <span class="">
+                  {{ book.rating.toFixed(1) }} ({{ book.coutRating }} đánh giá)
+                </span>
+              </div>
+              
+              <!-- Genres -->
+              <div class="flex flex-wrap gap-2 mb-6">
+                <app-book-genre-tag 
+                  *ngFor="let genre of book.genres" 
+                  [genre]="genre">
+                </app-book-genre-tag>
+              </div>
+              
+              <!-- Tags -->
+              <div *ngIf="(book.tagNames ?? []).length > 0" class="flex flex-wrap gap-2 mb-6">
+                <span *ngFor="let tag of book.tagNames ?? []" class="text-blue-300 hover:text-blue-200 transition-colors cursor-pointer">
+                  #{{ tag }}
+                </span>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="flex flex-wrap gap-4 mt-8">
+                <button 
+                  [ngClass]="getCtaButtonColor()"
+                  class="px-6 py-3 rounded-lg font-bold text-white shadow-lg transition-all duration-300 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  {{ getCtaButtonText() }}
+                </button>
+                
+                <button class="px-4 py-3 rounded-lg font-medium text-white bg-gray-700 hover:bg-gray-600 transition-colors duration-300 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                  Chia sẻ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Section -->
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column - Description, Chapters, and Comments -->
+          <div class="lg:col-span-2">
+            <!-- Description -->
+            <div class="rounded-xl shadow-lg p-6 mb-8">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Mô tả sách</h2>
+                <button 
+                  (click)="toggleDescription()"
+                  class="text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 text-sm font-medium"
+                >
+                  <ng-container *ngIf="isDescriptionExpanded">
+                    Thu gọn 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                  </ng-container>
+                  <ng-container *ngIf="!isDescriptionExpanded">
+                    Xem thêm 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </ng-container>
+                </button>
+              </div>
+              
+              <div [ngClass]="isDescriptionExpanded ? 'prose' : 'prose line-clamp-4'">
+                <p class="">{{ book.description }}</p>
+              </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="mb-6">
+              <div class="flex gap-4 border-b border-gray-200">
+                <button
+                  (click)="setActiveTab('chapters')"
+                  [ngClass]="activeTab === 'chapters' ? 'text-blue-600' : 'hover:text-gray-700'"
+                  class="pb-4 px-1 font-medium transition-colors relative"
+                >
+                  Danh sách chương
+                  <div *ngIf="activeTab === 'chapters'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+                </button>
+                <button
+                  (click)="setActiveTab('comments')"
+                  [ngClass]="activeTab === 'comments' ? 'text-blue-600' : 'hover:text-gray-700'"
+                  class="pb-4 px-1 font-medium transition-colors relative"
+                >
+                  Bình luận
+                  <div *ngIf="activeTab === 'comments'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Tab Content -->
+            <div *ngIf="activeTab === 'chapters' && book.chapters && book.chapters.length > 0" class="rounded-xl shadow-lg p-6">
+              <app-book-chapter-list 
+                [chapters]="book.chapters" 
+                [policy]="book.policyReadBook.bookPolicy">
+              </app-book-chapter-list>
+            </div>
+            
+            <div *ngIf="activeTab === 'comments'">
+              <!-- <app-book-comment-section [bookId]="book.id"></app-book-comment-section> -->
+            </div>
+          </div>
+          
+          <!-- Right Column - Book Details and Stats -->
+          <div>
+            <div class="rounded-xl shadow-lg p-6 mb-8">
+              <h2 class="text-xl font-bold mb-4">Thông tin</h2>
+              
+              <div class="space-y-4">
+                <div class="flex justify-between">
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                      <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg> 
+                    Thể loại
+                  </span>
+                  <span class="font-medium">{{ genreNames }}</span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <circle cx="12" cy="8" r="7"></circle>
+                      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                    </svg>
+                    Tác giả
+                  </span>
+                  <span class="font-medium">{{ book.author }}</span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Trạng thái
+                  </span>
+                  <span [ngClass]="book.isCompeleted ? 'text-emerald-600' : 'text-blue-600'" class="font-medium">
+                    {{ getStatusLabel() }}
+                  </span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Loại sách
+                  </span>
+                  <span class="font-medium">
+                    {{ book.bookReleaseType === BookReleaseType.Serialized ? 'Ra từng chương' : 'Hoàn chỉnh' }}
+                  </span>
+                </div>
+                
+                <div class="flex justify-between">
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Chính sách
+                  </span>
+                  <span [ngClass]="getPolicyTextColor()" class="font-medium">
+                    {{ getPolicyLabel() }}
+                    <ng-container *ngIf="book.policyReadBook.bookPolicy === BookPolicy.Paid && book.policyReadBook.price">
+                      - {{ book.policyReadBook.price | number:'1.0-0' }}đ
+                    </ng-container>
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Community Stats -->
+            <div class="rounded-xl shadow-lg p-6">
+              <h2 class="text-xl font-bold mb-4">Cộng đồng</h2>
+              
+              <div class="space-y-4">
+                <div class="flex flex-col">
+                  <div class="mb-2">
+                    <span class="">Đánh giá trung bình</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <app-star-rating [rating]="book.rating"></app-star-rating>
+                    <span class="text-amber-600 font-bold">{{ book.rating.toFixed(1) }}</span>
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="mb-2">
+                    <span class="">Phân bố đánh giá</span>
+                  </div>
+                  
+                  <div *ngFor="let star of [5, 4, 3, 2, 1]" class="flex items-center gap-2 mb-1">
+                    <span class="w-3">{{ star }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-amber-400">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full bg-amber-400" 
+                        [style.width]="getRandomPercentage() + '%'"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
