@@ -8,6 +8,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 {
     public void Configure(EntityTypeBuilder<Comment> builder)
     {
-        builder.ToTable("Comments", DbSchema.BookReviewContext);
+        builder.ToTable("Comments", DbSchema.BookReview);
     }
 }

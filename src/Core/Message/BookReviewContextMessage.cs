@@ -10,4 +10,7 @@ public static class BookReviewContextMessage
 
     public const string JustHaveOneRatingInTheBook
         = "Bạn chỉ có thể đánh giá tác phẩm 1 lần ";
+
+    public const string CanNotFindYourRating
+        = "Không tìm thấy đánh giá của bạn";
 }

@@ -20,6 +20,7 @@ internal static class AddOptionConfigurationsExtension
         services.Configure<CacheConnectionConfiguration>(configuration.GetSection("Cache:RedisConnection"));
         services.Configure<DatabaseConnectionString>(configuration.GetSection("DatabaseConnectionString:Postgresql"));
         services.Configure<KeycloakConfiguration>(configuration.GetSection("KeyCloakAuthentication:BookStoreServer"));
+        services.Configure<MailSettingConfiguration>(configuration.GetSection("MailSettings"));
         return services;
     }
 }

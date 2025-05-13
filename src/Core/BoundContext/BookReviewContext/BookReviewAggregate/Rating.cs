@@ -1,32 +1,31 @@
 ﻿using Core.Entities;
+using Core.ValueObjects;
 
 namespace Core.BoundContext.BookReviewContext.BookReviewAggregate;
 
-public class Rating : BaseEntity
+public class Rating : ValueObject
 {
-    private Guid _bookReviewId;
     public Guid ReviewerId { get; private set; }
     public RatingStar Star { get; private set; }
     
     public DateTimeOffset DateTimeReviewSubmit { get; private set; }
 
-    private Rating(Guid bookReviewId, Guid reviewerId, RatingStar star)
+    private Rating(Guid reviewerId, RatingStar star)
     {
         ReviewerId = reviewerId;
         Star = star;
-        _bookReviewId = bookReviewId;
         DateTimeReviewSubmit = DateTimeOffset.UtcNow;
     }
 
-    public static Rating Create(Guid bookReviewId, Guid reviewerId, RatingStar star)
+    public static Rating Create(Guid reviewerId, RatingStar star)
     {
-        return new Rating(bookReviewId, reviewerId, star);
+        return new Rating(reviewerId, star);
     }
 
-    public void Update(RatingStar stars)
+    protected override IEnumerable<object> GetEqualityComponents()
     {
-        Star = stars;
-        DateTimeReviewSubmit = DateTimeOffset.UtcNow;
+        yield return ReviewerId;
+        yield return Star;
+        yield return DateTimeReviewSubmit;
     }
-    
 }

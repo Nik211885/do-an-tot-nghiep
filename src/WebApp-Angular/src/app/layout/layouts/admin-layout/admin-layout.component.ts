@@ -41,7 +41,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     ]);
 
     // Example page header
-    this.layoutService.setPageHeader('Book Management', 'Edit book details and manage content');
 
     // Subscribe to sidebar state
     this.subscriptions.add(

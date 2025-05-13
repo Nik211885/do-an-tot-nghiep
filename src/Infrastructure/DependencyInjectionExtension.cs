@@ -2,6 +2,7 @@
 using Application.Interfaces.Cache;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
+using Application.Interfaces.Notification;
 using Core.Interfaces.Repositories;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
@@ -10,6 +11,7 @@ using Infrastructure.Services.Cache;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
 using Infrastructure.Services.Keycloak;
+using Infrastructure.Services.Notification;
 using Infrastructure.Services.Repository;
 using Infrastructure.Services.UploadFile;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +33,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
+        services.AddTransient<IEmailSender, EmailSender>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository();

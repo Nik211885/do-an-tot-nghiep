@@ -1,0 +1,28 @@
+<section class="comments-container">
+  <h2 class="text-xl font-semibold mb-6">Bình luận ({{ totalComments }})</h2>
+  
+  <!-- Main comment input -->
+  <div class="mb-8">
+    <app-comment-input
+      [currentUser]="currentUser"
+      submitLabel="Bình luận"
+      placeholder="Viết bình luận của bạn..."
+      (handleSubmit)="addComment($event)"
+    ></app-comment-input>
+  </div>
+  
+  <!-- Comment list -->
+  <div class="space-y-6">
+    <app-comment
+      *ngFor="let comment of comments"
+      [comment]="comment"
+      [currentUser]="currentUser"
+      (addNewReply)="addReply($event)"
+    ></app-comment>
+  </div>
+  
+  <!-- Empty state -->
+  <div *ngIf="comments.length === 0" class="text-center py-10">
+    <p class="text-gray-500">Chưa có bình luận nào, hãy viết bình luận của bạn</p>
+  </div>
+</section>

@@ -8,6 +8,6 @@ public class RatingConfiguration : IEntityTypeConfiguration<Rating>
 {
     public void Configure(EntityTypeBuilder<Rating> builder)
     {
-        builder.ToTable("Ratings", DbSchema.BookReviewContext);
+        builder.ToTable("Ratings", DbSchema.BookReview);
     }
 }

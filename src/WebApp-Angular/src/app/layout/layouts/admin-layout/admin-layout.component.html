@@ -1,27 +1,15 @@
 <div class="flex flex-col min-h-screen">
   <app-admin-header></app-admin-header>
 
-  <div class="flex flex-1 pt-16">
+  <div class="flex flex-1">
     <app-sidebar></app-sidebar>
 
     <main class="flex-1 transition-all duration-300"
       [ngClass]="{'ml-64': sidebarExpanded, 'ml-16': !sidebarExpanded}"
     >
-      <div class="p-6">
+      <div class="p-2">
         <app-breadcrumb></app-breadcrumb>
-
-        <div class="mt-4">
-          <div class="mb-6" *ngIf="pageHeader.title">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {{pageHeader.title}}
-            </h1>
-            <p *ngIf="pageHeader.subtitle" class="mt-1 text-gray-600 dark:text-gray-400">
-              {{pageHeader.subtitle}}
-            </p>
-          </div>
-
-          <router-outlet></router-outlet>
-        </div>
+        <router-outlet></router-outlet>
       </div>
     </main>
   </div>

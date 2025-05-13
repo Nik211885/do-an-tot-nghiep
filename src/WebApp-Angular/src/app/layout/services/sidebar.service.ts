@@ -67,13 +67,13 @@ export class SidebarService {
           {
             id: 'all-books',
             label: 'All Books',
-            route: '/admin/books',
+            route: '/write-book/books',
             permissions: [MenuPermission.MANAGE_BOOKS]
           },
           {
             id: 'add-book',
             label: 'Add New Book',
-            route: '/admin/books/new',
+            route: '/write-book//books/create',
             permissions: [MenuPermission.MANAGE_BOOKS]
           },
           {

@@ -7,18 +7,20 @@ import { BookGenreTagComponent } from './book-genre-tag/book-genre-tag.component
 import { BookChapterListComponent } from './book-chapter-list/book-chapter-list.component';
 import { BookPolicyBadgeComponent } from './book-policy-badge/book-policy-badge.component';
 import { StarRatingComponent } from './star-rating/star-rating.component';
+import { CommentBookSectionComponent } from "./comment-book-section/comment-book-section.component";
 
 @Component({
   selector: 'app-book-detail',
   standalone: true,
   imports: [
-    CommonModule, 
-    BookGenreTagComponent, 
-    BookPolicyBadgeComponent, 
-    BookChapterListComponent, 
+    CommonModule,
+    BookGenreTagComponent,
+    BookPolicyBadgeComponent,
+    BookChapterListComponent,
     // BookCommentSectionComponent,
-    StarRatingComponent
-  ],
+    StarRatingComponent,
+    CommentBookSectionComponent
+],
   templateUrl: './book-detail.component.html',
   styleUrl: './book-detail.component.css'
 })

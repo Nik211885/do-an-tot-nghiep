@@ -51,9 +51,6 @@ export class LayoutService {
     this.setLayoutConfig({ sidebarExpanded: this.sidebarExpandedSubject.value });
   }
 
-  setPageHeader(title: string, subtitle?: string): void {
-    this.pageHeaderSubject.next({ title, subtitle });
-  }
 
   getLayoutConfig(): Observable<LayoutConfig> {
     return this.layoutConfig$;

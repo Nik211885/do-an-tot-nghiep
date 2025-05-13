@@ -1,0 +1,15 @@
+<div class="toast-container" *ngIf="toasts.length > 0">
+    <div
+    *ngFor="let toast of toasts"
+    class="toast animate-fade-in"
+    [ngClass]="'toast-' + toast.type"
+    >
+    <span class="toast-message">{{ toast.message }}</span>
+    <button 
+        class="ml-3 text-white hover:text-gray-100"
+        (click)="removeToast(toast)"
+    >
+        ×
+    </button>
+    </div>
+</div>

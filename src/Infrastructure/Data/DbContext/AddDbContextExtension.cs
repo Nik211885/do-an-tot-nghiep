@@ -6,8 +6,10 @@ internal static class AddDbContextExtension
 {
     internal static IServiceCollection AddDbContext(this IServiceCollection services)
     {
-        services.AddDbContext<WriteBookDbContext>();
-        services.AddDbContext<BookReviewDbContext>();
+        services.AddDbContext<ModerationDbContext>();
+        services.AddDbContext<BookAuthoringDbContext>();
+        services.AddDbContext<BookAuthoringDbContext>();
+        services.AddDbContext<OrderDbContext>();
         return services;
     } 
 }
