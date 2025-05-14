@@ -24,4 +24,10 @@ public static class BookAuthoringContextMessage
 
     public const string CanNotFindChapterHasId
         = "Không tìm thấy chương có id là {0}";
+
+    public const string CanNotExitsGenresInYourBook
+        = "Thể loại bạn muốn xóa khỏi tác phẩm, không có trong tác phẩm của bạn";
+
+    public const string BookCanNotDuplicateGenre
+        = "Tác phẩm của bạn đã có thể loại này rồi!";
 }

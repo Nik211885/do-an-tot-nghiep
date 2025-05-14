@@ -1,4 +1,5 @@
 using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
+using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Core.Entities;
 using Core.Events.WriteBookContext;
 using Core.Exception;
@@ -22,8 +23,8 @@ public class Book
     public PolicyReadBook PolicyReadBook { get; private set; }
     public BookReleaseType BookReleaseType { get; private set; }
     
-    private List<Guid> _genreIds;
-    public IReadOnlyCollection<Guid> GenreIds => _genreIds.AsReadOnly();
+    private List<BookGenres> _genres;
+    public IReadOnlyCollection<BookGenres> GenreIds => _genres.AsReadOnly();
     public List<Tag>? Tags { get; private set; }
     private List<Chapter> _chapters;
     public IReadOnlyCollection<Chapter> Chapters => _chapters.AsReadOnly();
@@ -59,8 +60,7 @@ public class Book
         PolicyReadBook = policyReadBook;
         BookReleaseType = bookReleaseType;
         IsComplete = false;
-        Tags = tags;
-        _genreIds = genres;
+        _genres = genres.Select(gId => BookGenres.Create(Id, gId)).ToList();
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
@@ -142,17 +142,27 @@ public class Book
 
     public void AddGenres(Guid genreId)
     {
-        _genreIds.Add(genreId);
+        var genreExits = _genres.FirstOrDefault(x=>x.GenreId == genreId && x.BookId == Id);
+        if (genreExits is not null)
+        {
+            throw new BadRequestException(BookAuthoringContextMessage.BookCanNotDuplicateGenre);
+        }
+        _genres.Add(BookGenres.Create(genreId, Id));
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
     public void RemoveGenres(Guid genreId)
     {
-        if (_genreIds.Count <= 1)
+        if (_genres.Count <= 1)
         {
             throw new BadRequestException(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
         }
-        _genreIds.Remove(genreId);
+        var genreExits = _genres.FirstOrDefault(x => x.GenreId == genreId && x.BookId == Id);
+        if (genreExits is null)
+        {
+            throw new BadRequestException(BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
+        }
+        _genres.Add(BookGenres.Create(genreId, Id));
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     public static Book Create(string title, string? avatarUrl, string? description,

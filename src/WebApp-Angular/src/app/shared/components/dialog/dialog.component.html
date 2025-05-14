@@ -1,0 +1,74 @@
+<div *ngIf="isOpen" class="dialog-container">
+  
+  <!-- Enhanced backdrop with stronger blur effect -->
+  <div
+    class="dialog-backdrop fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10"
+    (click)="onBackdropClick($event)"
+    [@backdropAnimation]>
+    
+    <!-- Dialog container with max height and improved positioning -->
+    <div
+      [ngClass]="[dialogSizeClass, 'my-4 mx-auto']"
+      class="dialog-content w-full relative"
+      (click)="onDialogClick($event)">
+      
+      <!-- Dialog panel with enhanced shadows and animations -->
+      <div
+        [@dialogAnimation]
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200/30 dark:border-gray-700/30 transform transition-all flex flex-col max-h-[85vh]">
+        
+        <!-- Redesigned header with gradient accent -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center relative">
+          <div class="flex items-center gap-3">
+            <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full hidden sm:block"></div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ title }}</h3>
+          </div>
+          
+          <!-- Improved close button with hover animation -->
+          <button
+            type="button"
+            (click)="cancel()"
+            class="close-button text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300 transition-all p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            aria-label="Close dialog">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Enhanced body with improved spacing and typography -->
+        <div class="px-6 py-5 overflow-y-auto custom-scrollbar dialog-body" style="max-height: calc(85vh - 130px);">
+          <p *ngIf="message" class="text-gray-700 dark:text-gray-300 leading-relaxed text-base">{{ message }}</p>
+          
+          <!-- Dynamic Content -->
+          <ng-container *ngIf="customContent">
+            <ng-container *ngTemplateOutlet="customContent"></ng-container>
+          </ng-container>
+          
+          <!-- Projected Content -->
+          <ng-content select="[dialog-content]"></ng-content>
+        </div>
+        
+        <!-- Enhanced footer with gradient background and improved button styling -->
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 dialog-footer">
+          <ng-container *ngIf="!hideDefaultButtons">
+            <button
+              *ngIf="options.showCancelButton"
+              (click)="cancel()"
+              class="cancel-button px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 shadow-sm hover:shadow-lg">
+              {{ options.cancelButtonText || 'Hủy' }}
+            </button>
+            <button
+              (click)="confirm()"
+              class="confirm-button px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-sm hover:shadow-lg">
+              {{ options.confirmButtonText || 'Xác nhận' }}
+            </button>
+          </ng-container>
+          
+          <!-- Projected Footer Content -->
+          <ng-content select="[dialog-footer]"></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

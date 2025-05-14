@@ -10,7 +10,7 @@ namespace Infrastructure.Data.DbContext;
 /// </summary>
 /// <param name="options"></param>
 /// <param name="dbConnectionStringSelector"></param>
-public class BaseDbContext(DbContextOptions<BaseDbContext> options, 
+public class BaseDbContext(DbContextOptions options, 
     IDbConnectionStringSelector dbConnectionStringSelector)
     : Microsoft.EntityFrameworkCore.DbContext(options), IUnitOfWork
 {

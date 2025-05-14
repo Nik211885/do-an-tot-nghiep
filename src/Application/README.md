@@ -26,7 +26,8 @@ It encapsulation to folder it makes to easy fun file release make edit
 ## Think 
 If you use command with mediator and query is interface services in application and implement in ifra layer,
 but it has problem when I need add services like cache it want to appy open close prince just has use wraper interface
-
+Make good performance i just apply query is use cqrs if query need more services like 
+cache forever i just use query through abstraction query extension implement in inf layer
 ```csharp
     interface IOrderQueryService
     {
@@ -89,3 +90,6 @@ services.AddScope<IOrderQueryServices>(provider=>
     return new OrderQueryWithCaheServices(oldOrderQueryServices,cache);
 })
 ```
+
+
+Think about shared layer in between bound context

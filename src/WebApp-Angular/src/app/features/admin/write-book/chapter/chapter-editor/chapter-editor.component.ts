@@ -71,7 +71,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     const chapterId = this.route.snapshot.paramMap.get('chapterId');
     
     if (!bookId) {
-      this.toastService.error('Book ID is missing');
+      this.toastService.error('Không tìm thấy sách của bạn');
       this.router.navigate(['/books']);
       return;
     }
@@ -79,7 +79,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     this.bookService.getBook(bookId).subscribe({
       next: (book) => {
         if (!book) {
-          this.toastService.error('Book not found');
+          this.toastService.error('Không tìm thấy sách của bạn');
           this.router.navigate(['/books']);
           return;
         }
@@ -95,7 +95,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading book:', error);
-        this.toastService.error('Failed to load book information');
+        this.toastService.error('Không thể tải dữ liệu sách');
         this.router.navigate(['/books']);
       }
     });
@@ -111,7 +111,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     this.bookService.getChapter(chapterId).subscribe({
       next: (chapter) => {
         if (!chapter) {
-          this.toastService.error('Chapter not found');
+          this.toastService.error('Không tìm thấy chương sách');
           this.router.navigate(['/books', this.book?.id]);
           return;
         }
@@ -121,7 +121,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading chapter:', error);
-        this.toastService.error('Failed to load chapter');
+        this.toastService.error('Không thể tải chương sách');
         this.router.navigate(['/books', this.book?.id]);
       }
     });
@@ -163,24 +163,24 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       chapterData.id = this.chapter.id;
       this.bookService.updateChapter(chapterData).subscribe({
         next: () => {
-          this.toastService.success('Chapter updated successfully');
+          this.toastService.success('Cập nhật thành công');
           this.router.navigate(['/write-book/books', this.book?.id]);
         },
         error: (error) => {
           console.error('Error updating chapter:', error);
-          this.toastService.error('Failed to update chapter');
+          this.toastService.error('Không thể cập nhập chương sách');
           this.isSaving = false;
         }
       });
     } else {
       this.bookService.createChapter(chapterData).subscribe({
         next: () => {
-          this.toastService.success('Chapter published successfully');
+          this.toastService.success('Chương được xuất bản thành công');
           this.router.navigate(['/write-book/books', this.book?.id]);
         },
         error: (error) => {
           console.error('Error creating chapter:', error);
-          this.toastService.error('Failed to publish chapter');
+          this.toastService.error('Chương xuất bản thất bại');
           this.isSaving = false;
         }
       });
@@ -206,12 +206,12 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     // In a real app, you would probably have a draft status field
     this.bookService[this.isEditing ? 'updateChapter' : 'createChapter'](chapterData).subscribe({
       next: () => {
-        this.toastService.success('Draft saved successfully');
+        this.toastService.success('Đã lưu lại thành công');
         this.isSaving = false;
       },
       error: (error) => {
         console.error('Error saving draft:', error);
-        this.toastService.error('Failed to save draft');
+        this.toastService.error('Có lỗi trong quá trình lưu lại');
         this.isSaving = false;
       }
     });

@@ -8,6 +8,6 @@ public class ChapterVersionConfiguration : IEntityTypeConfiguration<ChapterVersi
 {
     public void Configure(EntityTypeBuilder<ChapterVersion> builder)
     {
-        builder.ToTable("ChapterVersions", DbSchema.WriteBook);
+        builder.ToTable("ChapterVersions", DbSchema.BookAuthoring);
     }
 }

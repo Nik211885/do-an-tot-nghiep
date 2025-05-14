@@ -5,10 +5,12 @@ import { AuthService } from './core/auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { DiffDOM } from 'diff-dom';
 import { getDelta, undoDiffJson } from './core/utils/diff-content.until';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { DialogComponent } from './shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, ToastComponent, DialogComponent],
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

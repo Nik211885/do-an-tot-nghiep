@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DbContext;
 
-public class BookReviewDbContext(DbContextOptions<BaseDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector)
+public class BookReviewDbContext(DbContextOptions<BookReviewDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector)
     : BaseDbContext(options, dbConnectionStringSelector)
 {
     

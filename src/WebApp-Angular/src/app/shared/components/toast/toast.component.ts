@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Toast, ToastService } from './toast.service';
+import { Toast, ToastService, ToastType } from './toast.service';
 
 @Component({
   standalone: true,
@@ -14,7 +14,7 @@ export class ToastComponent {
   toasts: (Toast & { id: number })[] = [];
   private subscription: Subscription | null = null;
   private counter = 0;
-
+  toastType = ToastType
   constructor(private toastService: ToastService) {}
 
   ngOnInit(): void {

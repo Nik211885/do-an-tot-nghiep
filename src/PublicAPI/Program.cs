@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application;
+using Asp.Versioning;
 using Infrastructure;
 using PublicAPI.Services;
 using PublicAPI.Services.Endpoint;

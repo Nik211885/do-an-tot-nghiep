@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DbContext;
 
-public class ReportSubmissionDbContext(DbContextOptions<BaseDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector)
+public class ReportSubmissionDbContext(DbContextOptions<ReportSubmissionDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector)
     : BaseDbContext(options, dbConnectionStringSelector)
 {
     public DbSet<ReportSubmission> ReportSubmissions { get; set; }

@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.EntityConfigurations.BookAuthoringContext;
 
-public class BookConfiguration : IEntityTypeConfiguration<Book>
+public class BookGenreConfiguration : IEntityTypeConfiguration<BookGenres>
 {
-    public void Configure(EntityTypeBuilder<Book> builder)
+    public void Configure(EntityTypeBuilder<BookGenres> builder)
     {
-        builder.ToTable("Books", DbSchema.BookAuthoring);
+        builder.ToTable("BookGenres", DbSchema.BookAuthoring);
     }
 }

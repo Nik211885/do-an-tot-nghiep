@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Book, Chapter } from '../../models/book.model';
 import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
+import { DialogService } from '../../../../../shared/components/dialog/dialog.component.service';
 
 @Component({
   selector: 'app-chapter-list',
@@ -21,14 +22,15 @@ export class ChapterListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
     const bookId = this.route.snapshot.paramMap.get('bookId');
     
     if (!bookId) {
-      this.toastService.error('Book ID is missing');
+      this.toastService.error('Không tìm thấy sách của bạn');
       this.router.navigate(['/books']);
       return;
     }
@@ -40,7 +42,7 @@ export class ChapterListComponent implements OnInit {
     this.bookService.getBook(bookId).subscribe({
       next: (book) => {
         if (!book) {
-          this.toastService.error('Book not found');
+          this.toastService.error('Không tìm thấy sách của bạn');
           this.router.navigate(['/books']);
           return;
         }
@@ -50,7 +52,7 @@ export class ChapterListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading book:', error);
-        this.toastService.error('Failed to load book information');
+        this.toastService.error('Có lỗi trong quá trình tải sách của bạn');
         this.router.navigate(['/books']);
       }
     });
@@ -64,7 +66,7 @@ export class ChapterListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading chapters:', error);
-        this.toastService.error('Failed to load chapters');
+        this.toastService.error('Có lỗi trong quá trình tải chương');
         this.isLoading = false;
       }
     });
@@ -74,22 +76,26 @@ export class ChapterListComponent implements OnInit {
     this.router.navigate(['write-book/books', chapter.bookId, 'chapters', chapter.id, 'edit']);
   }
 
-  deleteChapter(chapter: Chapter): void {
-    if (confirm(`Are you sure you want to delete the chapter "${chapter.title}"?`)) {
-      this.bookService.deleteChapter(chapter.id!).subscribe({
-        next: (success) => {
-          if (success) {
-            this.toastService.success('Chapter deleted successfully');
-            this.chapters = this.chapters.filter(c => c.id !== chapter.id);
-          } else {
-            this.toastService.error('Failed to delete chapter');
-          }
-        },
-        error: (error) => {
+  async deleteChapter(chapter: Chapter) {
+    var dialog = await this.dialogService.open("Xác nhận xóa","Bạn có chắc chắn muốn xóa chương này không");
+    if(dialog.isSuccess){
+      if(chapter.id){
+        this.bookService.deleteChapter(chapter.id).subscribe({
+          next: (success)=>{
+            if(success){
+              this.toastService.success('Chương đã được xóa thành công');
+              this.chapters = this.chapters.filter(c => c.id !== chapter.id);
+            } 
+            else {
+            this.toastService.error('Không thể xóa chương này');
+            }
+          },
+          error: (error) => {
           console.error('Error deleting chapter:', error);
-          this.toastService.error('Failed to delete chapter');
+          this.toastService.error('Không thể xóa chương này');
         }
-      });
+        })
+      }
     }
   }
 
