@@ -1,0 +1,19 @@
+ :host {
+    display: block;
+}
+
+.card-hover {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}

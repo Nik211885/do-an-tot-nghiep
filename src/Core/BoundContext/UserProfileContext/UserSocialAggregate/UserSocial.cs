@@ -20,9 +20,9 @@ public class UserSocial : BaseEntity,
         Bio = bio;
     }
 
-    public static UserSocial Create(Guid userId)
+    public static UserSocial Create(Guid userId, string bio)
     {
-        return new UserSocial(userId);
+        return new UserSocial(userId, bio);
     }
 
     public void AddFollower(Guid followerId)

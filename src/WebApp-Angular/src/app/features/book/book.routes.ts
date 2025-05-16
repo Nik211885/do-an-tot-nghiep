@@ -13,7 +13,21 @@ export const bookRoutes: Routes = [
             {
                 path: "books/:slug",
                 loadComponent: () => import("./components/book-detail/book-detail.component").then(m => m.BookDetailComponent)
+            },
+            {
+                path: 'genere',
+                children: [
+                    {
+                        path: '',
+                        loadComponent: () => import('./components/genere-list/genere-list.component').then(c => c.GenereListComponent)
+                    },
+                    {
+                        path: ':slug',
+                        loadComponent: () => import('./components/genere-detail/genere-detail.component').then(c => c.GenereDetailComponent)
+                    }
+                ]
             }
+
         ]
     }
 ]
