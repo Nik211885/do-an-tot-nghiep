@@ -34,7 +34,6 @@ export class CommentComponent {
   @Output() addNewReply = new EventEmitter<{parentId: string, content: string}>();
   
   isReplying = false;
-  isShowReply = false;
 
 
   toggleReplyForm(): void {
@@ -48,8 +47,5 @@ export class CommentComponent {
 
   formatDate(date: Date): string {
     return formatRelativeTime(convertUtcToLocal(date));
-  }
-  showReply(){
-    this.isShowReply = !this.isShowReply;
   }
 }

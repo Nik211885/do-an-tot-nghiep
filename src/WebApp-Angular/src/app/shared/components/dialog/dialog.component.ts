@@ -1,13 +1,14 @@
-// dialog.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Subscription } from 'rxjs';
-import { DialogService, DialogOptions, DialogSize } from './dialog.component.service';
+import { DialogService, DialogOptions, DialogSize, InputField } from './dialog.component.service';
+
 @Component({
   selector: 'app-dialog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dialog.component.html',
   styleUrls: ['./dialog.component.css'],
   animations: [
@@ -42,6 +43,12 @@ export class DialogComponent implements OnInit, OnDestroy {
   customContent: any = null;
   hideDefaultButtons = false;
   
+  // Input dialog properties
+  isInputDialog = false;
+  inputFields: InputField[] = [];
+  inputValues: { [key: string]: any } = {};
+  inputErrors: { [key: string]: string } = {};
+  
   private subscriptions: Subscription[] = [];
   
   constructor(private dialogService: DialogService) {}
@@ -74,6 +81,20 @@ export class DialogComponent implements OnInit, OnDestroy {
       }),
       this.dialogService.hideDefaultButtons$.subscribe(hide => {
         this.hideDefaultButtons = hide;
+      }),
+      
+      // Input dialog subscriptions
+      this.dialogService.isInputDialog$.subscribe(isInput => {
+        this.isInputDialog = isInput;
+      }),
+      this.dialogService.inputFields$.subscribe(fields => {
+        this.inputFields = fields;
+      }),
+      this.dialogService.inputValues$.subscribe(values => {
+        this.inputValues = values;
+      }),
+      this.dialogService.inputErrors$.subscribe(errors => {
+        this.inputErrors = errors;
       })
     );
   }
@@ -134,5 +155,10 @@ export class DialogComponent implements OnInit, OnDestroy {
   // Prevent closing when clicking inside the dialog
   onDialogClick(event: Event): void {
     event.stopPropagation();
+  }
+  
+  // New method for updating input values
+  updateInputValue(name: string, value: any): void {
+    this.dialogService.updateInputValue(name, value);
   }
 }

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application;
+using Application.Helper;
 using Asp.Versioning;
 using Infrastructure;
 using PublicAPI.Services;
@@ -17,6 +18,9 @@ builder.Services.AddApplication();
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
 builder.Host.UseSerilog();
+
+var name = "Lê Khắc Ninh";
+Console.WriteLine(name.CreateSlug());
 
 var app = builder.Build();
 

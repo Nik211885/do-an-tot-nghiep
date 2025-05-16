@@ -31,9 +31,6 @@
             Trả lời
           </button>
         </div>
-        <div *ngIf="comment.replies && comment.replies.length > 0" class="mt-1 ml-1">
-          <button (click)="showReply()" class="text-sm text-blue-600 hover:text-blue-800 font-medium px-2 py-1 rounded-md hover:bg-blue-50 comment-transition">Xem phản hồi</button>
-        </div>
       </div>
       
       <!-- Reply form -->
@@ -51,7 +48,7 @@
     
 
       <!-- Nested replies -->
-      <div *ngIf="isShowReply" class="mt-3 pl-3 border-l-2 border-gray-200">
+      <div class="mt-2 pl-2 border-l-2 border-gray-200">
         <app-comment
           *ngFor="let reply of comment.replies"
           [comment]="reply"

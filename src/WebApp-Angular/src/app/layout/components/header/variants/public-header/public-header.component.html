@@ -2,10 +2,11 @@
   <div class="header-end container mx-auto flex items-center justify-between px-4 bg-white dark:bg-gray-800 relative z-20">
     <!-- Menu chính - desktop -->
     <div class="hidden lg:flex lg:items-center lg:space-x-8">
-      <a href="/categories" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Thể Loại Sách</a>
-      <a href="/books" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tất Cả Sách</a>
-      <a href="/free-books" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Miễn Phí</a>
-      <a href="/premium" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Trả Phí</a>
+      <a [routerLink]="['/categories']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Thể Loại Sách</a>
+      <a [routerLink]="['/books']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tất Cả Sách</a>
+      <a [routerLink]="['/free-books']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Miễn Phí</a>
+      <a [routerLink]="['/premium']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Trả Phí</a>
+      <a [routerLink]="['/author']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tác Giả Nổi Bật</a>
     </div>
     
     <!-- Phần bên phải: tìm kiếm + đăng nhập -->
@@ -68,10 +69,11 @@
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
           </div>
           
-          <a href="/categories" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Thể Loại Sách</a>
-          <a href="/books" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tất Cả Sách</a>
-          <a href="/free-books" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Miễn Phí</a>
-          <a href="/premium" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Trả Phí</a>
+          <a [routerLink]="['/categories']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Thể Loại Sách</a>
+          <a [routerLink]="['/books']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tất Cả Sách</a>
+          <a [routerLink]="['/free-books']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Miễn Phí</a>
+          <a [routerLink]="['/premium']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Trả Phí</a>
+          <a [routerLink]="['/author']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tác Giả Nổi Bật</a>
           <button *ngIf="!isAuthenticated" (click)="login()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center my-5">Đăng Nhập</button>
         
           <div *ngIf="isAuthenticated" class="relative elative flex justify-center">

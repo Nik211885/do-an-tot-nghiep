@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -8,15 +8,18 @@ import { Book, Chapter } from '../../models/book.model';
 import { Subscription } from 'rxjs';
 import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
+import { ChapterVersion, ChapterVersionComponent } from "./chapter-version/chapter-version.component";
+import { ChapterVersionService } from '../../services/chapter.service';
 
 @Component({
   selector: 'app-chapter-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CKEditorModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, CKEditorModule, RouterModule, ChapterVersionComponent],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.css'
 })
-export class ChapterEditorComponent implements OnInit, OnDestroy {
+export class ChapterEditorComponent implements OnInit, 
+OnDestroy, AfterViewInit {
   Editor = signal<any>(null); 
   public editorConfig = {
     toolbar: {
@@ -38,7 +41,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         'redo'
       ]
     },
-    placeholder: 'Start writing your chapter content here...'
+    placeholder: 'Bắt đầu viết những chương sách của bạn...'
   };
 
   book: Book | null = null;
@@ -46,8 +49,13 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   chapterForm: FormGroup | null = null;
   isLoading = true;
   isSaving = false;
+  isVersionPanelClosed = false;
+  chapterVersion: ChapterVersion[] = [];
+  private renderer!: Renderer2;
+  private el!: ElementRef;
   isBrowser: boolean;
   isEditing = false;
+  chapterId: string | null = null;
   private subscription: Subscription | null = null;
 
   constructor(
@@ -55,6 +63,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
+    private chapterVersionService: ChapterVersionService,
     private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -65,10 +74,10 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     if(this.isBrowser){
       const CKEditor = await import('@ckeditor/ckeditor5-build-classic');
       this.Editor.set(CKEditor.default);
-      console.log(this.Editor());
+      console.log("ckeditor" + this.Editor());
     }
     const bookId = this.route.snapshot.paramMap.get('bookId');
-    const chapterId = this.route.snapshot.paramMap.get('chapterId');
+    this.chapterId = this.route.snapshot.paramMap.get('chapterId');
     
     if (!bookId) {
       this.toastService.error('Không tìm thấy sách của bạn');
@@ -86,9 +95,9 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
         this.book = book;
         
-        if (chapterId) {
+        if (this.chapterId) {
           this.isEditing = true;
-          this.loadChapter(chapterId);
+          this.loadChapter(this.chapterId);
         } else {
           this.initializeForm();
         }
@@ -99,6 +108,9 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         this.router.navigate(['/books']);
       }
     });
+    if(this.chapterId){
+      this.chapterVersion = this.chapterVersionService.getChapterVersionByChaoterId(this.chapterId);
+    }
   }
 
   ngOnDestroy(): void {
@@ -219,5 +231,107 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.router.navigate(['/write-book/books', this.book?.id]);
+  }
+  onReady(editor: any){
+    this.Editor.set(editor);
+    this.enableEditor();
+    this.applyCKEditorWordWrapping(this.Editor());
+  }
+  private disableEditor() {
+    if (this.Editor()) {
+      this.Editor().enableReadOnlyMode('manual-toggle');
+    }
+  }
+  private enableEditor() {
+    if (this.Editor()) {
+      this.Editor().disableReadOnlyMode('manual-toggle');
+    }
+  }
+  getChapterVersionByBookId(){
+    if(this.chapterId){
+      this.chapterVersion = this.chapterVersionService.getChapterVersionByChaoterId(this.chapterId);
+    }
+  }
+  toggleVersionPanel(): void {
+    this.isVersionPanelClosed = !this.isVersionPanelClosed;
+    
+    // Thêm class vào body để animate khi panel thay đổi trạng thái
+    if (this.isVersionPanelClosed) {
+      document.body.classList.add('panel-closing');
+      setTimeout(() => {
+        document.body.classList.remove('panel-closing');
+      }, 300); // Thời gian bằng với duration của animation
+    } else {
+      document.body.classList.add('panel-opening');
+      setTimeout(() => {
+        document.body.classList.remove('panel-opening');
+      }, 300);
+    }
+  }
+
+   private applyCKEditorWordWrapping(editor: any) {
+    if (!this.isBrowser || !editor) return;
+    
+    // Get the editing view
+    const editorElement = editor.ui.getEditableElement();
+    if (!editorElement) return;
+    
+    // Add a custom style element with high specificity
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = `
+      .ck.ck-editor__editable, 
+      .ck.ck-editor__editable > *,
+      .ck-content, 
+      .ck-content > * {
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+        white-space: pre-wrap !important;
+        max-width: 100% !important;
+      }
+    `;
+    
+    // Add the style element to document head
+    document.head.appendChild(styleElement);
+    
+    // Directly apply inline styles to the editor for maximum effectiveness
+    this.renderer.setStyle(editorElement, 'word-break', 'normal');
+    this.renderer.setStyle(editorElement, 'overflow-wrap', 'break-word');
+    this.renderer.setStyle(editorElement, 'white-space', 'pre-wrap');
+    
+    // Set up a mutation observer to ensure styles are maintained
+    // This helps if CKEditor overwrites styles after initialization
+    if (window.MutationObserver) {
+      const observer = new MutationObserver(() => {
+        const paragraphs = editorElement.querySelectorAll('p, div, li, h1, h2, h3, h4, h5, h6');
+        paragraphs.forEach((element: HTMLElement) => {
+          this.renderer.setStyle(element, 'word-break', 'normal');
+          this.renderer.setStyle(element, 'overflow-wrap', 'break-word');
+          this.renderer.setStyle(element, 'white-space', 'pre-wrap');
+          this.renderer.setStyle(element, 'max-width', '100%');
+        });
+      });
+      
+      observer.observe(editorElement, { 
+        childList: true, 
+        subtree: true,
+        characterData: true,
+        attributes: true
+      });
+    }
+  }
+  
+  ngAfterViewInit() {
+    // Wait for DOM to be ready and apply styles for the editor 
+    if (this.isBrowser) {
+      setTimeout(() => {
+        const editorElements = document.querySelectorAll('.ck-editor__editable');
+        editorElements.forEach((el) => {
+          this.renderer.setStyle(el, 'word-break', 'normal');
+          this.renderer.setStyle(el, 'overflow-wrap', 'break-word');
+          this.renderer.setStyle(el, 'white-space', 'pre-wrap');
+        });
+      }, 500);
+    }
   }
 }

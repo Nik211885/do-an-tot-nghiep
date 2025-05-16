@@ -1,0 +1,29 @@
+﻿using Npgsql;
+using PublicAPI.Services.Endpoint;
+
+namespace PublicAPI.Endpoints;
+
+public class HealthCheckEndpoint : IEndpoints
+{
+    public void Map(IEndpointRouteBuilder endpoint)
+    {
+        var api = endpoint.MapGroup("health-check")
+            .WithTags("HealthCheck");
+        api.MapGet("health", ()=>TypedResults.Ok("Healthy"));
+        api.MapGet("connection", async () =>
+        {
+            var configuration = endpoint.ServiceProvider.GetService<IConfiguration>();
+            var connectionString = configuration!.GetValue<string>("DatabaseConnectionString:Postgresql:Master");
+            try
+            {
+                await using var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync();
+                return TypedResults.Ok(new { status = "Healthy", db = "Connected", timestamp = DateTime.UtcNow });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem("Database connection failed: " + ex.Message);
+            }
+        });
+    }
+}

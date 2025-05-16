@@ -1,0 +1,14 @@
+<button 
+    (click)="toggleFollow()"
+    [ngClass]="{
+    'btn-primary': !isFollowing,
+    'border border-teal-600': isFollowing,
+    'px-6 py-2': size === 'lg',
+    'px-4 py-2': size === 'md',
+    'px-3 py-1 text-sm': size === 'sm'
+    }"
+    class="btn rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+>
+    <i class="fas" [ngClass]="isFollowing ? 'fa-user-check' : 'fa-user-plus'"></i>
+    <span *ngIf="displayText">{{ isFollowing ? 'Bỏ theo dõi' : 'Theo dõi' }}</span>
+</button>

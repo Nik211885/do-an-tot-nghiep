@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Book, BookPolicy, BookReleaseType } from '../../models/book.model';
 import { BookService } from '../../services/book.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +8,9 @@ import { BookChapterListComponent } from './book-chapter-list/book-chapter-list.
 import { BookPolicyBadgeComponent } from './book-policy-badge/book-policy-badge.component';
 import { StarRatingComponent } from './star-rating/star-rating.component';
 import { CommentBookSectionComponent } from "./comment-book-section/comment-book-section.component";
+import { DialogService } from '../../../../shared/components/dialog/dialog.component.service';
+import { RatingFormComponent } from './rating-form/rating-form.component';
+import { BookRating, RatingService } from '../../services/rating.service';
 
 @Component({
   selector: 'app-book-detail',
@@ -18,6 +21,7 @@ import { CommentBookSectionComponent } from "./comment-book-section/comment-book
     BookPolicyBadgeComponent,
     BookChapterListComponent,
     // BookCommentSectionComponent,
+    RatingFormComponent,
     StarRatingComponent,
     CommentBookSectionComponent
 ],
@@ -25,15 +29,18 @@ import { CommentBookSectionComponent } from "./comment-book-section/comment-book
   styleUrl: './book-detail.component.css'
 })
 export class BookDetailComponent implements OnInit {
+  @ViewChild('ratingDialog') ratingDialogTemplate!: TemplateRef<any>;
+  @ViewChild('ratingForm') ratingForm!: RatingFormComponent;
   book!: Book;
   BookPolicy = BookPolicy;
   BookReleaseType = BookReleaseType;
-  
   isDescriptionExpanded = false;
   isFavorite = false;
   activeTab: 'chapters' | 'comments' = 'chapters';
   constructor(private route: ActivatedRoute,
+     private ratingService: RatingService,
      private bookService: BookService,
+     private dialogService: DialogService,
     private router: Router) {
 
   }
@@ -170,5 +177,61 @@ export class BookDetailComponent implements OnInit {
    */
   getRandomPercentage(): number {
     return Math.floor(Math.random() * 100);
+  }
+
+  async openRatingDialog() {
+    // Cài đặt dialog options
+    const dialogOptions = {
+      title: 'Đánh giá sách',
+      size: 'md' as const,
+      customContent: this.ratingDialogTemplate,
+      confirmButtonText: 'Gửi đánh giá',
+      cancelButtonText: 'Hủy bỏ',
+      showCancelButton: true
+    };
+    
+    // Mở dialog
+    const dialog = await this.dialogService.open(dialogOptions);
+      if (dialog.isSuccess) {
+        const isValid = this.ratingForm.submitRating();
+        
+        if (isValid) {
+          const bookRating: BookRating = {
+            bookId: this.book.id,
+            rating: this.ratingForm.rating,
+          };
+          this.ratingService.submitRating(bookRating).subscribe({
+            next: (response) => {
+              this.showSuccessMessage();
+            },
+            error: (error) => {
+              console.error('Error submitting rating:', error);
+              this.showErrorMessage();
+            }
+          });
+        } else {
+        }
+      } else {
+        this.ratingForm.resetForm();
+    }
+  }
+  showSuccessMessage(): void {
+    this.dialogService.open({
+      title: 'Thành công',
+      message: 'Cảm ơn bạn đã đánh giá sản phẩm!',
+      size: 'sm',
+      showCancelButton: false,
+      confirmButtonText: 'Đóng'
+    });
+  }
+  
+  showErrorMessage(): void {
+    this.dialogService.open({
+      title: 'Lỗi',
+      message: 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.',
+      size: 'sm',
+      showCancelButton: false,
+      confirmButtonText: 'Đóng'
+    });
   }
 }

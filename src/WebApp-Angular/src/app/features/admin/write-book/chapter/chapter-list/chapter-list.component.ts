@@ -77,7 +77,7 @@ export class ChapterListComponent implements OnInit {
   }
 
   async deleteChapter(chapter: Chapter) {
-    var dialog = await this.dialogService.open("Xác nhận xóa","Bạn có chắc chắn muốn xóa chương này không");
+    const dialog = await this.dialogService.open("Xác nhận xóa","Bạn có chắc chắn muốn xóa chương này không");
     if(dialog.isSuccess){
       if(chapter.id){
         this.bookService.deleteChapter(chapter.id).subscribe({

@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, Input, OnInit, Renderer2, signal, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../header.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import {
   trigger,
   transition,
@@ -36,7 +36,7 @@ import { UserModel } from '../../../../../core/models/user.model';
       ])
     ])
   ],
-  imports: [HeaderComponent, CommonModule, RouterLink],
+  imports: [HeaderComponent, CommonModule, RouterLink, RouterModule],
   templateUrl: './public-header.component.html',
   styleUrl: './public-header.component.css'
 })

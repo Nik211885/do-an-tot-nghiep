@@ -22,7 +22,7 @@ public static class StringHelperExtension
         slug = slug.ToLowerInvariant();
         slug = Regex.Replace(slug, @"[^a-z0-9\s-]", ""); 
         slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
-        return string.Concat(slug, RandomStringBase64ByBytes(byteRandomSlug));
+        return string.Concat(slug,"-", RandomStringBase64ByBytes(byteRandomSlug));
     }
 
     public static string RandomStringBase64ByBytes(int bytes)

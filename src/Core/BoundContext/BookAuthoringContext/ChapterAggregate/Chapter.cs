@@ -49,14 +49,15 @@ public class Chapter
     /// <param name="title"></param>
     /// <param name="diffTitle"></param>
     /// <param name="diffContent"></param>
-    public void UpdateChapter(string newContent, string title, string diffTitle, string diffContent)
+    public void UpdateChapter(string newContent, string title, string diffTitle, string diffContent, string? nameVersion = null)
     {
         LockedCanNotBeChanged();
+        nameVersion = nameVersion ?? "Đã cập nhật";
         Content = newContent;
         Status = ChapterStatus.Draft;
         Title = title;
         _currentVersion++;
-        var chapterVersion = ChapterVersion.Create(Id,diffTitle, diffContent,_currentVersion);
+        var chapterVersion = ChapterVersion.Create(Id,nameVersion,diffTitle, diffContent,_currentVersion);
         _chapterVersions ??= [];
         _chapterVersions.Add(chapterVersion);
     }
