@@ -1,0 +1,16 @@
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\bin\Debug\net9.0\Application.deps.json
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\bin\Debug\net9.0\Application.dll
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\bin\Debug\net9.0\Application.pdb
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\bin\Debug\net9.0\Core.dll
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\bin\Debug\net9.0\Core.pdb
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.csproj.AssemblyReference.cache
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.AssemblyInfoInputs.cache
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.AssemblyInfo.cs
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.sourcelink.json
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Applicat.44B5EDA2.Up2Date
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.dll
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\refint\Application.dll
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\Application.pdb
+C:\Users\klnt\Desktop\do-an-tot-nghiep\src\Application\obj\Debug\net9.0\ref\Application.dll

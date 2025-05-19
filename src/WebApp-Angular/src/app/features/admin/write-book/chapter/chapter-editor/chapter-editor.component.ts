@@ -1,10 +1,10 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Book, Chapter } from '../../models/book.model';
+import {applyDelta,applyDeltaJson,getDelta,undoDiff, undoDiffJson} from "../../../../../core/utils/diff-content.until"
 import { Subscription } from 'rxjs';
 import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
@@ -164,7 +164,7 @@ OnDestroy, AfterViewInit {
     if (this.chapterForm?.invalid || !this.book?.id) {
       return;
     }
-
+    
     this.isSaving = true;
     const chapterData: Chapter = {
       ...(this.chapterForm ? this.chapterForm.value : {}),
@@ -231,21 +231,6 @@ OnDestroy, AfterViewInit {
 
   onCancel(): void {
     this.router.navigate(['/write-book/books', this.book?.id]);
-  }
-  onReady(editor: any){
-    this.Editor.set(editor);
-    this.enableEditor();
-    this.applyCKEditorWordWrapping(this.Editor());
-  }
-  private disableEditor() {
-    if (this.Editor()) {
-      this.Editor().enableReadOnlyMode('manual-toggle');
-    }
-  }
-  private enableEditor() {
-    if (this.Editor()) {
-      this.Editor().disableReadOnlyMode('manual-toggle');
-    }
   }
   getChapterVersionByBookId(){
     if(this.chapterId){

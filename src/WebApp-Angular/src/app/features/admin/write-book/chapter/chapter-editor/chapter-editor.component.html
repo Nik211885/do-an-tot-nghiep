@@ -57,7 +57,6 @@
                 [editor]="Editor()"
                 formControlName="content"
                 [config]="editorConfig"
-                (ready)="onReady($event)"
             ></ckeditor>
           <div *ngIf="chapterForm.get('content')?.invalid && chapterForm.get('content')?.touched" class="mt-1 text-sm text-red-600">
             Nội dung sách là bắt buộc nhập

@@ -172,21 +172,32 @@
         </div>
     </div>
     
-    <div class="mt-6 flex justify-start space-x-3">
+    <div class="mt-6 flex justify-start space-x-4">
+        <!-- Nút Quay lại -->
         <button 
-        type="button" 
-        routerLink="/write-book/books" 
-        class="btn btn-secondary cursor-pointer"
+            type="button" 
+            routerLink="/write-book/books" 
+            class="px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
         >
-        Quay lại
+            Quay lại
         </button>
+        
+        <!-- Nút Sửa sách -->
         <button 
-        type="button" 
-        (click)="editBook(book)"
-        class="btn btn-secondary cursor-pointer border-book-primary-300 text-book-primary-700 hover:bg-book-primary-50"
+            type="button" 
+            (click)="editBook(book)"
+            class="px-5 py-2.5 text-sm font-medium rounded-lg border border-book-primary-500 bg-book-primary-500 hover:bg-book-primary-600 hover:border-book-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
         >
-        Sửa sách
+            Sửa sách
         </button>
-    </div>
+        
+        <!-- Nút Đánh dấu -->
+        <button 
+            type="button" 
+            (click)="markBook()"
+            class="px-5 py-2.5 text-sm font-medium rounded-lg border {{book.isCompleted ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100' : 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'}} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
+        >
+            {{book.isCompleted ? "Đánh dấu sách đang viết" : "Đánh dấu sách hoàn thành"}}
+        </button>
     </div>
 </div>

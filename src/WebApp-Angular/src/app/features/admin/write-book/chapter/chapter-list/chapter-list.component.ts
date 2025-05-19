@@ -104,4 +104,7 @@ export class ChapterListComponent implements OnInit {
     console.log("aa")
     this.toastService.info('Book editing is not implemented in this demo');
   }
+  markBook(): void{
+
+  }
 }
