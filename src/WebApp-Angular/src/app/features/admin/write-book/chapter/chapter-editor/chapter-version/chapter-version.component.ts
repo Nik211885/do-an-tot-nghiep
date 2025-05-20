@@ -19,6 +19,9 @@ export interface ChapterVersion{
 })
 export class ChapterVersionComponent {
   constructor(private dialogService: DialogService){}
+  @Output() chapterVersionClickedEvent = new EventEmitter<ChapterVersion>();
+  @Output() renameChapterVersionEvent = new EventEmitter<ChapterVersion>();
+  @Output() rollBackChapterVersionEvent = new EventEmitter<string>();
   @Input() chapterVersion!: ChapterVersion;
   @Input() currentVersion:boolean = false;
   isDropdownOpen: boolean = false;
@@ -32,31 +35,11 @@ export class ChapterVersionComponent {
   }
   async renameChapterVersion(event: MouseEvent){
     event.stopPropagation();
-    const options: InputDialogOptions = {
-      title: 'Đặt tên phiên bản chương',
-      inputs:[
-        {
-          name: 'name',
-          label: 'Tên phiên bản',
-          type: 'text',
-          value: this.chapterVersion.name,
-          required: true,
-          validators: [
-            {
-              type: 'required',
-              message: 'Tên phiên bản không được để trống'
-            },
-          ]
-        }
-      ]
-    }
-    const renameChapterVersionDialog = await this.dialogService.openInputDialog(options);
-    if(renameChapterVersionDialog.isSuccess){
-      console.log(renameChapterVersionDialog.data);
-    }
+    this.renameChapterVersionEvent.emit(this.chapterVersion);
   }
   rollBackToVersion(event: MouseEvent){
     event.stopPropagation();
+    this.rollBackChapterVersionEvent.emit(this.chapterVersion.id)
   }
   @ViewChild('dropdownRef') dropdownRef!: ElementRef;
   @HostListener('document:click', ['$event'])
@@ -70,7 +53,8 @@ export class ChapterVersionComponent {
   onHostClick(event: MouseEvent){
     /// you can use library diff and rollback and comapre with new version
     // if i want to watch this verison i will compare this version with with back version
-    // but i'm in top version i want to back content with this version and get back one version 
-    // and comapre and display for ui 
+    // but i'm in top version i want to back content with this version and get back one version
+    // and comapre and display for ui
+    this.chapterVersionClickedEvent.emit(this.chapterVersion);
   }
 }

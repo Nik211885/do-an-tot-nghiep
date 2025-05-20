@@ -1,0 +1,16 @@
+::ng-deep ins {
+  background-color: #e6ffed;
+  color: #22863a;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+::ng-deep del {
+  background-color: #ffeef0;
+  color: #cb2431;
+  font-weight: 500;
+  padding: 0 2px;
+  border-radius: 3px;
+}

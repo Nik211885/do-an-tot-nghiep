@@ -25,7 +25,7 @@
       <div class="bg-white shadow-sm rounded-lg p-6">
         <div class="form-group mb-6">
           <label for="title" class="form-label">Tiêu đề chương <span class="text-red-500">*</span></label>
-          <input 
+          <input
             type="text"
             id="title"
             formControlName="title"
@@ -39,7 +39,7 @@
 
         <div class="form-group mb-6">
           <label for="chapterNumber" class="form-label">Số chương <span class="text-red-500">*</span></label>
-          <input 
+          <input
             type="number"
             id="chapterNumber"
             formControlName="chapterNumber"
@@ -52,7 +52,7 @@
         </div>
 
         <div class="form-group">
-          <label for="content" class="form-label">Nội dung sách<span class="text-red-500">*</span></label>
+          <label for="content" id="content" class="form-label">Nội dung sách<span class="text-red-500">*</span></label>
           <ckeditor *ngIf="Editor()"
                 [editor]="Editor()"
                 formControlName="content"
@@ -64,15 +64,15 @@
         </div>
       </div>
       <div class="mt-6 flex justify-end space-x-4">
-        <button 
-          type="button" 
+        <button
+          type="button"
           (click)="onCancel()"
           class="btn btn-secondary"
         >
           Hủy
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           (click)="onSaveDraft()"
           class="btn btn-secondary border-book-primary-300 text-book-primary-700 hover:bg-book-primary-50"
           [disabled]="isSaving"
@@ -85,8 +85,8 @@
           </span>
           Lưu bản nháp
         </button>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           class="btn btn-primary"
           [disabled]="isSaving || chapterForm.invalid"
           [ngClass]="{'opacity-50 cursor-not-allowed': isSaving || chapterForm.invalid}"
@@ -104,7 +104,7 @@
   </div>
 
   <!-- Phần version với icon đóng/mở và animation -->
-  <div class="version-panel md:w-1/4 bg-gray-50 p-4 border-l border-gray-200 overflow-hidden transition-all duration-300 ease-in-out" 
+  <div class="version-panel md:w-1/4 bg-gray-50 p-4 border-l border-gray-200 overflow-hidden transition-all duration-300 ease-in-out"
        [ngStyle]="{
          'max-width': isVersionPanelClosed ? '0' : '25%',
          'opacity': isVersionPanelClosed ? '0' : '1',
@@ -120,22 +120,33 @@
       </button>
     </div>
     @for (item of chapterVersion; track $index) {
-      <app-chapter-version 
-        [chapterVersion]="item" 
+      <app-chapter-version
+        [chapterVersion]="item"
+        (chapterVersionClickedEvent)="onChapterVersionClicked($event)"
+        (renameChapterVersionEvent)="renameChapterVersion($event)"
+        (rollBackChapterVersionEvent)="rollBackChapterVersion($event)"
         [currentVersion]="$index === 0">
       </app-chapter-version>
     }
   </div>
 
   <!-- Button mở panel khi đã đóng với animation -->
-  <button 
+  <button
     *ngIf="isVersionPanelClosed"
-    (click)="toggleVersionPanel()" 
+    (click)="toggleVersionPanel()"
     class="fixed right-0 top-20 bg-gray-100 p-2 rounded-l-md shadow-md border border-gray-200 text-gray-600 hover:bg-gray-200 focus:outline-none transform transition-all duration-300 hover:scale-110 animate-pulse-slow"
   >
     <!-- Icon mở (chevron-left) -->
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
+    </svg>+
   </button>
 </div>
+
+<app-chapter-diff *ngIf="currentChapterDiff"
+(closeDiffContentEvent)="closeDiffContent()"
+[chapterVersion]="currentChapterDiff"
+(chapterRenameEvent)="renameChapterVersion($event)"
+(chapterRollBackEvent)="rollBackChapterVersion($event)"
+>
+</app-chapter-diff>

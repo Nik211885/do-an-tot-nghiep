@@ -10,39 +10,88 @@ import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { ChapterVersion, ChapterVersionComponent } from "./chapter-version/chapter-version.component";
 import { ChapterVersionService } from '../../services/chapter.service';
+import { ChapterDiffComponent } from './chapter-diff/chapter-diff.component';
+import {DialogService, InputDialogOptions} from '../../../../../shared/components/dialog/dialog.component.service';
 
 @Component({
   selector: 'app-chapter-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CKEditorModule, RouterModule, ChapterVersionComponent],
+  imports: [CommonModule, ReactiveFormsModule, CKEditorModule,
+     RouterModule, ChapterVersionComponent,
+    ChapterDiffComponent],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.css'
 })
-export class ChapterEditorComponent implements OnInit, 
+export class ChapterEditorComponent implements OnInit,
 OnDestroy, AfterViewInit {
-  Editor = signal<any>(null); 
-  public editorConfig = {
+  Editor = signal<any>(null);
+  editorConfig = {
     toolbar: {
       items: [
         'heading',
         '|',
         'bold',
         'italic',
+        'underline',
+        'strikethrough',
+        'subscript',
+        'superscript',
+        'highlight',
+        'fontColor',
+        'fontBackgroundColor',
+        'fontSize',
+        'fontFamily',
+        '|',
         'link',
+        'linkDecorator',
         'bulletedList',
         'numberedList',
-        '|',
-        'indent',
         'outdent',
+        'indent',
+        'alignment',
         '|',
         'blockQuote',
+        'code',
+        'codeBlock',
+        'horizontalLine',
+        'specialCharacters',
+        '|',
         'insertTable',
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        '|',
+        'imageInsert',
+        'imageUpload',
+        'mediaEmbed',
+        '|',
+        'removeFormat',
         'undo',
-        'redo'
+        'redo',
+        '|',
+        'pasteFromOffice',
+        'autoformat'
+      ]
+    },
+    image: {
+      toolbar: [
+        'imageTextAlternative',
+        'imageStyle:full',
+        'imageStyle:side'
+      ]
+    },
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        'tableProperties',
+        'tableCellProperties'
       ]
     },
     placeholder: 'Bắt đầu viết những chương sách của bạn...'
-  };
+  } as any;
+
 
   book: Book | null = null;
   chapter: Chapter | null = null;
@@ -58,11 +107,14 @@ OnDestroy, AfterViewInit {
   chapterId: string | null = null;
   private subscription: Subscription | null = null;
 
+  currentChapterDiff: ChapterVersion | null = null;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
+    private dialogServies: DialogService,
     private chapterVersionService: ChapterVersionService,
     private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -78,7 +130,7 @@ OnDestroy, AfterViewInit {
     }
     const bookId = this.route.snapshot.paramMap.get('bookId');
     this.chapterId = this.route.snapshot.paramMap.get('chapterId');
-    
+
     if (!bookId) {
       this.toastService.error('Không tìm thấy sách của bạn');
       this.router.navigate(['/books']);
@@ -94,7 +146,7 @@ OnDestroy, AfterViewInit {
         }
 
         this.book = book;
-        
+
         if (this.chapterId) {
           this.isEditing = true;
           this.loadChapter(this.chapterId);
@@ -150,7 +202,7 @@ OnDestroy, AfterViewInit {
       this.chapterForm = this.fb.group({
         title: [this.chapter?.title || '', Validators.required],
         chapterNumber: [
-          this.chapter?.chapterNumber || suggestedChapterNumber, 
+          this.chapter?.chapterNumber || suggestedChapterNumber,
           [Validators.required, Validators.min(1)]
         ],
         content: [this.chapter?.content || '', Validators.required]
@@ -164,7 +216,7 @@ OnDestroy, AfterViewInit {
     if (this.chapterForm?.invalid || !this.book?.id) {
       return;
     }
-    
+
     this.isSaving = true;
     const chapterData: Chapter = {
       ...(this.chapterForm ? this.chapterForm.value : {}),
@@ -214,7 +266,7 @@ OnDestroy, AfterViewInit {
       chapterData.id = this.chapter.id;
     }
 
-    // For a draft we're just saving locally without validating 
+    // For a draft we're just saving locally without validating
     // In a real app, you would probably have a draft status field
     this.bookService[this.isEditing ? 'updateChapter' : 'createChapter'](chapterData).subscribe({
       next: () => {
@@ -239,7 +291,7 @@ OnDestroy, AfterViewInit {
   }
   toggleVersionPanel(): void {
     this.isVersionPanelClosed = !this.isVersionPanelClosed;
-    
+
     // Thêm class vào body để animate khi panel thay đổi trạng thái
     if (this.isVersionPanelClosed) {
       document.body.classList.add('panel-closing');
@@ -256,17 +308,17 @@ OnDestroy, AfterViewInit {
 
    private applyCKEditorWordWrapping(editor: any) {
     if (!this.isBrowser || !editor) return;
-    
+
     // Get the editing view
     const editorElement = editor.ui.getEditableElement();
     if (!editorElement) return;
-    
+
     // Add a custom style element with high specificity
     const styleElement = document.createElement('style');
     styleElement.innerHTML = `
-      .ck.ck-editor__editable, 
+      .ck.ck-editor__editable,
       .ck.ck-editor__editable > *,
-      .ck-content, 
+      .ck-content,
       .ck-content > * {
         word-break: normal !important;
         overflow-wrap: break-word !important;
@@ -275,15 +327,15 @@ OnDestroy, AfterViewInit {
         max-width: 100% !important;
       }
     `;
-    
+
     // Add the style element to document head
     document.head.appendChild(styleElement);
-    
+
     // Directly apply inline styles to the editor for maximum effectiveness
     this.renderer.setStyle(editorElement, 'word-break', 'normal');
     this.renderer.setStyle(editorElement, 'overflow-wrap', 'break-word');
     this.renderer.setStyle(editorElement, 'white-space', 'pre-wrap');
-    
+
     // Set up a mutation observer to ensure styles are maintained
     // This helps if CKEditor overwrites styles after initialization
     if (window.MutationObserver) {
@@ -296,18 +348,18 @@ OnDestroy, AfterViewInit {
           this.renderer.setStyle(element, 'max-width', '100%');
         });
       });
-      
-      observer.observe(editorElement, { 
-        childList: true, 
+
+      observer.observe(editorElement, {
+        childList: true,
         subtree: true,
         characterData: true,
         attributes: true
       });
     }
   }
-  
+
   ngAfterViewInit() {
-    // Wait for DOM to be ready and apply styles for the editor 
+    // Wait for DOM to be ready and apply styles for the editor
     if (this.isBrowser) {
       setTimeout(() => {
         const editorElements = document.querySelectorAll('.ck-editor__editable');
@@ -318,5 +370,41 @@ OnDestroy, AfterViewInit {
         });
       }, 500);
     }
+  }
+  onChapterVersionClicked(chapterVersion: ChapterVersion) {
+    this.currentChapterDiff = (chapterVersion);
+  }
+  closeDiffContent(){
+    this.currentChapterDiff = (null);
+  }
+  async renameChapterVersion(chapterVersion: ChapterVersion){
+    const options: InputDialogOptions = {
+      title: 'Đặt tên phiên bản chương',
+      inputs:[
+        {
+          name: 'name',
+          label: 'Tên phiên bản',
+          type: 'text',
+          value: chapterVersion.name,
+          required: true,
+          validators: [
+            {
+              type: 'required',
+              message: 'Tên phiên bản không được để trống'
+            },
+          ]
+        }
+      ]
+    }
+    const renameChapterVersionDialog = await this.dialogServies.openInputDialog(options);
+    if(renameChapterVersionDialog.isSuccess){
+      this.dialogServies.close();
+      this.toastService.success("Bạn đã đổi tên version thành công");
+      console.log(renameChapterVersionDialog.data);
+    }
+  }
+  rollBackChapterVersion(chapterVersionId: string) {
+    this.toastService.success("Bạn đã khôi phục phiên bản thành công");
+    console.log(chapterVersionId);
   }
 }
