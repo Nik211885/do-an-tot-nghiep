@@ -6,7 +6,7 @@ public class ReportCategory : ValueObject
 {
     public string CategoryName { get; private set; }
     public string Description { get; private set; }
-
+    protected ReportCategory(){}
     private ReportCategory(string categoryName, string description)
     {
         CategoryName = categoryName;

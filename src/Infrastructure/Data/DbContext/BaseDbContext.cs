@@ -26,14 +26,14 @@ public class BaseDbContext(DbContextOptions options,
     /// 
     /// </summary>
     private bool _isReadOnly = false;
-    /// <summary>
+    /*/// <summary>
     /// 
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
-    }
+    }*/
     /// <summary>
     /// 
     /// </summary>

@@ -8,6 +8,7 @@ public class Report : BaseEntity
     public ReportCategory Category { get; private set; }
     public DateTimeOffset CreateDateTime { get; private set; }
     public DateTimeOffset UpdateDateTime { get; private set; }
+    protected Report(){}
 
     private Report(string categoryName, string categoryDescription, string title, string body, string attachment)
     {

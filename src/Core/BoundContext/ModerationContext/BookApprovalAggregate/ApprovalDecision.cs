@@ -9,7 +9,7 @@ public class ApprovalDecision : ValueObject
     public DateTimeOffset DecisionDateTime { get; private set; }
     public string? Note { get; private set; }
     public bool IsAutomated { get; private set; }
-
+    protected ApprovalDecision(){}
     private ApprovalDecision(Guid? moderatorId, string? note, bool isAutomated)
     {
         ModeratorId = moderatorId;

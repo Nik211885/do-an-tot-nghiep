@@ -7,7 +7,7 @@ public class DigitalSignature : ValueObject
     public string SignatureValue { get; private set; }
     public string SignatureAlgorithm { get; private set; }
     public DateTimeOffset SigningDateTime { get; private set; }
-
+    protected DigitalSignature(){}
     private DigitalSignature(string signatureValue, string signatureAlgorithm)
     {
         SignatureValue = signatureValue;

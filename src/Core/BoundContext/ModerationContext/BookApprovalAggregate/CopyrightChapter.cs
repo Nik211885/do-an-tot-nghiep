@@ -17,7 +17,7 @@ public class CopyrightChapter : BaseEntity, IAggregateRoot
     public DateTimeOffset DateTimeCopyright { get; private set; }
     // If book has report it will remove in system
     public bool IsActive { get; private set; }
-
+    protected CopyrightChapter(){}
     private CopyrightChapter(Guid authorId, Guid bookId, Guid chapterId, string bookTitle,
         string chapterTitle, string chapterContent, string chapterContentPlainText, string signatureValue,
         string signatureAlgorithm)

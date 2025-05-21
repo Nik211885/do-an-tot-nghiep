@@ -9,5 +9,19 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genres>
     public void Configure(EntityTypeBuilder<Genres> builder)
     {
         builder.ToTable("Genres", DbSchema.BookAuthoring);
+        builder.HasIndex(g=>g.Slug).IsUnique();
+        builder.Ignore(g => g.DomainEvents);
+        builder.Property(g=>g.Name)
+            .HasMaxLength(100)
+            .IsRequired();
+        builder.Property(g=>g.Description)
+            .HasMaxLength(500)
+            .IsRequired();
+        builder.Property(g=>g.Slug)
+            .HasMaxLength(100)
+            .IsRequired();
+        builder.Property(g=>g.AvatarUrl)
+            .HasMaxLength(200)
+            .IsRequired();
     }
 }

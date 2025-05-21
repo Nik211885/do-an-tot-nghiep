@@ -9,5 +9,9 @@ public class ChapterVersionConfiguration : IEntityTypeConfiguration<ChapterVersi
     public void Configure(EntityTypeBuilder<ChapterVersion> builder)
     {
         builder.ToTable("ChapterVersions", DbSchema.BookAuthoring);
+        builder.Ignore(c=>c.DomainEvents);
+        builder.Property(c => c.NameVersion)
+            .HasMaxLength(100);
+        builder.Property<Guid>("ChapterId");
     }
 }

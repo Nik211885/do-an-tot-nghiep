@@ -30,5 +30,29 @@ If you have some many condition and reuse many times like soft delete you have c
 
 
 
+## Setup with EF core
+### First create migrations
+If your dbContext has dependency to services container you should create new instance for dbContext with DbContextDesignTimeFactory because in time run migration, services container not
+```csharp
+public class YourDbContextDesignTimedFactory : IDesignTimeDbContextFactory<YourdbContext>{
+    public YourDbContext CreatedbContext()
+    {
+        // Create services for your db context and pass it to constructer
+        return new YourDbContext();
+    }
+}
+```
+
+```csharp
+dotnet ef migrations add [migrations message] --project [Project constains dbContext] --startup-project [Project constains startup file] --context [Your dbContext] --output-dir [Folder will constains migrations]
+```
+
+## Migrations to database
+
+
+```csharp
+  dotnet ef database update --context [Your dbContext] --project [Project constains your DbContext] --startup-project [Project constains startup file]
+```
+
 
 

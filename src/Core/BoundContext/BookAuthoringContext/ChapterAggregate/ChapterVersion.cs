@@ -4,8 +4,6 @@ namespace Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 
 public class ChapterVersion : BaseEntity
 {
-    private Guid _chapterId;
-    public Chapter Chapter { get; private set; }
     /// <summary>
     /// It make use rembember what name is history
     /// </summary>
@@ -19,23 +17,22 @@ public class ChapterVersion : BaseEntity
     /*public string TitleSnapShot { get;private set; }*/
     //public bool IsSnapShot { get; private set; }
     /*public bool IsRollBack { get; private set; }*/
-
-    private ChapterVersion(Guid chapterId, string nameVersion, string diffContent, string diffTitle, uint version)
+    protected ChapterVersion(){}
+    private ChapterVersion(string nameVersion, string diffContent, string diffTitle, uint version)
     {
         NameVersion = nameVersion;
-        _chapterId = chapterId;
         DiffTitle = diffTitle;
         DiffContent = diffContent;
         Version = version;
         CreatedDateTime = DateTimeOffset.UtcNow;
     }
 
-    public static ChapterVersion Create(Guid chapterId, string nameVersion, string diffTitle, string diffContent,
+    public static ChapterVersion Create(string nameVersion, string diffTitle, string diffContent,
         uint version)
     {
-        return new ChapterVersion(chapterId, nameVersion, diffTitle, diffContent, version);
+        return new ChapterVersion(nameVersion, diffTitle, diffContent, version);
     }
-
+    
     public void UpdateNameVersion(string newNameVersion)
     {
         NameVersion = newNameVersion;

@@ -4,25 +4,30 @@ using Core.Exception;
 using Core.Interfaces;
 using Core.Message;
 
-namespace Core.BoundContext.UserProfileContext.UserSocialAggregate;
+namespace Core.BoundContext.UserProfileContext.UserProfileAggregate;
 
-public class UserSocial : BaseEntity,
-    IAggregateRoot
+public class UserProfile : BaseEntity, IAggregateRoot
 {
     public Guid UserId { get; private set; }
-    public string Bio { get; private set; }
+    public string? Bio { get; private set; }
     private List<Follower> _followers;
     public IReadOnlyList<Follower> Followers => _followers.AsReadOnly();
-
-    private UserSocial(Guid userId, string bio)
+    private List<FavoriteBook> _favoriteItems;
+    public IReadOnlyCollection<FavoriteBook> FavoriteItems => _favoriteItems.AsReadOnly();
+    protected UserProfile(){}
+    private UserProfile(Guid userId, string bio)
     {
         UserId = userId;
         Bio = bio;
     }
 
-    public static UserSocial Create(Guid userId, string bio)
+    public void UpdateBio(string bio)
     {
-        return new UserSocial(userId, bio);
+        Bio = bio;
+    }
+    public static UserProfile Create(Guid userId, string bio)
+    {
+        return new UserProfile(userId, bio);
     }
 
     public void AddFollower(Guid followerId)
@@ -36,7 +41,7 @@ public class UserSocial : BaseEntity,
         {
             throw new BadRequestException(UserProfileContextMessage.YouHasFollowedUser);
         }
-        var follower = Follower.Create(followerId);
+        var follower = Follower.Create(UserId,followerId);
         _followers.Add(follower);
         RaiseDomainEvent(new UserFollowedDomainEvent(UserId, followerId));
     }
@@ -50,5 +55,15 @@ public class UserSocial : BaseEntity,
         }
 
         _followers.Remove(followerExits);
+    }
+    public void FavoriteItem(Guid favoriteBookId)
+    {
+        var favoredItemExits = _favoriteItems.FirstOrDefault(x => x.FavoriteBookId == favoriteBookId);
+        if (favoredItemExits is not null)
+        {
+            throw new BadRequestException(UserProfileContextMessage.YouHasFavoriteItem);
+        }
+        _favoriteItems.Add(FavoriteBook.Create(UserId,favoriteBookId));
+        RaiseDomainEvent(new FavoredBookDomainEvent(UserId,favoriteBookId));
     }
 }

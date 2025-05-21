@@ -9,7 +9,7 @@ public class Rating : ValueObject
     public RatingStar Star { get; private set; }
     
     public DateTimeOffset DateTimeReviewSubmit { get; private set; }
-
+    protected Rating(){}
     private Rating(Guid reviewerId, RatingStar star)
     {
         ReviewerId = reviewerId;

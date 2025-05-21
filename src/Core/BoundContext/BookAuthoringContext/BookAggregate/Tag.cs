@@ -1,13 +1,11 @@
-﻿using Core.Exception;
-using Core.Message;
-using Core.ValueObjects;
+﻿using Core.ValueObjects;
 
 namespace Core.BoundContext.BookAuthoringContext.BookAggregate;
 
 public class Tag : ValueObject
 {
     public string TagName { get; private set; }
-
+    protected Tag(){}
     private Tag(string tagName)
     {
         TagName = tagName;

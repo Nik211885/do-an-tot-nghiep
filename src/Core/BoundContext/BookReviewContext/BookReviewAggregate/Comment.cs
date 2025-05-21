@@ -17,7 +17,7 @@ public class Comment : BaseEntity
     
     private List<Comment>? _commentChild;
     public IReadOnlyCollection<Comment>? CommentChild => _commentChild;
-
+    protected Comment(){}
     private Comment(Guid bookReviewId, Guid reviewerId, string content, Guid? commentParentId)
     {
         _bookReviewId = bookReviewId;

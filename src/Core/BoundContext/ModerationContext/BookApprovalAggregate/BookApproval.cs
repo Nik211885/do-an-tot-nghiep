@@ -16,7 +16,7 @@ public class BookApproval : BaseEntity, IAggregateRoot
     public int Version { get; private set; }
     
     public CopyrightChapter? CopyrightChapter { get; private set; }
-
+    protected BookApproval(){}
     private BookApproval(Guid bookId, Guid chapterId, string contentHash, Guid? moderatorId, string? note,
         bool isAutomated, Guid authorId)
     {

@@ -21,7 +21,7 @@ public class PolicyReadBook : ValueObject
         Policy = policy;
         Price = price;
     }
-    
+    protected PolicyReadBook(){}
     public static PolicyReadBook CreatePolicy(BookPolicy policy, decimal? price)
     {
         if (policy == BookPolicy.Paid && price is null or < 0)

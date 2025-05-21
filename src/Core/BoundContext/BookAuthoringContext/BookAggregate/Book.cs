@@ -19,48 +19,50 @@ public class Book
     public bool IsComplete { get; private set; }
     public int VersionNumber { get; private set; }
     public bool Visibility { get; private set; }
-    // public string Slug {get; private set;}
+    public string Slug {get; private set;}
     public PolicyReadBook PolicyReadBook { get; private set; }
     public BookReleaseType BookReleaseType { get; private set; }
+
+    private List<Genres> _genres;
+    public IReadOnlyCollection<Genres> Genres => _genres.AsReadOnly();
     
-    private List<BookGenres> _genres;
-    public IReadOnlyCollection<BookGenres> GenreIds => _genres.AsReadOnly();
     public List<Tag>? Tags { get; private set; }
     private List<Chapter> _chapters;
     public IReadOnlyCollection<Chapter> Chapters => _chapters.AsReadOnly();
 
-    public void AddNewChapter(string content, string title)
+    public void AddNewChapter(string content, string title, string chapterSlug)
     {
-        var chapter = Chapter.Create(Id, content, title);
-        _chapters ??= [];
+        var chapter = Chapter.Create(content, title, chapterSlug);
         _chapters.Add(chapter);
     }
 
     public void RemoveChapter(Guid chapterId)
     {
-        var chapter = _chapters?.FirstOrDefault(x => x.Id == chapterId);
+        var chapter = _chapters.FirstOrDefault(x => x.Id == chapterId);
         if (chapter is null)
         {
             throw new BadRequestException(string.Format(BookAuthoringContextMessage.CanNotFindChapterHasId,chapterId));
         }
-        _chapters?.Remove(chapter);
+        _chapters.Remove(chapter);
         RaiseDomainEvent(new RemovedChapterDomainEvent(Id, chapterId));
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
+    protected Book(){}
     private Book(string title, string? avatarUrl, string? description, 
-        int versionNumber, PolicyReadBook policyReadBook, 
-        BookReleaseType bookReleaseType,List<Tag>? tags, bool visibility,
-        List<Guid> genres)
+        int versionNumber, PolicyReadBook policyReadBook,
+        BookReleaseType bookReleaseType,List<Tag>? tags, bool visibility, List<Genres> genres,  string slug)
     {
         Title = title;
         AvatarUrl = avatarUrl;
         Description = description;
+        Slug = slug;
+        Tags = tags;
         Visibility = visibility;
+        _genres = genres;
         VersionNumber = versionNumber;
         PolicyReadBook = policyReadBook;
         BookReleaseType = bookReleaseType;
         IsComplete = false;
-        _genres = genres.Select(gId => BookGenres.Create(Id, gId)).ToList();
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
@@ -96,9 +98,10 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
-    public void UpdateTitle(string title)
+    public void UpdateTitle(string title, string slug)
     {
         Title = title;
+        Slug = slug;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
@@ -132,44 +135,45 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
-    public void Update(string title, string? avatarUrl, string? description)
+    public void Update(string title, string? avatarUrl, string? description, string slug)
     {
         Title = title;
+        Slug = slug;
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
-    public void AddGenres(Guid genreId)
+    public void AddGenres(Genres genres)
     {
-        var genreExits = _genres.FirstOrDefault(x=>x.GenreId == genreId && x.BookId == Id);
+        var genreExits = _genres.FirstOrDefault(x=>x.Id == genres.Id);
         if (genreExits is not null)
         {
             throw new BadRequestException(BookAuthoringContextMessage.BookCanNotDuplicateGenre);
         }
-        _genres.Add(BookGenres.Create(genreId, Id));
+        _genres.Add(genres);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
-    public void RemoveGenres(Guid genreId)
+    public void RemoveGenres(Genres genres)
     {
         if (_genres.Count <= 1)
         {
             throw new BadRequestException(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
         }
-        var genreExits = _genres.FirstOrDefault(x => x.GenreId == genreId && x.BookId == Id);
+        var genreExits = _genres.FirstOrDefault(x => x.Id == genres.Id);
         if (genreExits is null)
         {
             throw new BadRequestException(BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
         }
-        _genres.Add(BookGenres.Create(genreId, Id));
+        _genres.Remove(genres);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     public static Book Create(string title, string? avatarUrl, string? description,
         int versionNumber, PolicyReadBook policyReadBook,
-        BookReleaseType bookReleaseType, List<Tag>? tags, bool visibility, List<Guid> genres)
+        BookReleaseType bookReleaseType, List<Tag>? tags, bool visibility, List<Genres> genres,string slug)
     {
         return new Book(title, avatarUrl, description, versionNumber, 
-            policyReadBook,bookReleaseType, tags, visibility, genres);
+            policyReadBook,bookReleaseType, tags, visibility,genres, slug);
     }
 }

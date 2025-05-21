@@ -11,7 +11,7 @@ public class ReportSubmission
     public Submitter Submitter { get; private set; }
     public SubmissionStatus Status { get; private set; }
     public DateTimeOffset SubmissionTime { get; private set; }
-
+    protected ReportSubmission(){}
     private ReportSubmission(string categoryName, string categoryDescription, string title, string body,
         string attachment,
         Guid? submitterId, string name, string email)

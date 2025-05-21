@@ -8,15 +8,16 @@ namespace Core.BoundContext.BookReviewContext.BookReviewAggregate;
 
 public class BookReview : BaseEntity, IAggregateRoot
 {
-    private Guid _bookId;
+    public Guid BookId { get; private set; }
     public int View { get; private set; }
     private List<Rating>? _ratings;
     private List<Comment>? _comments;
     public IReadOnlyCollection<Rating> Ratings => _ratings ?? [];
     public IReadOnlyCollection<Comment> Comments => _comments ?? [];
+    protected BookReview(){}
     private BookReview(Guid bookId, Rating? rating, Comment? comment)
     {
-        _bookId = bookId;
+        BookId = bookId;
         if (rating is not null)
         {
             _ratings ??= [];
@@ -45,7 +46,7 @@ public class BookReview : BaseEntity, IAggregateRoot
         {
             throw new BadRequestException(BookReviewContextMessage.JustHaveOneRatingInTheBook);
         }
-        var rating = Rating.Create(reviewerId, new RatingStar(star));
+        var rating = Rating.Create(reviewerId, RatingStar.Create(star));
         _ratings ??= [];
         _ratings.Add(rating);
     }
@@ -55,7 +56,7 @@ public class BookReview : BaseEntity, IAggregateRoot
         var comment = Comment.Create(Id, reviewerId, commentContent, null);
         _comments ??= [];
         _comments.Add(comment);
-        RaiseDomainEvent(new CommentedBookDomainEvent(comment.Id, _bookId, commentContent));
+        RaiseDomainEvent(new CommentedBookDomainEvent(comment.Id, BookId, commentContent));
     }
 
     public void RemoveComment(Guid commentId)
@@ -75,7 +76,7 @@ public class BookReview : BaseEntity, IAggregateRoot
         {
             throw new BadRequestException(BookReviewContextMessage.CanNotFindYourRating);
         }
-        var newRating = Rating.Create(reviewerId, new RatingStar(star));
+        var newRating = Rating.Create(reviewerId,RatingStar.Create(star));
         _ratings?.Remove(rating);
         _ratings?.Add(newRating);
     }

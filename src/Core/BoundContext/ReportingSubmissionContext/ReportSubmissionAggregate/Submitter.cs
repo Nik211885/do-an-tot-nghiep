@@ -7,7 +7,7 @@ public class Submitter : BaseEntity
     public Guid SubmitterId { get; private set; }
     public string Name { get; private set; }
     public string Email { get; private set; }
-
+    protected Submitter(){}
     private Submitter(Guid? submitterId, string name, string email)
     {
         SubmitterId = submitterId ?? Guid.NewGuid();
