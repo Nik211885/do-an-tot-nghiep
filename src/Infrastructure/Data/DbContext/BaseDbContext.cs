@@ -86,8 +86,11 @@ public class BaseDbContext(DbContextOptions options,
         }
         finally
         {
-            await _transaction.DisposeAsync();
-            _transaction = null;
+            if (HasActiveTransaction)
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
         }
     }
     /// <summary>
@@ -97,9 +100,33 @@ public class BaseDbContext(DbContextOptions options,
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(_transaction);
-        await _transaction.RollbackAsync(cancellationToken);
-        await _transaction.DisposeAsync();
+        if (HasActiveTransaction)
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+            await _transaction.DisposeAsync();
+        }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool HasActiveTransaction => _transaction is not null;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task ExecutionStrategyRetry(Func<Task> func)
+    {
+        var strategy = base.Database.CreateExecutionStrategy(); 
+        await strategy.ExecuteAsync(async () =>
+        {
+            await func();
+        });
+    }
+
+    public Guid? CurrentTransactionId => _transaction?.TransactionId;
+
     /// <summary>
     /// 
     /// </summary>

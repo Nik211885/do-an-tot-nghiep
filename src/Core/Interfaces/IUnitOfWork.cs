@@ -32,4 +32,20 @@ public interface IUnitOfWork : IAsyncDisposable
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task RollbackTransactionAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Check has exits transaction in current
+    /// </summary>
+    bool HasActiveTransaction { get; }
+    /// <summary>
+    /// ;)) I just try to add implement services with func it difficult when you need change infrastructure
+    /// It jus execute retry transaction when has fail like time out
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    Task ExecutionStrategyRetry(Func<Task> action);
+    /// <summary>
+    ///     Get id for current transaction
+    /// </summary>
+    Guid? CurrentTransactionId { get; }
 }
