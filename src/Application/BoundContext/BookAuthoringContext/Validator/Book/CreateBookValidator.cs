@@ -1,4 +1,4 @@
-﻿using Application.BoundContext.BookAuthoringContext.Command;
+﻿using Application.BoundContext.BookAuthoringContext.Command.Book;
 using Application.BoundContext.BookAuthoringContext.Message;
 using FluentValidation;
 
