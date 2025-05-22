@@ -30,7 +30,7 @@ public static class StringHelperExtension
         byte[] byteArray = new byte[bytes];
         using var random = RandomNumberGenerator.Create();
         random.GetBytes(byteArray);
-        return Convert.ToBase64String(byteArray);
+        return Convert.ToBase64String(byteArray).ToLowerInvariant();
     }
     
 }

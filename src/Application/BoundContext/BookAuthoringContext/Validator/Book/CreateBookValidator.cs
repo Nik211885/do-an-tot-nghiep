@@ -2,7 +2,7 @@
 using Application.BoundContext.BookAuthoringContext.Message;
 using FluentValidation;
 
-namespace Application.BoundContext.BookAuthoringContext.Validator;
+namespace Application.BoundContext.BookAuthoringContext.Validator.Book;
 
 public class CreateBookValidator : AbstractValidator<CreateBookAuthoringCommand>
 {

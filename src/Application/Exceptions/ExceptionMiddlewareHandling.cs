@@ -6,7 +6,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Middlewares;
+namespace Application.Exceptions;
 
 /// <summary>
 /// Middleware xử lý exception với logging và error handling được cải thiện.
@@ -116,6 +116,7 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
             BadRequestException badRequestException => badRequestException.Message,
             UnauthorizedException unauthorizedException => unauthorizedException.Message,
             ForbiddenException forbiddenException => forbiddenException.Message,
+            NotFoundException notFoundException => notFoundException.Message,
             _ => "Có lỗi server trong quá trình xử lý"
         };
         return new
@@ -130,6 +131,7 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
         ValidationException => StatusCodes.Status400BadRequest,
         UnauthorizedException => StatusCodes.Status401Unauthorized,
         InvalidOperationException => StatusCodes.Status409Conflict,
+        NotFoundException => StatusCodes.Status404NotFound,
         ForbiddenException => StatusCodes.Status403Forbidden,
         NotImplementedException => StatusCodes.Status501NotImplemented,
         TimeoutException => StatusCodes.Status408RequestTimeout,
@@ -142,6 +144,7 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
         ValidationException => LogLevel.Warning,
         UnauthorizedException => LogLevel.Warning,
         ForbiddenException => LogLevel.Warning,
+        NotFoundException => LogLevel.Warning,
         _ => LogLevel.Error
     };
 

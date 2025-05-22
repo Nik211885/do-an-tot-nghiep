@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Application.Behaviors;
 using Application.Interfaces.CQRS;
-using Application.Middlewares;
 using Application;
+using Application.Exceptions;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

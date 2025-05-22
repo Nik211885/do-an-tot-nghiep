@@ -1,11 +1,13 @@
-﻿using Application.Helper;
+﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Helper;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using Microsoft.Extensions.Logging;
+using BookCore = Core.BoundContext.BookAuthoringContext.BookAggregate.Book;
 
-namespace Application.BoundContext.BookAuthoringContext.Command;
+namespace Application.BoundContext.BookAuthoringContext.Command.Book;
 
 public record CreateBookAuthoringCommand(
     string Title,
@@ -17,7 +19,7 @@ public record CreateBookAuthoringCommand(
     BookReleaseType BookReleaseType,
     IReadOnlyCollection<string> TagsName,
     bool Visibility,
-    IReadOnlyCollection<Guid> GenreIds) : IBookAuthoringCommand<Book>;
+    IReadOnlyCollection<Guid> GenreIds) : IBookAuthoringCommand<BookViewModel>;
 /// <summary>
 /// 
 /// </summary>
@@ -27,7 +29,7 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     IGenresRepository genresRepository,
     IIdentityProvider identityProvider,
     ILogger<CreateBookCommandHandler> logger) 
-    : ICommandHandler<CreateBookAuthoringCommand, Book>
+    : ICommandHandler<CreateBookAuthoringCommand, BookViewModel>
 {
     private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly IBookRepository _bookRepository = bookRepository;
@@ -40,13 +42,13 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<Book> Handle(CreateBookAuthoringCommand request, CancellationToken cancellationToken)
+    public async Task<BookViewModel> Handle(CreateBookAuthoringCommand request, CancellationToken cancellationToken)
     {
         var genresByIds = await _genresRepository
-            .GetGenresActiveByIdsAsync(request.GenreIds.ToArray());
+            .GetGenresActiveByIdsAsync(cancellationToken, request.GenreIds.ToArray());
         // You have compare with count genres user  request with genres has find in repository
         // It sure user don't miss genres active when user create new book
-        var book = Book.Create(
+        var book = BookCore.Create(
             createdUserid: _identityProvider.UserIdentity(),
             title: request.Title,
             avatarUrl: request.AvatarUrl,
@@ -62,6 +64,6 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
         );
         _bookRepository.AddEntity(book);
         await _bookRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
-        return book;
+        return book.MapToViewModel();
     }
 }

@@ -1,8 +1,7 @@
 using System.Reflection;
 using Application;
+using Application.Exceptions;
 using Application.Helper;
-using Application.Middlewares;
-using Asp.Versioning;
 using Infrastructure;
 using PublicAPI.Services;
 using PublicAPI.Services.Endpoint;
@@ -20,9 +19,6 @@ builder.Services.AddServiceWrapper();
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
 builder.Host.UseSerilog();
-
-var name = "Lê Khắc Ninh";
-Console.WriteLine(name.CreateSlug());
 
 var app = builder.Build();
 

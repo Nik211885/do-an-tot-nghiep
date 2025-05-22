@@ -3,7 +3,7 @@ using Application.BoundContext.BookAuthoringContext.Message;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using FluentValidation;
 
-namespace Application.BoundContext.BookAuthoringContext.Validator;
+namespace Application.BoundContext.BookAuthoringContext.Validator.Genre;
 
 public class CreateGenreValidator : AbstractValidator<CreateGenreCommand>
 {
@@ -15,7 +15,8 @@ public class CreateGenreValidator : AbstractValidator<CreateGenreCommand>
         RuleFor(g => g.Name)
             .NotEmpty().WithMessage(GenreMessage.NameRequired)
             .MaximumLength(100).WithMessage(GenreMessage.NameMaxLength)
-            .MustAsync(queryValidator.GenreBeUniqueName).WithMessage(GenreMessage.NameAlreadyExists);
+            .MustAsync(async(name, cancellationToken)=>await queryValidator.GenreBeUniqueName(name, cancellationToken))
+            .WithMessage(GenreMessage.NameAlreadyExists);
         RuleFor(g => g.Description)
             .NotEmpty().WithMessage(GenreMessage.DescriptionRequired)
             .MaximumLength(500).WithMessage(GenreMessage.DescriptionMaxLength);

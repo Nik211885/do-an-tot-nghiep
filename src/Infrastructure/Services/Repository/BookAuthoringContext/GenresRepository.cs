@@ -10,65 +10,75 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
     : Repository<Genres>(bookAuthoringDbContext), IGenresRepository
 {
     private readonly BookAuthoringDbContext _bookAuthoringDbContext = bookAuthoringDbContext;
-    public async Task<IReadOnlyCollection<Genres>> GetAllGenresActiveAsync()
+    public async Task<IReadOnlyCollection<Genres>> GetAllGenresActiveAsync(CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         return genreActive.AsReadOnly();
     }
 
-    public async Task<IReadOnlyCollection<Genres>> GetAllGenresAsync()
+    public async Task<IReadOnlyCollection<Genres>> GetAllGenresAsync(CancellationToken cancellationToken)
     {
         var allGenres = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
             .IgnoreQueryFilters()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         return allGenres.AsReadOnly();
     }
 
-    public async Task<Genres?> GetGenresActiveBySlugAsync(string slug)
+    public async Task<Genres?> GetGenresActiveBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
             .Where(GenreFilter.BySlug(slug))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return genreActive;
     }
 
-    public Task<Genres?> GetGenresBySlugAsync(string slug)
+    public Task<Genres?> GetGenresBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var genre = _bookAuthoringDbContext.Genres
             .IgnoreQueryFilters()
             .Where(GenreFilter.BySlug(slug))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return genre;
     }
 
-    public async Task<Genres?> GetGenresActiveById(Guid id)
+    public async Task<Genres?> GetGenresActiveById(Guid id, CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
             .Where(GenreFilter.ById(id))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return genreActive;
     }
 
-    public async Task<Genres?> GetGenresByIdAsync(Guid id)
+    public async Task<Genres?> GetGenresByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var genre = await _bookAuthoringDbContext.Genres
             .Where(GenreFilter.ById(id))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
         return genre;
     }
 
-    public async Task<IReadOnlyCollection<Genres>> GetGenresActiveByIdsAsync(params Guid[] ids)
+    public async Task<IReadOnlyCollection<Genres>> GetGenresActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids)
     {
         var genre = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
             .Where(GenreFilter.ConstanisId(ids))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         return genre.AsReadOnly();
+    }
+
+    public async Task<Genres?> GetGenresByNameAsync(string name, CancellationToken cancellationToken)
+    {
+        var genre = await _bookAuthoringDbContext.Genres
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(GenreFilter.ByName(name))
+            .FirstOrDefaultAsync(cancellationToken);
+        return genre;
     }
 
     private static class GenreFilter
@@ -79,5 +89,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
             => g => g.Slug == slug;
         public static Expression<Func<Genres, bool>> ConstanisId(params Guid[] ids)
             => g=>ids.Contains(g.Id);
+        public static Expression<Func<Genres, bool>> ByName(string name)
+            => g => g.Name == name;
     }
 }
