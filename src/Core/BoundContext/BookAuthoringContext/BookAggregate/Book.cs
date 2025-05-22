@@ -11,6 +11,7 @@ namespace Core.BoundContext.BookAuthoringContext.BookAggregate;
 public class Book 
     : BaseEntity, IAggregateRoot
 {
+    public Guid CreatedUerId { get; private set; }
     public string Title { get; private set; } 
     public string? AvatarUrl { get; private set; }
     public string? Description { get; private set; }
@@ -25,8 +26,8 @@ public class Book
 
     private List<Genres> _genres;
     public IReadOnlyCollection<Genres> Genres => _genres.AsReadOnly();
-    
-    public List<Tag>? Tags { get; private set; }
+    private List<Tag>? _tags;
+    public IReadOnlyCollection<Tag>? Tags => _tags?.AsReadOnly();
     private List<Chapter> _chapters;
     public IReadOnlyCollection<Chapter> Chapters => _chapters.AsReadOnly();
 
@@ -48,18 +49,46 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     protected Book(){}
-    private Book(string title, string? avatarUrl, string? description, 
-        int versionNumber, PolicyReadBook policyReadBook,
-        BookReleaseType bookReleaseType,List<Tag>? tags, bool visibility, List<Genres> genres,  string slug)
+    private Book(Guid createdUserId, string title, string? avatarUrl, string? description, 
+        int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
+        BookReleaseType bookReleaseType,IReadOnlyCollection<string>? tagsName,
+        bool visibility, IReadOnlyCollection<Genres> genres,  string slug)
     {
+        if(!genres.Any())
+        {
+            throw new BadRequestException(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
+        }
+        bool hasDuplicatesGenre = genres
+            .GroupBy(x => x.Id)
+            .Any(x => x.Count() > 1);
+        if (hasDuplicatesGenre)
+        {
+            throw new BadRequestException(BookAuthoringContextMessage.DuplicateBookGenre);
+        }
+        if(tagsName is not null)
+        {
+            bool hasDuplicateTag = tagsName
+                .GroupBy(x => x)
+                .Any(x => x.Count() > 1);
+            if (hasDuplicateTag)
+            {
+                throw new BadRequestException(BookAuthoringContextMessage.DuplicateBookTags);
+            }
+            _tags ??= [];
+            var tags = tagsName.Select(Tag.CreateTag);
+            _tags.AddRange(tags);
+        }
+        CreatedUerId = createdUserId;
         Title = title;
         AvatarUrl = avatarUrl;
         Description = description;
         Slug = slug;
-        Tags = tags;
         Visibility = visibility;
-        _genres = genres;
+        _genres ??= [];
+        _genres.AddRange(genres);
         VersionNumber = versionNumber;
+        var policyReadBook = PolicyReadBook
+            .CreatePolicy(readerBookPolicy, priceReaderBookPolicy);
         PolicyReadBook = policyReadBook;
         BookReleaseType = bookReleaseType;
         IsComplete = false;
@@ -76,25 +105,25 @@ public class Book
 
     public void AddNewTag(string tagName)
     {
-        var findTagExits = Tags?.Exists(x => x.TagName == tagName) ?? false;
+        var findTagExits = _tags?.Exists(x => x.TagName == tagName) ?? false;
         if (findTagExits)
         {
             throw new BadRequestException(BookAuthoringContextMessage.TagBookHasExits);
         }
         var tag = Tag.CreateTag(tagName);
-        Tags ??= [];
-        Tags.Add(tag);
+        _tags ??= [];
+        _tags.Add(tag);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
     public void RemoveTag(string tagName)
     {
-        var tag = Tags?.FirstOrDefault(x => x.TagName == tagName);
+        var tag = _tags?.FirstOrDefault(x => x.TagName == tagName);
         if (tag is null)
         {
             return;
         }
-        Tags?.Remove(tag);
+        _tags?.Remove(tag);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
@@ -169,11 +198,12 @@ public class Book
         _genres.Remove(genres);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-    public static Book Create(string title, string? avatarUrl, string? description,
-        int versionNumber, PolicyReadBook policyReadBook,
-        BookReleaseType bookReleaseType, List<Tag>? tags, bool visibility, List<Genres> genres,string slug)
+    public static Book Create(Guid createdUserid, string title, string? avatarUrl, string? description,
+        int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
+        BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames, bool visibility, 
+        IReadOnlyCollection<Genres> genres,string slug)
     {
-        return new Book(title, avatarUrl, description, versionNumber, 
-            policyReadBook,bookReleaseType, tags, visibility,genres, slug);
+        return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
+            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tagNames, visibility,genres, slug);
     }
 }

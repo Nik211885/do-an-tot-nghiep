@@ -23,11 +23,11 @@ public static class DependencyInjectionExtension
         services.AddDomainEvents(assembly);
         services.AddHandler(assembly);
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
+        services.AddTransient<ExceptionMiddlewareHandling>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
-        services.AddTransient<ExceptionMiddlewareHandling>();
         return services;
     }
 }

@@ -3,6 +3,7 @@ using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Core.BoundContext.BookReviewContext.BookReviewAggregate;
+using Core.Interfaces.Repositories.BookAuthoringContext;
 using Infrastructure.Data.EntityConfigurations.BookAuthoringContext;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;

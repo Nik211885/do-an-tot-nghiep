@@ -1,4 +1,5 @@
 ﻿using Core.BoundContext.BookReviewContext.BookReviewAggregate;
+using Core.Interfaces;
 using Core.Interfaces.Repositories.BookReviewContext;
 using Infrastructure.Data.DbContext;
 

@@ -1,6 +1,5 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.Repositories;
-using Infrastructure.Data;
 using Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Services.Repository;

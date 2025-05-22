@@ -2,7 +2,8 @@
 
 namespace Core.Interfaces.Repositories.OrderContext;
 
-public interface IOrderRepository : IRepository<Order>
+public interface IOrderRepository
+    : IRepository<Order>
 {
     
 }

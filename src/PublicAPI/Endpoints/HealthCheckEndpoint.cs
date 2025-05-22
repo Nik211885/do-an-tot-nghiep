@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Application.Interfaces.IdentityProvider;
+using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
@@ -9,8 +11,8 @@ public class HealthCheckEndpoint : IEndpoints
     {
         var api = endpoint.MapGroup("health-check")
             .WithTags("HealthCheck");
-        api.MapGet("health", ()=>TypedResults.Ok("Healthy"));
-        api.MapGet("connection", async () =>
+        api.MapGet("health-app", ()=>TypedResults.Ok("Healthy"));
+        api.MapGet("health-check-connection", async () =>
         {
             var configuration = endpoint.ServiceProvider.GetService<IConfiguration>();
             var connectionString = configuration!.GetValue<string>("DatabaseConnectionString:Postgresql:Master");
@@ -25,5 +27,11 @@ public class HealthCheckEndpoint : IEndpoints
                 return Results.Problem("Database connection failed: " + ex.Message);
             }
         });
+        api.MapPost("health-get-token-exchange", async (
+            [FromServices] IIdentityProviderServices identityService) =>
+        {
+            var token = await identityService.GetTokenAsync();
+            return TypedResults.Ok(token);
+        }).WithDescription("Get new token with client credentials grant");
     }
 }

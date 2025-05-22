@@ -1,6 +1,7 @@
 using System.Reflection;
 using Application;
 using Application.Helper;
+using Application.Middlewares;
 using Asp.Versioning;
 using Infrastructure;
 using PublicAPI.Services;
@@ -15,6 +16,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthenticationJwtBearer(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+builder.Services.AddServiceWrapper();
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
 builder.Host.UseSerilog();
@@ -31,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddlewareHandling>();
 
 app.UseHttpsRedirection();
 

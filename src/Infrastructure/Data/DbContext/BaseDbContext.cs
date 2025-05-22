@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -56,7 +55,7 @@ public class BaseDbContext(DbContextOptions options,
     
     /// <summary>
     /// 
-    /// </summary>
+    /// </summary>  
     /// <param name="cancellationToken"></param>
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
         => _transaction = await base.Database.BeginTransactionAsync(cancellationToken);

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Core.Interfaces.Repositories;
 
 namespace Core.Interfaces;
 /// <summary>

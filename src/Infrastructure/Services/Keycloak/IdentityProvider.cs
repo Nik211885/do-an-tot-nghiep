@@ -1,4 +1,6 @@
-﻿using Application.Interfaces.IdentityProvider;
+﻿using System.Security.Claims;
+using Application.Exceptions;
+using Application.Interfaces.IdentityProvider;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -8,16 +10,27 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
     : IIdentityProvider
 {
     private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
+
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public string UserIdentity() 
-        => _contextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "Unknown";
+    public Guid UserIdentity()
+    {
+        if (Guid.TryParse(_contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                out var value))
+        {
+            return value;
+        }
+        // you cant throw authorization when not find id in access token
+        throw new UnauthorizedException();
+    }
+
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     public string UserName()
-        => _contextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "Unknown";
+        => _contextAccessor.HttpContext?.User?.Claims.
+            FirstOrDefault(c => c.Type == "name")?.Value ?? "Unknown";
 }

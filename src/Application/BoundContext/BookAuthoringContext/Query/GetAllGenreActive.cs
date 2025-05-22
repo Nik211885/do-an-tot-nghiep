@@ -20,7 +20,7 @@ public class GetAllGenreActiveQueryHandler(IGenresRepository genresRepository, I
         {
             return genresInCache;
         }
-        var genresInDb = await _genresRepository.GetAllGenresAsync(isActive:true);
+        var genresInDb = await _genresRepository.GetAllGenresAsync();
         return genresInDb;
     }
 }

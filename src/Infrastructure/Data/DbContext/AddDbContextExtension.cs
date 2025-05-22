@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Data.DbContext;
 

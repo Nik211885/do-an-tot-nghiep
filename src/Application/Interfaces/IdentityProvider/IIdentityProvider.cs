@@ -7,7 +7,7 @@ public interface IIdentityProvider
     /// <summary>
     ///   Get user id in token if you don't have token return "unknown" ????
     /// </summary>
-    string UserIdentity();
+    Guid UserIdentity();
 
     /// <summary>
     ///     Get username in token if you don't have token return "unknown" ??

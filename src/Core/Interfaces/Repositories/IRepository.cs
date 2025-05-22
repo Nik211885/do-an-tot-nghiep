@@ -1,4 +1,5 @@
 ﻿namespace Core.Interfaces.Repositories;
+
 /// <summary>
 ///     Repository it bound action migrations to db is unitOfWork
 ///     it defined in bound context with aggregate root interface

@@ -2,7 +2,8 @@
 
 namespace Core.Interfaces.Repositories.BookAuthoringContext;
 
-public interface IChapterRepository : IRepository<Chapter>
+public interface IChapterRepository
+    : IRepository<Chapter>
 {
     
 }

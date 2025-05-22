@@ -3,6 +3,8 @@ using Application.Interfaces.Cache;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Interfaces.Notification;
+using Application.Interfaces.UnitOfWork;
+using Core.Interfaces;
 using Core.Interfaces.Repositories;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
@@ -13,6 +15,7 @@ using Infrastructure.Services.DbContext;
 using Infrastructure.Services.Keycloak;
 using Infrastructure.Services.Notification;
 using Infrastructure.Services.Repository;
+using Infrastructure.Services.UnitOfWork;
 using Infrastructure.Services.UploadFile;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +45,7 @@ public static class DependencyInjectionExtension
         services.AddKeyCloakIdentityProvider();
         services.AddCache();
         services.AddUploadFileWithCloudinary();
+        services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();
         return services;
     }
 }

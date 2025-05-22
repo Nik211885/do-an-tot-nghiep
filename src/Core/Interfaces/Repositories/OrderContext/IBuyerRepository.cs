@@ -2,7 +2,8 @@
 
 namespace Core.Interfaces.Repositories.OrderContext;
 
-public interface IBuyerRepository : IRepository<Buyer>
+public interface IBuyerRepository
+    : IRepository<Buyer> 
 {
     
 }

@@ -1,10 +1,12 @@
 ﻿using Core.BoundContext.ReportingSubmissionContext.ReportSubmissionAggregate;
+using Core.Interfaces.Repositories.ReportSubmissionContext;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DbContext;
 
-public class ReportSubmissionDbContext(DbContextOptions<ReportSubmissionDbContext> options, IDbConnectionStringSelector dbConnectionStringSelector)
+public class ReportSubmissionDbContext(DbContextOptions<ReportSubmissionDbContext> options,
+    IDbConnectionStringSelector dbConnectionStringSelector)
     : BaseDbContext(options, dbConnectionStringSelector)
 {
     public DbSet<ReportSubmission> ReportSubmissions { get; set; }

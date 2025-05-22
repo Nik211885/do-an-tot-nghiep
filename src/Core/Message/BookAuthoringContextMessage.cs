@@ -30,4 +30,13 @@ public static class BookAuthoringContextMessage
 
     public const string BookCanNotDuplicateGenre
         = "Tác phẩm của bạn đã có thể loại này rồi!";
+
+    public const string DuplicateBookGenre
+        = "Sách của bạn không thể có hai thể loại giống nhau!";
+
+    public const string DuplicateBookTags
+        = "Sách của bạn không thể có hai thẻ có tên giống nhau!";
+
+    public const string YourBookMustHasMoreThanOneGenre
+        = "Sách của bạn phải chọn ít nhất một thể loại";
 }
