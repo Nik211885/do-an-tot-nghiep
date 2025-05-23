@@ -34,12 +34,12 @@ public class UserProfile : BaseEntity, IAggregateRoot
     {
         if (followerId == UserId)
         {
-            throw new BadRequestException(UserProfileContextMessage.YouCanNotFollowYourself);
+            ThrowHelper.ThrowIfBadRequest(UserProfileContextMessage.YouCanNotFollowYourself);
         }
         var followersExits = _followers.Where(f => f.FollowerId == followerId);
         if (followersExits.Any())
         {
-            throw new BadRequestException(UserProfileContextMessage.YouHasFollowedUser);
+            ThrowHelper.ThrowIfBadRequest(UserProfileContextMessage.YouHasFollowedUser);
         }
         var follower = Follower.Create(UserId,followerId);
         _followers.Add(follower);
@@ -49,20 +49,13 @@ public class UserProfile : BaseEntity, IAggregateRoot
     public void RemoveFollower(Guid followerId)
     {
         var followerExits = _followers.FirstOrDefault(f => f.FollowerId == followerId);
-        if (followerExits == null)
-        {
-            throw new BadRequestException(UserProfileContextMessage.YouDontHasFollowedUser);
-        }
-
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(followerExits,UserProfileContextMessage.YouDontHasFollowedUser);
         _followers.Remove(followerExits);
     }
     public void FavoriteItem(Guid favoriteBookId)
     {
         var favoredItemExits = _favoriteItems.FirstOrDefault(x => x.FavoriteBookId == favoriteBookId);
-        if (favoredItemExits is not null)
-        {
-            throw new BadRequestException(UserProfileContextMessage.YouHasFavoriteItem);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(favoredItemExits,UserProfileContextMessage.YouHasFavoriteItem);
         _favoriteItems.Add(FavoriteBook.Create(UserId,favoriteBookId));
         RaiseDomainEvent(new FavoredBookDomainEvent(UserId,favoriteBookId));
     }

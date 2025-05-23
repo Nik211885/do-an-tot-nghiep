@@ -23,7 +23,7 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
             return value;
         }
         // you cant throw authorization when not find id in access token
-        throw new UnauthorizedException();
+        throw new Exception("Invalid user identity");
     }
 
     /// <summary>

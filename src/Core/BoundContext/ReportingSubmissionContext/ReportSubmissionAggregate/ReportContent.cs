@@ -21,6 +21,8 @@ public class ReportContent : ValueObject
     }
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return Title;
+        yield return Body;
+        yield return Attachments;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Principal;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Exceptions;
 using Application.Helper;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
@@ -25,7 +26,7 @@ public class UpdateGenreCommandHandler(
     public async Task<GenreViewModel> Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
     {
         var genre = await _genresRepository.GetGenresByIdAsync(request.Id,cancellationToken);
-        ThrowHelper.ThrowNotFoundWhenItemsIsNull(genre, "Thể loại", new(){["Định danh"] = request.Id.ToString()});
+        ThrowHelper.ThrowNotFoundWhenItemIsNull(genre, "Thể loại", new(){["Định danh"] = request.Id.ToString()});
         var updateRequest = request.Request;
         genre.Update(
             name: updateRequest.Name,

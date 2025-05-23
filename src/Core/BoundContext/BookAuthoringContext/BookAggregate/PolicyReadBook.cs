@@ -26,12 +26,12 @@ public class PolicyReadBook : ValueObject
     {
         if (policy == BookPolicy.Paid && price is null or < 0)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.BookPaidPolicyButDontAddPrice);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.BookPaidPolicyButDontAddPrice);
         }
 
         if (policy != BookPolicy.Paid && price is not null)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.BookNotPaidPolicyButAddPrice);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.BookNotPaidPolicyButAddPrice);
         }
         return new PolicyReadBook(policy, price);
     }

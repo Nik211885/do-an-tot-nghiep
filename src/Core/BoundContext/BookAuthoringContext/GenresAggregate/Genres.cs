@@ -70,4 +70,12 @@ public class Genres : BaseEntity, IAggregateRoot
     {
         CountBook++;
     }
+
+    public void ChangeActive()
+    {
+        if (IsActive)
+            UnActivate();
+        else
+            Activate();
+    }
 }

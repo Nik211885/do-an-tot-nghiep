@@ -12,7 +12,7 @@ public class RatingStar : ValueObject
     {
         if (star is <= 0 or > 5)
         {
-            throw new BadRequestException(BookReviewContextMessage.RatingStarNotFormat);
+            ThrowHelper.ThrowIfBadRequest(BookReviewContextMessage.RatingStarNotFormat);
         }
         // add rule for comment
         return new RatingStar(star);

@@ -33,7 +33,7 @@ public class Chapter
         var chapterVersionBackIndex = _chapterVersions.FindIndex(x => x.Version == version);
         if (chapterVersionBackIndex < 0)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.ChapterFindBackVersion);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterFindBackVersion);
         }
 
         return _chapterVersions.Skip(chapterVersionBackIndex).ToList().AsReadOnly();
@@ -77,7 +77,7 @@ public class Chapter
     {
         if (IsLocked)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.ChapterHasLocked);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterHasLocked);
         }
     }
     public void Unlocked()

@@ -19,6 +19,7 @@ public class ReportCategory : ValueObject
     }
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return CategoryName;
+        yield return Description;
     }
 }

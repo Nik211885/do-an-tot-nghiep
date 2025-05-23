@@ -24,14 +24,13 @@ public class BookReview : BaseEntity, IAggregateRoot
             _ratings.Add(rating);
         }
 
-        if (comment is null)
+        if (comment is not null)
         {
-            return;
+            _comments ??= [];
+            _comments.Add(comment);
         }
 
         View = 0;
-        _comments ??= [];
-        _comments.Add(comment);
     }
 
     public static BookReview CreateBookReview(Guid bookId, Rating? rating, Comment? comment)
@@ -42,10 +41,7 @@ public class BookReview : BaseEntity, IAggregateRoot
     public void AddRating(Guid reviewerId, int star)
     {
         var ratingExits = _ratings?.FirstOrDefault(r=>r.ReviewerId == reviewerId);
-        if (ratingExits is not null)
-        {
-            throw new BadRequestException(BookReviewContextMessage.JustHaveOneRatingInTheBook);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentNotNull(ratingExits,BookReviewContextMessage.JustHaveOneRatingInTheBook);
         var rating = Rating.Create(reviewerId, RatingStar.Create(star));
         _ratings ??= [];
         _ratings.Add(rating);
@@ -62,20 +58,14 @@ public class BookReview : BaseEntity, IAggregateRoot
     public void RemoveComment(Guid commentId)
     {
         var comment = _comments?.FirstOrDefault(c=>c.Id == commentId);
-        if (comment is null)
-        {
-            throw new BadRequestException(BookReviewContextMessage.CanNotFindCommentId);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(comment,BookReviewContextMessage.CanNotFindCommentId);
         _comments?.Remove(comment);
     }
 
     public void UpdateRating(Guid reviewerId, int star)
     {
         var rating = _ratings?.FirstOrDefault(r => r.ReviewerId == Id);
-        if (rating == null)
-        {
-            throw new BadRequestException(BookReviewContextMessage.CanNotFindYourRating);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(rating,BookReviewContextMessage.CanNotFindYourRating);
         var newRating = Rating.Create(reviewerId,RatingStar.Create(star));
         _ratings?.Remove(rating);
         _ratings?.Add(newRating);

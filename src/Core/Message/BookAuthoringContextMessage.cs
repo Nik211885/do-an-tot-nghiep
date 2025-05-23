@@ -39,4 +39,7 @@ public static class BookAuthoringContextMessage
 
     public const string YourBookMustHasMoreThanOneGenre
         = "Sách của bạn phải chọn ít nhất một thể loại";
+
+    public const string TagNotExitsInBook =
+        "Thẻ này không có trong tác phẩm của bạn";
 }

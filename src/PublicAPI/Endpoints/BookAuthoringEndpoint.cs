@@ -29,10 +29,14 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Genres")
             .WithName("CreateNewGenres")
             .WithDescription("Create New Genres");
-        apis.MapPost("genre/update",  BookAuthoringService.UpdateGenre)
+        apis.MapPut("genre/update",  BookAuthoringService.UpdateGenre)
             .WithTags("Genres")
             .WithName("UpdateNewGenres")
             .WithDescription("Update New Genres");
+        apis.MapPut("genre/change-active", BookAuthoringService.ChangeActive)
+            .WithTags("Genres")
+            .WithName("ChangeActiveGenres")
+            .WithDescription("Change Active Genre");
     }
 }
 
@@ -73,6 +77,16 @@ public static class BookAuthoringService
         var result = await service.FactoryHandler
             .Handler<UpdateGenreCommand, GenreViewModel>(
                 new UpdateGenreCommand(Id:id, Request:request));
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        ChangeActive([FromQuery] Guid id,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<ChangeActiveGenreCommand, GenreViewModel>(
+                new ChangeActiveGenreCommand(Id:id));
         return TypedResults.Ok(result);
     }
 }

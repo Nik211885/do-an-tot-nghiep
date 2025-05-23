@@ -43,10 +43,7 @@ public class Comment : BaseEntity
     public void RemoveReply(Guid replyId)
     {
         var reply = _commentChild?.FirstOrDefault(c => c.Id == replyId);
-        if (reply is null)
-        {
-            throw new BadRequestException(BookReviewContextMessage.CanNotFindCommentId);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(reply,BookReviewContextMessage.CanNotFindCommentId);
         _commentChild?.Remove(reply);
     }
 }

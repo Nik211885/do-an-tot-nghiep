@@ -46,10 +46,6 @@ public class BookApproval : BaseEntity, IAggregateRoot
     {
         Decision.UpdateNote(note);
         Status = BookApprovalStatus.Rejected;
-        if (Decision.Note is null)
-        {
-            throw new System.Exception();
-        }
         CopyrightChapter?.UnActive();
         RaiseDomainEvent(new RejectedBookDomainEvent(Id, BookId, ChapterId, Decision.Note));
     }

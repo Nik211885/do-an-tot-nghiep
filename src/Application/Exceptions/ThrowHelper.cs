@@ -1,17 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Core.Exception;
 
 namespace Application.Exceptions;
 
-public static class ThrowHelper
+internal static class ThrowHelper
 {
-    public static void ThrowWhenUserForbidden()
+    public static void ThrowIfNotOwner()
     {
-        throw new ForbiddenException();
-    }
-
-    public static void ThrowWhenUserUnauthorized()
-    {
-        throw new UnauthorizedAccessException();
+        throw new PermissionDeniedException();
     }
 
     public static void ThrowNotFoundWhenItemIsNull([NotNull] object? entity, string entityName)
@@ -22,7 +18,7 @@ public static class ThrowHelper
         }
     }
     
-    public static void ThrowNotFoundWhenItemsIsNull([NotNull]object? entity, string entityName,
+    public static void ThrowNotFoundWhenItemIsNull([NotNull]object? entity, string entityName,
         Dictionary<string, string> identifier)
     {
         if (entity is null)

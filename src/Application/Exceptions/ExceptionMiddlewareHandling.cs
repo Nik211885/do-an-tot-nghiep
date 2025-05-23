@@ -114,8 +114,7 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
             ValidationException validationException => validationException
                 .Errors.Select(errors => new { field = errors.PropertyName, message = errors.ErrorMessage, }).ToList(),
             BadRequestException badRequestException => badRequestException.Message,
-            UnauthorizedException unauthorizedException => unauthorizedException.Message,
-            ForbiddenException forbiddenException => forbiddenException.Message,
+            PermissionDeniedException  userForbiddenException => userForbiddenException.Message,
             NotFoundException notFoundException => notFoundException.Message,
             _ => "Có lỗi server trong quá trình xử lý"
         };
@@ -129,10 +128,9 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
     {
         BadRequestException => StatusCodes.Status400BadRequest,
         ValidationException => StatusCodes.Status400BadRequest,
-        UnauthorizedException => StatusCodes.Status401Unauthorized,
         InvalidOperationException => StatusCodes.Status409Conflict,
         NotFoundException => StatusCodes.Status404NotFound,
-        ForbiddenException => StatusCodes.Status403Forbidden,
+        PermissionDeniedException => StatusCodes.Status403Forbidden,
         NotImplementedException => StatusCodes.Status501NotImplemented,
         TimeoutException => StatusCodes.Status408RequestTimeout,
         _ => StatusCodes.Status500InternalServerError
@@ -142,8 +140,6 @@ public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> lo
     {
         BadRequestException => LogLevel.Warning,
         ValidationException => LogLevel.Warning,
-        UnauthorizedException => LogLevel.Warning,
-        ForbiddenException => LogLevel.Warning,
         NotFoundException => LogLevel.Warning,
         _ => LogLevel.Error
     };

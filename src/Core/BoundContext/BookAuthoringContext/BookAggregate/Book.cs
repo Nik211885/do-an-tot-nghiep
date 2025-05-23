@@ -30,25 +30,56 @@ public class Book
     public IReadOnlyCollection<Tag>? Tags => _tags?.AsReadOnly();
     private List<Chapter> _chapters;
     public IReadOnlyCollection<Chapter> Chapters => _chapters.AsReadOnly();
-
-    public void AddNewChapter(string content, string title, string chapterSlug)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="content"></param>
+    /// <param name="title"></param>
+    /// <param name="chapterSlug"></param>
+    public void AddNewChapter(Guid userId, string content, string title, string chapterSlug)
     {
+        EnsureOwner(userId);
         var chapter = Chapter.Create(content, title, chapterSlug);
         _chapters.Add(chapter);
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="chapterId"></param>
+    /// <exception cref="BadRequestException"></exception>
 
-    public void RemoveChapter(Guid chapterId)
+    public void RemoveChapter(Guid userId, Guid chapterId)
     {
+        EnsureOwner(userId);
         var chapter = _chapters.FirstOrDefault(x => x.Id == chapterId);
-        if (chapter is null)
-        {
-            throw new BadRequestException(string.Format(BookAuthoringContextMessage.CanNotFindChapterHasId,chapterId));
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(chapter,
+            string.Format(BookAuthoringContextMessage.CanNotFindChapterHasId,chapterId));
         _chapters.Remove(chapter);
         RaiseDomainEvent(new RemovedChapterDomainEvent(Id, chapterId));
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
+    /// <summary>
+    ///     It support for ef constructed
+    /// </summary>
     protected Book(){}
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="createdUserId"></param>
+    /// <param name="title"></param>
+    /// <param name="avatarUrl"></param>
+    /// <param name="description"></param>
+    /// <param name="versionNumber"></param>
+    /// <param name="readerBookPolicy"></param>
+    /// <param name="priceReaderBookPolicy"></param>
+    /// <param name="bookReleaseType"></param>
+    /// <param name="tagsName"></param>
+    /// <param name="visibility"></param>
+    /// <param name="genres"></param>
+    /// <param name="slug"></param>
+    /// <exception cref="BadRequestException"></exception>
     private Book(Guid createdUserId, string title, string? avatarUrl, string? description, 
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
         BookReleaseType bookReleaseType,IReadOnlyCollection<string>? tagsName,
@@ -56,14 +87,14 @@ public class Book
     {
         if(!genres.Any())
         {
-            throw new BadRequestException(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
         }
         bool hasDuplicatesGenre = genres
             .GroupBy(x => x.Id)
             .Any(x => x.Count() > 1);
         if (hasDuplicatesGenre)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.DuplicateBookGenre);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookGenre);
         }
         if(tagsName is not null)
         {
@@ -72,7 +103,7 @@ public class Book
                 .Any(x => x.Count() > 1);
             if (hasDuplicateTag)
             {
-                throw new BadRequestException(BookAuthoringContextMessage.DuplicateBookTags);
+                ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookTags);
             }
             _tags ??= [];
             var tags = tagsName.Select(Tag.CreateTag);
@@ -94,110 +125,187 @@ public class Book
         IsComplete = false;
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-    }
+    }   
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="policy"></param>
+    /// <param name="price"></param>
 
-    public void UpdatePolicyReadBook(BookPolicy policy, decimal? price)
+    public void UpdatePolicyReadBook(Guid userId, BookPolicy policy, decimal? price)
     {
+        EnsureOwner(userId);
         var policyReadBook = PolicyReadBook.CreatePolicy(policy, price);
         PolicyReadBook = policyReadBook;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void AddNewTag(string tagName)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="tagName"></param>
+    /// <exception cref="BadRequestException"></exception>
+    public void AddNewTag(Guid userId, string tagName)
     {
+        EnsureOwner(userId);
         var findTagExits = _tags?.Exists(x => x.TagName == tagName) ?? false;
         if (findTagExits)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.TagBookHasExits);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.TagBookHasExits);
         }
         var tag = Tag.CreateTag(tagName);
         _tags ??= [];
         _tags.Add(tag);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void RemoveTag(string tagName)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="tagName"></param>
+    public void RemoveTag(Guid userId, string tagName)
     {
+        EnsureOwner(userId);
         var tag = _tags?.FirstOrDefault(x => x.TagName == tagName);
-        if (tag is null)
-        {
-            return;
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(tag, BookAuthoringContextMessage.TagNotExitsInBook);
         _tags?.Remove(tag);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateTitle(string title, string slug)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="title"></param>
+    /// <param name="slug"></param>
+    public void UpdateTitle(Guid userId, string title, string slug)
     {
+        EnsureOwner(userId);
         Title = title;
         Slug = slug;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateAvatarUrl(string avatarUrl)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="avatarUrl"></param>
+    public void UpdateAvatarUrl(Guid userId, string avatarUrl)
     {
+        EnsureOwner(userId);
         AvatarUrl = avatarUrl;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateDescription(string description)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="description"></param>
+    public void UpdateDescription(Guid userId, string description)
     {
+        EnsureOwner(userId);
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateVisibility(bool visibility)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="visibility"></param>
+    public void UpdateVisibility(Guid userId, bool visibility)
     {
+        EnsureOwner(userId);
         Visibility = visibility;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateVersionNumber(int versionNumber)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="versionNumber"></param>
+    public void UpdateVersionNumber(Guid userId, int versionNumber)
     {
+        EnsureOwner(userId);
         VersionNumber = versionNumber;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void UpdateBookReleaseType(BookReleaseType bookReleaseType)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="bookReleaseType"></param>
+    public void UpdateBookReleaseType(Guid userId, BookReleaseType bookReleaseType)
     {
+        EnsureOwner(userId);
         BookReleaseType = bookReleaseType;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void Update(string title, string? avatarUrl, string? description, string slug)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="title"></param>
+    /// <param name="avatarUrl"></param>
+    /// <param name="description"></param>
+    /// <param name="slug"></param>
+    public void Update(Guid userId, string title, string? avatarUrl, string? description, string slug)
     {
+        EnsureOwner(userId);
         Title = title;
         Slug = slug;
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="genres"></param>
+    /// <exception cref="BadRequestException"></exception>
 
-    public void AddGenres(Genres genres)
+    public void AddGenres(Guid userId, Genres genres)
     {
+        EnsureOwner(userId);
         var genreExits = _genres.FirstOrDefault(x=>x.Id == genres.Id);
-        if (genreExits is not null)
-        {
-            throw new BadRequestException(BookAuthoringContextMessage.BookCanNotDuplicateGenre);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentNotNull(genreExits,BookAuthoringContextMessage.BookCanNotDuplicateGenre);
         _genres.Add(genres);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
-
-    public void RemoveGenres(Genres genres)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="genres"></param>
+    /// <exception cref="BadRequestException"></exception>
+    public void RemoveGenres(Guid userId, Genres genres)
     {
+        EnsureOwner(userId);
         if (_genres.Count <= 1)
         {
-            throw new BadRequestException(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
         }
         var genreExits = _genres.FirstOrDefault(x => x.Id == genres.Id);
-        if (genreExits is null)
-        {
-            throw new BadRequestException(BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
-        }
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(genreExits,BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
         _genres.Remove(genres);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="createdUserid"></param>
+    /// <param name="title"></param>
+    /// <param name="avatarUrl"></param>
+    /// <param name="description"></param>
+    /// <param name="versionNumber"></param>
+    /// <param name="readerBookPolicy"></param>
+    /// <param name="priceReaderBookPolicy"></param>
+    /// <param name="bookReleaseType"></param>
+    /// <param name="tagNames"></param>
+    /// <param name="visibility"></param>
+    /// <param name="genres"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
     public static Book Create(Guid createdUserid, string title, string? avatarUrl, string? description,
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
         BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames, bool visibility, 
@@ -205,5 +313,17 @@ public class Book
     {
         return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
             readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tagNames, visibility,genres, slug);
+    }
+    /// <summary>
+    ///  Rule for user can edit and update book
+    ///  In here author in book just edit owner book
+    /// </summary>
+    /// <param name="editUserId">User identifier want edit</param>
+    private void EnsureOwner(Guid editUserId)
+    {
+        if (CreatedUerId != editUserId)
+        {
+            ThrowHelper.ThrowIfNotOwner();
+        }
     }
 }
