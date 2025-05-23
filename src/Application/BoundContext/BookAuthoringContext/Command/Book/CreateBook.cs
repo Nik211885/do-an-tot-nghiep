@@ -44,10 +44,15 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     /// <exception cref="NotImplementedException"></exception>
     public async Task<BookViewModel> Handle(CreateBookAuthoringCommand request, CancellationToken cancellationToken)
     {
+        //
         var genresByIds = await _genresRepository
             .GetGenresActiveByIdsAsync(cancellationToken, request.GenreIds.ToArray());
         // You have compare with count genres user  request with genres has find in repository
         // It sure user don't miss genres active when user create new book
+        /*if (genresByIds.Count() != request.GenreIds.Count())
+        {
+            ThrowHelper.ThrowIfBadRequest("");
+        }*/
         var book = BookCore.Create(
             createdUserid: _identityProvider.UserIdentity(),
             title: request.Title,
@@ -59,7 +64,7 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
             bookReleaseType: request.BookReleaseType,
             tagNames: request.TagsName,
             visibility: request.Visibility,
-            genres: genresByIds,
+            genresId: genresByIds.Select(x=>x.Id).ToList(),
             slug: request.Title.CreateSlug()
         );
         _bookRepository.AddEntity(book);

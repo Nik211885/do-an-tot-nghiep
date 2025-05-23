@@ -22,6 +22,12 @@ public class PolicyReadBook : ValueObject
         Price = price;
     }
     protected PolicyReadBook(){}
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="policy"></param>
+    /// <param name="price"></param>
+    /// <returns></returns>
     public static PolicyReadBook CreatePolicy(BookPolicy policy, decimal? price)
     {
         if (policy == BookPolicy.Paid && price is null or < 0)

@@ -2,7 +2,6 @@
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Interfaces.Repositories.BookAuthoringContext;
 
 namespace Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
@@ -17,7 +16,6 @@ public class Genres : BaseEntity, IAggregateRoot
     public bool IsActive { get; private set; }
     public DateTimeOffset CreatedDateTime { get; private set; }
     public DateTimeOffset LastUpdateDateTime { get; private set; }
-    public IReadOnlyCollection<Book> Books { get; }
     protected Genres(){}
     private Genres(Guid createUserId,string name, string description, string slug, string avatarUrl)
     {

@@ -4,6 +4,9 @@ namespace Core.BoundContext.BookAuthoringContext.BookAggregate;
 
 public class Tag : ValueObject
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string TagName { get; private set; }
     protected Tag(){}
     private Tag(string tagName)

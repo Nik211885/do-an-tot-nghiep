@@ -7,6 +7,8 @@ public class ChapterVersion : BaseEntity
     /// <summary>
     /// It make use rembember what name is history
     /// </summary>
+    ///
+    // Shadow prop id chapter
     public string? NameVersion { get; private set; }
     public DateTimeOffset CreatedDateTime { get; private set; }
     public string DiffContent { get; private set; }

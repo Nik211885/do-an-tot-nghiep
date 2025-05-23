@@ -3,17 +3,12 @@ using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.ViewModel;
 
-public class GenreViewModelSimple(Guid id, string name)
-{
-    public Guid Id { get; } = id;
-    public string Name { get; } = name;
-}
 
 public class BookViewModel(Guid authorId, Guid id, string title, string? avatarUrl,
     string? description, DateTimeOffset createDateTimeOffset, DateTimeOffset lastUpdateDateTime,
     bool isComplete, int versionNumber, bool visibility, string slug,
     PolicyReadBook policyReadBook, BookReleaseType bookReleaseType, 
-    IReadOnlyCollection<Tag>? tags, IReadOnlyCollection<GenreViewModelSimple>  genres)
+    IReadOnlyCollection<Tag>? tags, IReadOnlyCollection<Guid> genreIds)
 {
     public Guid AuthorId { get; }  = authorId;
     public Guid Id { get; } = id;
@@ -28,31 +23,14 @@ public class BookViewModel(Guid authorId, Guid id, string title, string? avatarU
     public string Slug { get; } = slug;
     public PolicyReadBook PolicyReadBook { get; } = policyReadBook;
     public BookReleaseType BookReleaseType { get; } = bookReleaseType;
-    public IReadOnlyCollection<Tag> Tags { get; } = tags;
-    public IReadOnlyCollection<GenreViewModelSimple> Genres { get; } = genres;
-}
-
-public static class GenreViewModelMappingExtension
-{
-    public static GenreViewModelSimple MapToViewModelSimple(this Genres genres)
-    {
-        return new GenreViewModelSimple(
-            id: genres.Id, 
-            name:genres.Name);
-    }
-
-    public static IReadOnlyCollection<GenreViewModelSimple> MapToViewModelsSimple(
-        this IReadOnlyCollection<Genres> genres)
-    {
-        return genres.Select(g=>g.MapToViewModelSimple()).ToList();
-    }
+    public IReadOnlyCollection<Tag>? Tags { get; } = tags;
+    public IReadOnlyCollection<Guid> GenreIds { get; } = genreIds;
 }
 
 public static class BookViewModelMappingExtension
 {
     public static BookViewModel MapToViewModel(this Book book)
     {
-        var genresViewModel = book.Genres.MapToViewModelsSimple();
         return new BookViewModel(
             authorId: book.CreatedUerId,
             id: book.Id, 
@@ -67,6 +45,7 @@ public static class BookViewModelMappingExtension
             slug: book.Slug, 
             policyReadBook: book.PolicyReadBook, 
             bookReleaseType: book.BookReleaseType,
-            tags: book.Tags, genresViewModel);
+            tags: book.Tags, 
+            genreIds: book.Genres.Select(x=>x.GenreId).ToList());
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
+using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -36,9 +37,21 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             t.Property<int>("Id");
             t.HasKey("Id");
             t.ToTable("BookTags", DbSchema.BookAuthoring);
-            t.Property(t => t.TagName)
+            t.Property(tag => tag.TagName)
                 .HasMaxLength(50)
                 .IsRequired();
         });
+        builder.OwnsMany<BookGenres>(b => b.Genres,
+            bg =>
+            {
+                const string bookFk = "BookId";
+                bg.ToTable("BookGenres", DbSchema.BookAuthoring);
+                bg.WithOwner().HasForeignKey(bookFk);
+                bg.Property(x => x.GenreId).IsRequired();
+                bg.HasKey(bookFk,nameof(BookGenres.GenreId));
+                bg.HasOne<Genres>()
+                    .WithMany()
+                    .HasForeignKey(nameof(BookGenres.GenreId));
+            });
     }
 }

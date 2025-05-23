@@ -1,7 +1,4 @@
-using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
-using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Core.Entities;
-using Core.Events.WriteBookContext;
 using Core.Exception;
 using Core.Interfaces;
 using Core.Message;
@@ -23,49 +20,19 @@ public class Book
     public string Slug {get; private set;}
     public PolicyReadBook PolicyReadBook { get; private set; }
     public BookReleaseType BookReleaseType { get; private set; }
-
-    private List<Genres> _genres;
-    public IReadOnlyCollection<Genres> Genres => _genres.AsReadOnly();
+    
+    private List<BookGenres> _genres;
+    public IReadOnlyCollection<BookGenres> Genres => _genres.AsReadOnly();
     private List<Tag>? _tags;
     public IReadOnlyCollection<Tag>? Tags => _tags?.AsReadOnly();
-    private List<Chapter> _chapters;
-    public IReadOnlyCollection<Chapter> Chapters => _chapters.AsReadOnly();
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="content"></param>
-    /// <param name="title"></param>
-    /// <param name="chapterSlug"></param>
-    public void AddNewChapter(Guid userId, string content, string title, string chapterSlug)
-    {
-        EnsureOwner(userId);
-        var chapter = Chapter.Create(content, title, chapterSlug);
-        _chapters.Add(chapter);
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="chapterId"></param>
-    /// <exception cref="BadRequestException"></exception>
-
-    public void RemoveChapter(Guid userId, Guid chapterId)
-    {
-        EnsureOwner(userId);
-        var chapter = _chapters.FirstOrDefault(x => x.Id == chapterId);
-        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(chapter,
-            string.Format(BookAuthoringContextMessage.CanNotFindChapterHasId,chapterId));
-        _chapters.Remove(chapter);
-        RaiseDomainEvent(new RemovedChapterDomainEvent(Id, chapterId));
-        LastUpdateDateTime = DateTimeOffset.UtcNow;
-    }
     /// <summary>
     ///     It support for ef constructed
     /// </summary>
     protected Book(){}
     /// <summary>
-    /// 
+    ///     Constructed create new instance for book and follow rule domain
+    ///     is don't have any tags or genre duplicate name and id
+    ///     and rule create policy reader book
     /// </summary>
     /// <param name="createdUserId"></param>
     /// <param name="title"></param>
@@ -77,20 +44,20 @@ public class Book
     /// <param name="bookReleaseType"></param>
     /// <param name="tagsName"></param>
     /// <param name="visibility"></param>
-    /// <param name="genres"></param>
+    /// <param name="genreIds"></param>
     /// <param name="slug"></param>
     /// <exception cref="BadRequestException"></exception>
     private Book(Guid createdUserId, string title, string? avatarUrl, string? description, 
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
         BookReleaseType bookReleaseType,IReadOnlyCollection<string>? tagsName,
-        bool visibility, IReadOnlyCollection<Genres> genres,  string slug)
+        bool visibility, IReadOnlyCollection<Guid> genreIds,  string slug)
     {
-        if(!genres.Any())
+        if(!genreIds.Any())
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
         }
-        bool hasDuplicatesGenre = genres
-            .GroupBy(x => x.Id)
+        bool hasDuplicatesGenre = genreIds
+            .GroupBy(x => x)
             .Any(x => x.Count() > 1);
         if (hasDuplicatesGenre)
         {
@@ -116,7 +83,7 @@ public class Book
         Slug = slug;
         Visibility = visibility;
         _genres ??= [];
-        _genres.AddRange(genres);
+        _genres.AddRange(genreIds.Select(BookGenres.Create));
         VersionNumber = versionNumber;
         var policyReadBook = PolicyReadBook
             .CreatePolicy(readerBookPolicy, priceReaderBookPolicy);
@@ -127,11 +94,11 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }   
     /// <summary>
-    /// 
+    ///    Update policy reader book  and follow policy factory rule 
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="policy"></param>
-    /// <param name="price"></param>
+    /// <param name="userId">It rule ensure author just have change book</param>
+    /// <param name="policy">Policy in book</param>
+    /// <param name="price">Price when policy is paid</param>
 
     public void UpdatePolicyReadBook(Guid userId, BookPolicy policy, decimal? price)
     {
@@ -141,9 +108,10 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///    Add new tag and follower rule factory create tag and don't have
+    ///     any tag have name is duplicate
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">It rule ensure author just have change book</param>
     /// <param name="tagName"></param>
     /// <exception cref="BadRequestException"></exception>
     public void AddNewTag(Guid userId, string tagName)
@@ -160,9 +128,9 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Remove tag for book and make sure tag name exits in book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="tagName"></param>
     public void RemoveTag(Guid userId, string tagName)
     {
@@ -173,22 +141,26 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update title for book, and it just has change when title
+    ///     has changed in any character it will make slug changed
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="title"></param>
     /// <param name="slug"></param>
     public void UpdateTitle(Guid userId, string title, string slug)
     {
         EnsureOwner(userId);
-        Title = title;
-        Slug = slug;
+        if (title != Title)
+        {
+            Title = title;
+            Slug = slug;
+        }
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update avatar image for book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="avatarUrl"></param>
     public void UpdateAvatarUrl(Guid userId, string avatarUrl)
     {
@@ -197,9 +169,9 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update description for book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="description"></param>
     public void UpdateDescription(Guid userId, string description)
     {
@@ -208,9 +180,9 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Change visibility for book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="visibility"></param>
     public void UpdateVisibility(Guid userId, bool visibility)
     {
@@ -219,9 +191,9 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update version number for book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="versionNumber"></param>
     public void UpdateVersionNumber(Guid userId, int versionNumber)
     {
@@ -230,9 +202,9 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update book release type for book
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="bookReleaseType"></param>
     public void UpdateBookReleaseType(Guid userId, BookReleaseType bookReleaseType)
     {
@@ -241,7 +213,7 @@ public class Book
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Update information for book and when title has changed slug just has  change
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="title"></param>
@@ -251,47 +223,52 @@ public class Book
     public void Update(Guid userId, string title, string? avatarUrl, string? description, string slug)
     {
         EnsureOwner(userId);
-        Title = title;
-        Slug = slug;
+        if (Title != title)
+        {
+            Title = title;
+            Slug = slug;
+        }
+
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Add new genre for book and one genre just has constance one book
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="genres"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
+    /// <param name="genreId"></param>
     /// <exception cref="BadRequestException"></exception>
 
-    public void AddGenres(Guid userId, Genres genres)
+    public void AddGenres(Guid userId, Guid genreId)
     {
         EnsureOwner(userId);
-        var genreExits = _genres.FirstOrDefault(x=>x.Id == genres.Id);
+        var genreExits = _genres.FirstOrDefault(x=>x.GenreId == genreId);
         ThrowHelper.ThrowBadRequestWhenArgumentNotNull(genreExits,BookAuthoringContextMessage.BookCanNotDuplicateGenre);
-        _genres.Add(genres);
+        _genres.Add(BookGenres.Create(genreId));
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///     Remove genre for book make sure it have more than one
+    ///     genre and genre id has exits in genres
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="genres"></param>
+    /// <param name="userId">it rule ensure author just have change book</param>
+    /// <param name="genreId"></param>
     /// <exception cref="BadRequestException"></exception>
-    public void RemoveGenres(Guid userId, Genres genres)
+    public void RemoveGenres(Guid userId, Guid genreId)
     {
         EnsureOwner(userId);
         if (_genres.Count <= 1)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
         }
-        var genreExits = _genres.FirstOrDefault(x => x.Id == genres.Id);
+        var genreExits = _genres.FirstOrDefault(x => x.GenreId == genreId);
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(genreExits,BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
-        _genres.Remove(genres);
+        _genres.Remove(genreExits);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
-    /// 
+    ///    Factory create new instance book with constructed primary
     /// </summary>
     /// <param name="createdUserid"></param>
     /// <param name="title"></param>
@@ -303,23 +280,23 @@ public class Book
     /// <param name="bookReleaseType"></param>
     /// <param name="tagNames"></param>
     /// <param name="visibility"></param>
-    /// <param name="genres"></param>
+    /// <param name="genresId"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
     public static Book Create(Guid createdUserid, string title, string? avatarUrl, string? description,
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
         BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames, bool visibility, 
-        IReadOnlyCollection<Genres> genres,string slug)
+        IReadOnlyCollection<Guid> genresId,string slug)
     {
         return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
-            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tagNames, visibility,genres, slug);
+            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tagNames, visibility,genresId, slug);
     }
     /// <summary>
     ///  Rule for user can edit and update book
     ///  In here author in book just edit owner book
     /// </summary>
     /// <param name="editUserId">User identifier want edit</param>
-    private void EnsureOwner(Guid editUserId)
+    public void EnsureOwner(Guid editUserId)
     {
         if (CreatedUerId != editUserId)
         {

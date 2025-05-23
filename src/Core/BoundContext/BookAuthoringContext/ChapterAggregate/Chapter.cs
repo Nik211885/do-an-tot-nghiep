@@ -9,6 +9,7 @@ public class Chapter
     : BaseEntity, IAggregateRoot
 {
     private uint _currentVersion;
+    public Guid BookId { get; private set; }
     public string Content { get; private set; }
     public string Title { get; private set; }
     public bool IsLocked { get; private set; }
@@ -18,8 +19,9 @@ public class Chapter
     private List<ChapterVersion> _chapterVersions;
     public IReadOnlyCollection<ChapterVersion> ChapterVersions => _chapterVersions;
     protected Chapter(){}
-    private Chapter(string content, string title, string slug)
+    private Chapter(Guid bookId, string content, string title, string slug)
     {
+        BookId = bookId;
         _currentVersion = 0;
         Content = content;
         Slug = slug;
@@ -38,9 +40,9 @@ public class Chapter
 
         return _chapterVersions.Skip(chapterVersionBackIndex).ToList().AsReadOnly();
     }
-    public static Chapter Create(string content, string title, string slug)
+    public static Chapter Create(Guid bookId, string content, string title, string slug)
     {
-        return new Chapter(content, title, slug);
+        return new Chapter(bookId,content, title, slug);
     }
 
     /// <summary>

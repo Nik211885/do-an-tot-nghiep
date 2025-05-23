@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
+﻿using Core.BoundContext.BookAuthoringContext.BookAggregate;
+using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,6 +23,9 @@ public class ChapterConfiguration : IEntityTypeConfiguration<Chapter>
         builder.Property(c => c.Status)
             .HasConversion<string>()
             .HasMaxLength(30);
-        builder.Property<Guid>("BookId");
+        builder.HasOne<Book>()
+            .WithMany()
+            .HasForeignKey(c=>c.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
