@@ -25,7 +25,7 @@ public class UpdateGenreCommandHandler(
     private readonly ILogger<UpdateGenreCommandHandler> _logger = logger;
     public async Task<GenreViewModel> Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
     {
-        var genre = await _genresRepository.GetGenresByIdAsync(request.Id,cancellationToken);
+        var genre = await _genresRepository.FindByIdAsync(request.Id,cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(genre, "Thể loại", new(){["Định danh"] = request.Id.ToString()});
         var updateRequest = request.Request;
         genre.Update(
@@ -34,7 +34,7 @@ public class UpdateGenreCommandHandler(
             avatarUrl:updateRequest.AvatarUrl,
             slug: updateRequest.Name.CreateSlug()
             );
-        _genresRepository.UpdateEntity(genre);
+        _genresRepository.Update(genre);
         await _genresRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         return genre.MapToViewModel();
     }

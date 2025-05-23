@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.BookAuthoringContext.BookAggregate;
+﻿using Application.BoundContext.BookAuthoringContext.Validator.Chapter;
+using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,12 +14,12 @@ public class ChapterConfiguration : IEntityTypeConfiguration<Chapter>
         builder.HasIndex(c=>c.Slug).IsUnique();
         builder.Ignore(c => c.DomainEvents);    
         builder.Property(c=>c.Slug)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthPropForChapter.SlugMaxLength)
             .IsRequired();
         builder.Property(c => c.Content)
             .IsRequired();
         builder.Property(c=>c.Title)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthPropForChapter.TitleMaxLength)
             .IsRequired();
         builder.Property(c => c.Status)
             .HasConversion<string>()

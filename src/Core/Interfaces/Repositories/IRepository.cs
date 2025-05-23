@@ -11,20 +11,4 @@ public interface IRepository<T> where T : IAggregateRoot
     ///  Action make all migrations to database
     /// </summary>
     IUnitOfWork UnitOfWork { get; }
-    // add something action like add, delete, and update
-    /// <summary>
-    ///  Delete state entity is insert
-    /// </summary>
-    /// <param name="entity"></param>
-    T AddEntity(T entity);
-    /// <summary>
-    /// Update state entity is updated
-    /// </summary>
-    /// <param name="entity"></param>
-    T UpdateEntity(T entity);
-    /// <summary>
-    /// Update state entity is deleted
-    /// </summary>
-    /// <param name="entity"></param>
-    void DeleteEntity(T entity);
 }

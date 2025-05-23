@@ -30,9 +30,7 @@ public class Book
     /// </summary>
     protected Book(){}
     /// <summary>
-    ///     Constructed create new instance for book and follow rule domain
-    ///     is don't have any tags or genre duplicate name and id
-    ///     and rule create policy reader book
+    ///     Constructed create new instance for book 
     /// </summary>
     /// <param name="createdUserId"></param>
     /// <param name="title"></param>
@@ -42,48 +40,26 @@ public class Book
     /// <param name="readerBookPolicy"></param>
     /// <param name="priceReaderBookPolicy"></param>
     /// <param name="bookReleaseType"></param>
-    /// <param name="tagsName"></param>
+    /// <param name="tags"></param>
     /// <param name="visibility"></param>
-    /// <param name="genreIds"></param>
+    /// <param name="genres"></param>
     /// <param name="slug"></param>
     /// <exception cref="BadRequestException"></exception>
     private Book(Guid createdUserId, string title, string? avatarUrl, string? description, 
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
-        BookReleaseType bookReleaseType,IReadOnlyCollection<string>? tagsName,
-        bool visibility, IReadOnlyCollection<Guid> genreIds,  string slug)
+        BookReleaseType bookReleaseType,IReadOnlyCollection<Tag>? tags,
+        bool visibility, IReadOnlyCollection<BookGenres> genres,  string slug)
     {
-        if(!genreIds.Any())
-        {
-            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
-        }
-        bool hasDuplicatesGenre = genreIds
-            .GroupBy(x => x)
-            .Any(x => x.Count() > 1);
-        if (hasDuplicatesGenre)
-        {
-            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookGenre);
-        }
-        if(tagsName is not null)
-        {
-            bool hasDuplicateTag = tagsName
-                .GroupBy(x => x)
-                .Any(x => x.Count() > 1);
-            if (hasDuplicateTag)
-            {
-                ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookTags);
-            }
-            _tags ??= [];
-            var tags = tagsName.Select(Tag.CreateTag);
-            _tags.AddRange(tags);
-        }
         CreatedUerId = createdUserId;
         Title = title;
         AvatarUrl = avatarUrl;
         Description = description;
         Slug = slug;
         Visibility = visibility;
+        _tags ??= [];
+        _tags.AddRange(tags ?? []);
         _genres ??= [];
-        _genres.AddRange(genreIds.Select(BookGenres.Create));
+        _genres.AddRange(genres);
         VersionNumber = versionNumber;
         var policyReadBook = PolicyReadBook
             .CreatePolicy(readerBookPolicy, priceReaderBookPolicy);
@@ -96,13 +72,11 @@ public class Book
     /// <summary>
     ///    Update policy reader book  and follow policy factory rule 
     /// </summary>
-    /// <param name="userId">It rule ensure author just have change book</param>
     /// <param name="policy">Policy in book</param>
     /// <param name="price">Price when policy is paid</param>
 
-    public void UpdatePolicyReadBook(Guid userId, BookPolicy policy, decimal? price)
+    public void UpdatePolicyReadBook(BookPolicy policy, decimal? price)
     {
-        EnsureOwner(userId);
         var policyReadBook = PolicyReadBook.CreatePolicy(policy, price);
         PolicyReadBook = policyReadBook;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
@@ -111,12 +85,10 @@ public class Book
     ///    Add new tag and follower rule factory create tag and don't have
     ///     any tag have name is duplicate
     /// </summary>
-    /// <param name="userId">It rule ensure author just have change book</param>
     /// <param name="tagName"></param>
     /// <exception cref="BadRequestException"></exception>
-    public void AddNewTag(Guid userId, string tagName)
+    public void AddNewTag(string tagName)
     {
-        EnsureOwner(userId);
         var findTagExits = _tags?.Exists(x => x.TagName == tagName) ?? false;
         if (findTagExits)
         {
@@ -130,11 +102,9 @@ public class Book
     /// <summary>
     ///     Remove tag for book and make sure tag name exits in book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="tagName"></param>
-    public void RemoveTag(Guid userId, string tagName)
+    public void RemoveTag(string tagName)
     {
-        EnsureOwner(userId);
         var tag = _tags?.FirstOrDefault(x => x.TagName == tagName);
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(tag, BookAuthoringContextMessage.TagNotExitsInBook);
         _tags?.Remove(tag);
@@ -144,12 +114,10 @@ public class Book
     ///     Update title for book, and it just has change when title
     ///     has changed in any character it will make slug changed
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="title"></param>
     /// <param name="slug"></param>
-    public void UpdateTitle(Guid userId, string title, string slug)
+    public void UpdateTitle(string title, string slug)
     {
-        EnsureOwner(userId);
         if (title != Title)
         {
             Title = title;
@@ -160,55 +128,45 @@ public class Book
     /// <summary>
     ///     Update avatar image for book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="avatarUrl"></param>
-    public void UpdateAvatarUrl(Guid userId, string avatarUrl)
+    public void UpdateAvatarUrl(string avatarUrl)
     {
-        EnsureOwner(userId);
         AvatarUrl = avatarUrl;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
     ///     Update description for book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="description"></param>
-    public void UpdateDescription(Guid userId, string description)
+    public void UpdateDescription(string description)
     {
-        EnsureOwner(userId);
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
     ///     Change visibility for book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="visibility"></param>
-    public void UpdateVisibility(Guid userId, bool visibility)
+    public void UpdateVisibility( bool visibility)
     {
-        EnsureOwner(userId);
         Visibility = visibility;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
     ///     Update version number for book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="versionNumber"></param>
-    public void UpdateVersionNumber(Guid userId, int versionNumber)
+    public void UpdateVersionNumber(int versionNumber)
     {
-        EnsureOwner(userId);
         VersionNumber = versionNumber;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
     /// <summary>
     ///     Update book release type for book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="bookReleaseType"></param>
-    public void UpdateBookReleaseType(Guid userId, BookReleaseType bookReleaseType)
+    public void UpdateBookReleaseType(BookReleaseType bookReleaseType)
     {
-        EnsureOwner(userId);
         BookReleaseType = bookReleaseType;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
@@ -222,7 +180,6 @@ public class Book
     /// <param name="slug"></param>
     public void Update(Guid userId, string title, string? avatarUrl, string? description, string slug)
     {
-        EnsureOwner(userId);
         if (Title != title)
         {
             Title = title;
@@ -236,13 +193,11 @@ public class Book
     /// <summary>
     ///     Add new genre for book and one genre just has constance one book
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
     /// <param name="genreId"></param>
     /// <exception cref="BadRequestException"></exception>
 
-    public void AddGenres(Guid userId, Guid genreId)
+    public void AddGenres(Guid genreId)
     {
-        EnsureOwner(userId);
         var genreExits = _genres.FirstOrDefault(x=>x.GenreId == genreId);
         ThrowHelper.ThrowBadRequestWhenArgumentNotNull(genreExits,BookAuthoringContextMessage.BookCanNotDuplicateGenre);
         _genres.Add(BookGenres.Create(genreId));
@@ -252,12 +207,10 @@ public class Book
     ///     Remove genre for book make sure it have more than one
     ///     genre and genre id has exits in genres
     /// </summary>
-    /// <param name="userId">it rule ensure author just have change book</param>
-    /// <param name="genreId"></param>
+    ///  <param name="genreId"></param>
     /// <exception cref="BadRequestException"></exception>
-    public void RemoveGenres(Guid userId, Guid genreId)
+    public void RemoveGenres(Guid genreId)
     {
-        EnsureOwner(userId);
         if (_genres.Count <= 1)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.CanNotRemoveGenreIsEmpty);
@@ -269,6 +222,9 @@ public class Book
     }
     /// <summary>
     ///    Factory create new instance book with constructed primary
+    ///     Create new instance for book and follow rule domain
+    ///     is don't have any tags or genre duplicate name and id
+    ///     and rule create policy reader book
     /// </summary>
     /// <param name="createdUserid"></param>
     /// <param name="title"></param>
@@ -280,27 +236,36 @@ public class Book
     /// <param name="bookReleaseType"></param>
     /// <param name="tagNames"></param>
     /// <param name="visibility"></param>
-    /// <param name="genresId"></param>
+    /// <param name="genreIds"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
     public static Book Create(Guid createdUserid, string title, string? avatarUrl, string? description,
         int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
         BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames, bool visibility, 
-        IReadOnlyCollection<Guid> genresId,string slug)
+        IReadOnlyCollection<Guid> genreIds,string slug)
     {
-        return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
-            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tagNames, visibility,genresId, slug);
-    }
-    /// <summary>
-    ///  Rule for user can edit and update book
-    ///  In here author in book just edit owner book
-    /// </summary>
-    /// <param name="editUserId">User identifier want edit</param>
-    public void EnsureOwner(Guid editUserId)
-    {
-        if (CreatedUerId != editUserId)
+        static bool HasDuplicates<T>(IEnumerable<T> source) =>
+            source.GroupBy(x => x).Any(g => g.Count() > 1);
+        if (!genreIds.Any())
         {
-            ThrowHelper.ThrowIfNotOwner();
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
         }
+        if (HasDuplicates(genreIds))
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookGenre);
+        }
+        var genres = genreIds.Select(BookGenres.Create).ToList();
+        List<Tag> tags = [];
+        if (tagNames is not null)
+        {
+            if (HasDuplicates(tagNames))
+            {
+                ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookTags);
+            }
+
+            tags = tagNames.Select(Tag.CreateTag).ToList();
+        }
+        return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
+            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tags, visibility,genres, slug);
     }
 }

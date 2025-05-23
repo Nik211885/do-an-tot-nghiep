@@ -10,7 +10,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
     : Repository<Genres>(bookAuthoringDbContext), IGenresRepository
 {
     private readonly BookAuthoringDbContext _bookAuthoringDbContext = bookAuthoringDbContext;
-    public async Task<IReadOnlyCollection<Genres>> GetAllGenresActiveAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<Genres>> FindAllActiveAsync(CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
@@ -18,7 +18,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genreActive.AsReadOnly();
     }
 
-    public async Task<IReadOnlyCollection<Genres>> GetAllGenresAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<Genres>> FindAllAsync(CancellationToken cancellationToken)
     {
         var allGenres = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
@@ -27,7 +27,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return allGenres.AsReadOnly();
     }
 
-    public async Task<Genres?> GetGenresActiveBySlugAsync(string slug, CancellationToken cancellationToken)
+    public async Task<Genres?> FindActiveBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
@@ -36,7 +36,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genreActive;
     }
 
-    public Task<Genres?> GetGenresBySlugAsync(string slug, CancellationToken cancellationToken)
+    public Task<Genres?> FindBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var genre = _bookAuthoringDbContext.Genres
             .IgnoreQueryFilters()
@@ -45,7 +45,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genre;
     }
 
-    public async Task<Genres?> GetGenresActiveById(Guid id, CancellationToken cancellationToken)
+    public async Task<Genres?> FindActiveById(Guid id, CancellationToken cancellationToken)
     {
         var genreActive = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
@@ -54,7 +54,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genreActive;
     }
 
-    public async Task<Genres?> GetGenresByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Genres?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var genre = await _bookAuthoringDbContext.Genres
             .Where(GenreFilter.ById(id))
@@ -62,7 +62,7 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genre;
     }
 
-    public async Task<IReadOnlyCollection<Genres>> GetGenresActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids)
+    public async Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids)
     {
         var genre = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
@@ -71,13 +71,24 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genre.AsReadOnly();
     }
 
-    public async Task<Genres?> GetGenresByNameAsync(string name, CancellationToken cancellationToken)
+    public async Task<Genres?> FindByNameAsync(string name, CancellationToken cancellationToken)
     {
         var genre = await _bookAuthoringDbContext.Genres
             .IgnoreQueryFilters()
             .AsNoTracking()
             .Where(GenreFilter.ByName(name))
             .FirstOrDefaultAsync(cancellationToken);
+        return genre;
+    }
+
+    public Genres Create(Genres genre)
+    {
+        return _bookAuthoringDbContext.Genres.Add(genre).Entity;
+    }
+
+    public Genres Update(Genres genre)
+    {
+        _bookAuthoringDbContext.Genres.Update(genre);
         return genre;
     }
 

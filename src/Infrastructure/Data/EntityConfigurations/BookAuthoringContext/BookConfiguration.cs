@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Application.BoundContext.BookAuthoringContext.Validator.Book;
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +14,15 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.ToTable("Books", DbSchema.BookAuthoring);
         builder.Ignore(b => b.DomainEvents);
         builder.Property(b=>b.Slug)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthPropForBook.SlugMaxLenght)
             .IsRequired();
         builder.HasIndex(b=>b.Slug).IsUnique();
         builder.Property(b=>b.Title).HasMaxLength(50)
             .IsRequired();
         builder.Property(b => b.AvatarUrl)
-            .HasMaxLength(250);
+            .HasMaxLength(LengthPropForBook.AvatarUrlMaxLenght);
         builder.Property(b => b.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(LengthPropForBook.DescriptionMaxLenght);
         builder.OwnsOne(b => b.PolicyReadBook, policy =>
         {
             policy.Property(p => p.Policy)
@@ -38,7 +39,7 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             t.HasKey("Id");
             t.ToTable("BookTags", DbSchema.BookAuthoring);
             t.Property(tag => tag.TagName)
-                .HasMaxLength(50)
+                .HasMaxLength(LengthPropForBook.TagNameMaxLenght)
                 .IsRequired();
         });
         builder.OwnsMany<BookGenres>(b => b.Genres,

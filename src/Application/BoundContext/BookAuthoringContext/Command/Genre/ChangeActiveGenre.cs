@@ -21,12 +21,12 @@ public class ChangeActiveGenreCommandHandler(IGenresRepository genresRepository,
     public async Task<GenreViewModel> Handle(ChangeActiveGenreCommand request, CancellationToken cancellationToken)
     {
         var genre = await _genresRepository
-            .GetGenresByIdAsync(id:request.Id, cancellationToken: cancellationToken);
+            .FindByIdAsync(id:request.Id, cancellationToken: cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(genre, "Thể loại", new (){["Định danh"] = request.Id.ToString()});
         _logger.LogInformation("User {userId} has change active for genre {genreName}", 
             _identityProvider.UserIdentity(), genre.Name);
         genre.ChangeActive();
-        _genresRepository.UpdateEntity(genre);
+        _genresRepository.Update(genre);
         await _genresRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         _logger.LogInformation("User {userId} has change genre {genreName} with information changed {changed}", 
             _identityProvider.UserIdentity(), genre.Name, genre);

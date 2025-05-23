@@ -44,7 +44,7 @@ public class CreateGenreCommandHandle(IGenresRepository genresRepository,
         );
         _logger.LogInformation("Created genre pass domain rule for userId {userId} has created",
             _identityProvider.UserIdentity());
-        var genres = _genresRepository.AddEntity(genre);
+        var genres = _genresRepository.Create(genre);
         await _genresRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         _logger.LogInformation("Create genre success with id is {genreIdd} and user created is {userId}",
             genre.Id, _identityProvider.UserIdentity());

@@ -8,12 +8,12 @@ public interface IGenresRepository: IRepository<Genres>
     ///     Get all genres has active
     /// </summary>
     /// <returns></returns>
-    Task<IReadOnlyCollection<Genres>> GetAllGenresActiveAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<Genres>> FindAllActiveAsync(CancellationToken cancellationToken);
     /// <summary>
     ///     Get all genres ignore query filter with soft deleted
     /// </summary>
     /// <returns></returns>
-    Task<IReadOnlyCollection<Genres>> GetAllGenresAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<Genres>> FindAllAsync(CancellationToken cancellationToken);
 
     /// <summary>
     ///     Get genres active by slug
@@ -21,7 +21,7 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="slug"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Genres?> GetGenresActiveBySlugAsync(string slug,CancellationToken cancellationToken);
+    Task<Genres?> FindActiveBySlugAsync(string slug,CancellationToken cancellationToken);
 
     /// <summary>
     ///     Get genres by slug ignore query filter with soft deleted
@@ -29,7 +29,7 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="slug"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Genres?> GetGenresBySlugAsync(string slug,CancellationToken cancellationToken);
+    Task<Genres?> FindBySlugAsync(string slug,CancellationToken cancellationToken);
 
     /// <summary>
     ///     Get genres active by id
@@ -37,7 +37,7 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Genres?> GetGenresActiveById(Guid id, CancellationToken cancellationToken);
+    Task<Genres?> FindActiveById(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     ///      Get genres by id ignore query filter with soft deleted
@@ -45,7 +45,7 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Genres?> GetGenresByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Genres?> FindByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     ///    Get list genres active by ids
@@ -53,7 +53,7 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="ids"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IReadOnlyCollection<Genres>> GetGenresActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids);
+    Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids);
 
     /// <summary>
     ///    name genres is unique and index  get genres with ignore filter
@@ -61,5 +61,17 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="name"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Genres?> GetGenresByNameAsync(string name, CancellationToken cancellationToken);
+    Task<Genres?> FindByNameAsync(string name, CancellationToken cancellationToken);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="genre"></param>
+    /// <returns></returns>
+    Genres Create(Genres genre);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="genre"></param>
+    /// <returns></returns>
+    Genres Update(Genres genre);
 }   

@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.BookAuthoringContext.GenresAggregate;
+﻿using Application.BoundContext.BookAuthoringContext.Validator.Genre;
+using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,18 +14,18 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genres>
         builder.HasIndex(g=>g.Slug).IsUnique();
         builder.Ignore(g => g.DomainEvents);
         builder.Property(g=>g.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthPropGenre.NameMaxLenght)
             .IsRequired();
         builder.HasIndex(g => g.Name)
             .IsUnique();
         builder.Property(g=>g.Description)
-            .HasMaxLength(500)
+            .HasMaxLength(LengthPropGenre.DescriptionMaxLenght)
             .IsRequired();
         builder.Property(g=>g.Slug)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthPropGenre.SlugMaxLenght)
             .IsRequired();
         builder.Property(g=>g.AvatarUrl)
-            .HasMaxLength(200)
+            .HasMaxLength(LengthPropGenre.AvatarUrlMaxLenght)
             .IsRequired();
     }
 }

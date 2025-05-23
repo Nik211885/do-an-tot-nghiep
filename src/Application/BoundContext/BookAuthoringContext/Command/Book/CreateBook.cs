@@ -1,4 +1,6 @@
-﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Exceptions;
 using Application.Helper;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
@@ -20,11 +22,7 @@ public record CreateBookAuthoringCommand(
     IReadOnlyCollection<string> TagsName,
     bool Visibility,
     IReadOnlyCollection<Guid> GenreIds) : IBookAuthoringCommand<BookViewModel>;
-/// <summary>
-/// 
-/// </summary>
-/// <param name="bookRepository"></param>
-/// <param name="genresRepository"></param>
+
 public class CreateBookCommandHandler(IBookRepository bookRepository,
     IGenresRepository genresRepository,
     IIdentityProvider identityProvider,
@@ -35,24 +33,17 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IGenresRepository _genresRepository = genresRepository;
     private readonly ILogger<CreateBookCommandHandler> _logger = logger;
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public async Task<BookViewModel> Handle(CreateBookAuthoringCommand request, CancellationToken cancellationToken)
     {
         //
         var genresByIds = await _genresRepository
-            .GetGenresActiveByIdsAsync(cancellationToken, request.GenreIds.ToArray());
+            .FindActiveByIdsAsync(cancellationToken, request.GenreIds.ToArray());
         // You have compare with count genres user  request with genres has find in repository
         // It sure user don't miss genres active when user create new book
-        /*if (genresByIds.Count() != request.GenreIds.Count())
+        if (genresByIds.Count != request.GenreIds.Count)
         {
-            ThrowHelper.ThrowIfBadRequest("");
-        }*/
+            ThrowHelper.ThrowIfBadRequest(BookValidationMessages.HasGenreNotExit);
+        }
         var book = BookCore.Create(
             createdUserid: _identityProvider.UserIdentity(),
             title: request.Title,
@@ -64,10 +55,10 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
             bookReleaseType: request.BookReleaseType,
             tagNames: request.TagsName,
             visibility: request.Visibility,
-            genresId: genresByIds.Select(x=>x.Id).ToList(),
+            genreIds: genresByIds.Select(x=>x.Id).ToList(),
             slug: request.Title.CreateSlug()
         );
-        _bookRepository.AddEntity(book);
+        _bookRepository.Create(book);
         await _bookRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         return book.MapToViewModel();
     }

@@ -46,7 +46,9 @@ public class Chapter
     }
 
     /// <summary>
-    ///     Please update when has change content in chapter it make new version 
+    ///     Please update when has change content in chapter it make new version
+    ///     and when title has fact changed i just update slug
+    ///     title and content don't change don't anything update
     /// </summary>
     /// <param name="newContent"></param>
     /// <param name="title"></param>
@@ -57,13 +59,21 @@ public class Chapter
     public void UpdateChapter(string newContent, string title, string diffTitle, string diffContent, string slug, string? nameVersion = null)
     {
         LockedCanNotBeChanged();
+        var nextVersion = _currentVersion + 1;
         nameVersion = nameVersion ?? "Đã cập nhật";
+        var chapterVersion = ChapterVersion.Create(nameVersion,diffTitle, diffContent,nextVersion);
+        if (chapterVersion is null)
+        {
+            return;
+        }
         Content = newContent;
         Status = ChapterStatus.Draft;
-        Slug = slug;
-        Title = title;
-        _currentVersion++;
-        var chapterVersion = ChapterVersion.Create(nameVersion,diffTitle, diffContent,_currentVersion);
+        if (Title != title)
+        {
+            Slug = slug;
+            Title = title;
+        }
+        _currentVersion = nextVersion;
         _chapterVersions.Add(chapterVersion);
     }
     

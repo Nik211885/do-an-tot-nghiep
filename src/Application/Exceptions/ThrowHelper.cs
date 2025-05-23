@@ -26,4 +26,9 @@ internal static class ThrowHelper
             throw new NotFoundException(entityName, identifier);
         }
     }
+
+    public static void ThrowIfBadRequest(string message)
+    {
+        throw new BadRequestException(message);
+    }
 }
