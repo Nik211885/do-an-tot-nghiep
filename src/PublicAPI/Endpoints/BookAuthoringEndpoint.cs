@@ -1,4 +1,5 @@
 ﻿using Application.BoundContext.BookAuthoringContext.Command.Book;
+using Application.BoundContext.BookAuthoringContext.Command.Chapter;
 using Application.BoundContext.BookAuthoringContext.Command.Genre;
 using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookAuthoringContext.Query;
@@ -17,15 +18,19 @@ public class BookAuthoringEndpoint : IEndpoints
     public void Map(IEndpointRouteBuilder endpoint)
     {
         var apis = endpoint.MapGroup("book-authoring");
-        apis.MapPost("book/create", BookAuthoringService.CreateNewBook)
+        
+        // endpoint for book
+        apis.MapPost("book/create", BookAuthoringService.CreateBook)
             .WithName("CreateNewBook")
             .WithTags("Book")
             .WithDescription("Create New book");
+        
+        // endpoint for genre
         apis.MapGet("genre", BookAuthoringService.GetAllGenreActive)
             .WithTags("Genres")
             .WithName("ListGenreActive")
             .WithDescription("Get all genre active");
-        apis.MapPost("genre/create",  BookAuthoringService.CreateNewGenre)
+        apis.MapPost("genre/create",  BookAuthoringService.CreateGenre)
             .WithTags("Genres")
             .WithName("CreateNewGenres")
             .WithDescription("Create New Genres");
@@ -33,10 +38,20 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Genres")
             .WithName("UpdateNewGenres")
             .WithDescription("Update New Genres");
-        apis.MapPut("genre/change-active", BookAuthoringService.ChangeActive)
+        apis.MapPut("genre/change-active", BookAuthoringService.ChangeActiveGenre)
             .WithTags("Genres")
             .WithName("ChangeActiveGenres")
             .WithDescription("Change Active Genre");
+        
+        // endpoint for chapter
+        apis.MapPost("chapter/create", BookAuthoringService.CreateChapter)
+            .WithName("Chapter")
+            .WithName("CreateNewChapter")
+            .WithDescription("Create New Chapter");
+        apis.MapPut("chapter/update", BookAuthoringService.UpdateChapter)
+            .WithTags("Chapters")
+            .WithName("UpdateChapter")
+            .WithDescription("Update New Chapter");
     }
 }
 
@@ -53,7 +68,7 @@ public static class BookAuthoringService
     }
     [Authorize]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
-        CreateNewBook([FromBody] CreateBookAuthoringCommand command, 
+        CreateBook([FromBody] CreateBookAuthoringCommand command, 
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler
@@ -63,7 +78,7 @@ public static class BookAuthoringService
     
     [Authorize]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>
-        CreateNewGenre([FromBody] CreateGenreCommand command,
+        CreateGenre([FromBody] CreateGenreCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler.Handler<CreateGenreCommand, GenreViewModel>(command);
@@ -81,12 +96,32 @@ public static class BookAuthoringService
     }
     [Authorize]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
-        ChangeActive([FromQuery] Guid id,
+        ChangeActiveGenre([FromQuery] Guid id,
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler
             .Handler<ChangeActiveGenreCommand, GenreViewModel>(
                 new ChangeActiveGenreCommand(Id:id));
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>
+        CreateChapter([FromBody] CreateChapterCommand command,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<CreateChapterCommand, ChapterViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        UpdateChapter([FromQuery] Guid id, 
+            [FromBody] UpdateChapterRequest request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<UpdateChapterCommand, ChapterViewModel>(
+                new UpdateChapterCommand(Id:id, Request: request));
         return TypedResults.Ok(result);
     }
 }

@@ -58,8 +58,10 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
             genreIds: genresByIds.Select(x=>x.Id).ToList(),
             slug: request.Title.CreateSlug()
         );
+        _logger.LogInformation("Create book {book}", book);
         _bookRepository.Create(book);
         await _bookRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
+        _logger.LogInformation("Created book success {book}", book);
         return book.MapToViewModel();
     }
 }

@@ -13,6 +13,15 @@ It in heart ddd in software
 
 ## Domain Event
 
+## Behavior Domain
 
 Why I don't use concept module encapsulation all information into bound context ??
+
+# Concept
+
+## Pure domain model
+
+## Parameterized domain model
+
+
 

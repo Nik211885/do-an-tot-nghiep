@@ -91,5 +91,6 @@ services.AddScope<IOrderQueryServices>(provider=>
 })
 ```
 
-
 Think about shared layer in between bound context
+
+## Integration event
