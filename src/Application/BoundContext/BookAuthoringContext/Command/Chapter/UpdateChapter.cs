@@ -24,28 +24,19 @@ public class UpdateChapterCommandHandler(IChapterRepository chapterRepository,
         var chapter = await _chapterRepository.FindById(request.Id, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương",
             new (){["Định danh"] = request.Id.ToString()});
-        var diffMatchPatch = new diff_match_patch();
         var requestBody = request.Request;
         _logger.LogInformation("Create delta diff for update chapter request {request}", request);
-        var deltaContent = GetDelta(chapter.Content, requestBody.Content);
-        var deltaTitle = GetDelta(chapter.Title, requestBody.Title);
         chapter.UpdateChapter(
             newContent: requestBody.Content,
             title: requestBody.Title,
-            diffTitle: deltaTitle,
-            diffContent: deltaContent,
+            diffTitle: requestBody.Content.GetDelta(chapter.Content),
+            diffContent: requestBody.Title.GetDelta(chapter.Title),
             slug: requestBody.Title.CreateSlug()
         );
         _logger.LogInformation("Update chapter for chapter {chapter}", chapter);
         _chapterRepository.Update(chapter);
         await _chapterRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         _logger.LogInformation("Update chapter: {chapter} success", chapter);
-        string GetDelta(string oldText, string newText)
-        {
-            var diffValue = diffMatchPatch.diff_main(oldText, newText);
-            var delta = diffMatchPatch.diff_toDelta(diffValue);
-            return delta;
-        }
 
         return chapter.MapToViewModel();
     }

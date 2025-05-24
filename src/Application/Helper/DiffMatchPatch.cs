@@ -1504,6 +1504,17 @@ namespace Application.Helper {
       }
       return diffs;
     }
+    public List<Diff> safe_diff_from_delta(string text1, string? delta)
+    {
+        if (string.IsNullOrEmpty(delta))
+        {
+            if (string.IsNullOrEmpty(text1))
+                return new List<Diff>();
+
+            return new List<Diff> { new Diff(Operation.DELETE, text1) };
+        }
+        return diff_fromDelta(text1, delta);
+    }
 
 
     //  MATCH FUNCTIONS

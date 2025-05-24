@@ -30,15 +30,24 @@ public class Chapter
         IsLocked = false;
         CreateDateTime = DateTimeOffset.UtcNow;
     }
-    public IReadOnlyCollection<ChapterVersion> SlideBackToVersion(uint version)
+    public IReadOnlyCollection<ChapterVersion> GetChapterVersionMakeRollBack(Guid chapterVersionId)
     {
-        var chapterVersionBackIndex = _chapterVersions.FindIndex(x => x.Version == version);
+        var chapterVersionBackIndex = _chapterVersions.FindIndex(x => x.Id == chapterVersionId);
+        if (chapterVersionId.Version == _currentVersion)
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YouCanNotRollBackInCurrentVersion);
+        }
         if (chapterVersionBackIndex < 0)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterFindBackVersion);
         }
-
-        return _chapterVersions.Skip(chapterVersionBackIndex).ToList().AsReadOnly();
+        // In fact don't have this key
+        var chapterVersion = _chapterVersions.Skip(chapterVersionBackIndex).ToList();
+        if (chapterVersion.Any())
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterFindBackVersion);
+        }
+        return chapterVersion.AsReadOnly();
     }
     public static Chapter Create(Guid bookId, string content, string title, string slug)
     {

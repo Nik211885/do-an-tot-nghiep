@@ -3,6 +3,7 @@ using Application.BoundContext.BookAuthoringContext.Command.Chapter;
 using Application.BoundContext.BookAuthoringContext.Command.Genre;
 using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookAuthoringContext.Query;
+using Application.BoundContext.BookAuthoringContext.Query.Chapter;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.CQRS;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
@@ -52,6 +53,14 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Chapters")
             .WithName("UpdateChapter")
             .WithDescription("Update New Chapter");
+        apis.MapGet("chapter-roll-back",  BookAuthoringService.RollBackChapter)
+            .WithTags("Chapters")
+            .WithName("RollBackChapter")
+            .WithDescription("Rollback Chapter");
+        apis.MapGet("chapter-preview-change-content", BookAuthoringService.PreviewChangeChapter)
+            .WithTags("Chapters")
+            .WithName("PreviewChangeChapter")
+            .WithDescription("Preview Change Chapter");
     }
 }
 
@@ -122,6 +131,24 @@ public static class BookAuthoringService
         var result = await service.FactoryHandler
             .Handler<UpdateChapterCommand, ChapterViewModel>(
                 new UpdateChapterCommand(Id:id, Request: request));
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+       RollBackChapter([AsParameters] RollBackChapterCommand request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<RollBackChapterCommand, ChapterViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterDiffContentViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        PreviewChangeChapter([AsParameters] GetPreviewChangeContentQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetPreviewChangeContentQuery, ChapterDiffContentViewModel>(request);
         return TypedResults.Ok(result);
     }
 }

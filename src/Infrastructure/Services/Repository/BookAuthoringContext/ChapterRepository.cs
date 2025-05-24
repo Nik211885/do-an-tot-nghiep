@@ -14,6 +14,12 @@ public class ChapterRepository(BookAuthoringDbContext bookAuthoringDbContext)
         var chapterById = await _bookAuthoringDbContext.Chapters
             .Where(chapter => chapter.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
+        if (chapterById is not null)
+        {
+            await _bookAuthoringDbContext.Entry(chapterById)
+                .Collection(cv=>cv.ChapterVersions)
+                .LoadAsync(cancellationToken);
+        }
         return chapterById;
     }
 

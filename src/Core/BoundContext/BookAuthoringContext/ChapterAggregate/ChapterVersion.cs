@@ -9,7 +9,7 @@ public class ChapterVersion : BaseEntity
     /// </summary>
     ///
     // Shadow prop id chapter
-    public string? NameVersion { get; private set; }
+    public string NameVersion { get; private set; }
     public DateTimeOffset CreatedDateTime { get; private set; }
     public string DiffContent { get; private set; }
     public uint Version { get; private set; }
