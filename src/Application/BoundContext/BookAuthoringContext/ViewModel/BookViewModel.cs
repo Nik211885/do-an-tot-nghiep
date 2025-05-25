@@ -3,10 +3,9 @@ using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.ViewModel;
 
-
 public class BookViewModel(Guid authorId, Guid id, string title, string? avatarUrl,
     string? description, DateTimeOffset createDateTimeOffset, DateTimeOffset lastUpdateDateTime,
-    bool isComplete, int versionNumber, bool visibility, string slug,
+    bool isComplete, bool visibility, string slug,
     PolicyReadBook policyReadBook, BookReleaseType bookReleaseType, 
     IReadOnlyCollection<Tag>? tags, IReadOnlyCollection<Guid> genreIds)
 {
@@ -18,7 +17,6 @@ public class BookViewModel(Guid authorId, Guid id, string title, string? avatarU
     public DateTimeOffset CreateDateTimeOffset { get; } = createDateTimeOffset;
     public DateTimeOffset LastUpdateDateTime { get; } = lastUpdateDateTime;
     public bool IsComplete { get; } = isComplete;
-    public int VersionNumber { get; } = versionNumber;
     public bool Visibility { get; } = visibility;
     public string Slug { get; } = slug;
     public PolicyReadBook PolicyReadBook { get; } = policyReadBook;
@@ -40,7 +38,6 @@ public static class BookViewModelMappingExtension
             createDateTimeOffset: book.CreatedDateTime,
             lastUpdateDateTime: book.LastUpdateDateTime,
             isComplete: book.IsComplete,
-            versionNumber: book.VersionNumber,
             visibility: book.Visibility,
             slug: book.Slug, 
             policyReadBook: book.PolicyReadBook, 

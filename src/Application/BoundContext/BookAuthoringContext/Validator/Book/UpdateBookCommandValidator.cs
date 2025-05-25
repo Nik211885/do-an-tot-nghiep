@@ -4,41 +4,41 @@ using FluentValidation;
 
 namespace Application.BoundContext.BookAuthoringContext.Validator.Book;
 
-public class CreateBookCommandValidator : AbstractValidator<CreateBookAuthoringCommand>
+public class UpdateBookCommandValidator :  AbstractValidator<UpdateBookCommand>
 {
-    public CreateBookCommandValidator()
+    public UpdateBookCommandValidator()
     {
-        RuleFor(b => b.Title)
+        RuleFor(b => b.Request.Title)
             .NotEmpty()
             .WithMessage(BookValidationMessages.TitleRequired)
             .MaximumLength(LengthPropForBook.TitleMaxLenght)
             .WithMessage(string.Format(BookValidationMessages.TitleMaxLength,LengthPropForBook.TitleMaxLenght));
 
-        RuleFor(b => b.AvatarUrl)
+        RuleFor(b => b.Request.AvatarUrl)
             .MaximumLength(LengthPropForBook.AvatarUrlMaxLenght)
             .WithMessage(string.Format(BookValidationMessages.AvatarUrlMaxLength,LengthPropForBook.AvatarUrlMaxLenght))
-            .When(b => !string.IsNullOrWhiteSpace(b.AvatarUrl));
+            .When(b => !string.IsNullOrWhiteSpace(b.Request.AvatarUrl));
 
-        RuleFor(b => b.Description)
+        RuleFor(b => b.Request.Description)
             .MaximumLength(LengthPropForBook.DescriptionMaxLenght)
             .WithMessage(string.Format(BookValidationMessages.DescriptionMaxLength, LengthPropForBook.DescriptionMaxLenght))
-            .When(b => !string.IsNullOrWhiteSpace(b.Description));
+            .When(b => !string.IsNullOrWhiteSpace(b.Request.Description));
 
-        RuleFor(b => b.ReaderBookPolicy)
+        RuleFor(b => b.Request.ReaderBookPolicy)
             .IsInEnum()
             .WithMessage(BookValidationMessages.ReaderBookPolicyInvalid);
 
-        RuleFor(b => b.BookReleaseType)
+        RuleFor(b => b.Request.BookReleaseType)
             .IsInEnum()
             .WithMessage(BookValidationMessages.BookReleaseTypeInvalid);
 
-        RuleForEach(b => b.TagsName)
+        RuleForEach(b => b.Request.TagsName)
             .NotEmpty()
             .WithMessage(BookValidationMessages.TagNameRequired)
             .MaximumLength(LengthPropForBook.TagNameMaxLenght)
             .WithMessage(string.Format(BookValidationMessages.TagNameMaxLength, LengthPropForBook.TagNameMaxLenght));
 
-        RuleFor(b => b.GenreIds)
+        RuleFor(b => b.Request.GenreIds)
             .NotEmpty()
             .WithMessage(BookValidationMessages.GenreIdsRequired);
 

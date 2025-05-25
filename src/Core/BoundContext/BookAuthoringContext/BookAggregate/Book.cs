@@ -15,7 +15,7 @@ public class Book
     public DateTimeOffset CreatedDateTime { get;private set; }
     public DateTimeOffset LastUpdateDateTime { get; private set; }
     public bool IsComplete { get; private set; }
-    public int VersionNumber { get; private set; }
+    /*public int VersionNumber { get; private set; }*/
     public bool Visibility { get; private set; }
     public string Slug {get; private set;}
     public PolicyReadBook PolicyReadBook { get; private set; }
@@ -36,31 +36,28 @@ public class Book
     /// <param name="title"></param>
     /// <param name="avatarUrl"></param>
     /// <param name="description"></param>
-    /// <param name="versionNumber"></param>
     /// <param name="readerBookPolicy"></param>
     /// <param name="priceReaderBookPolicy"></param>
     /// <param name="bookReleaseType"></param>
     /// <param name="tags"></param>
-    /// <param name="visibility"></param>
     /// <param name="genres"></param>
     /// <param name="slug"></param>
     /// <exception cref="BadRequestException"></exception>
     private Book(Guid createdUserId, string title, string? avatarUrl, string? description, 
-        int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
-        BookReleaseType bookReleaseType,IReadOnlyCollection<Tag>? tags,
-        bool visibility, IReadOnlyCollection<BookGenres> genres,  string slug)
+        BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
+        BookReleaseType bookReleaseType,IReadOnlyCollection<Tag>? tags, IReadOnlyCollection<BookGenres> genres,  string slug)
     {
         CreatedUerId = createdUserId;
         Title = title;
         AvatarUrl = avatarUrl;
         Description = description;
         Slug = slug;
-        Visibility = visibility;
+        Visibility = true;
         _tags ??= [];
         _tags.AddRange(tags ?? []);
         _genres ??= [];
         _genres.AddRange(genres);
-        VersionNumber = versionNumber;
+        /*VersionNumber = versionNumber;*/
         var policyReadBook = PolicyReadBook
             .CreatePolicy(readerBookPolicy, priceReaderBookPolicy);
         PolicyReadBook = policyReadBook;
@@ -151,7 +148,7 @@ public class Book
     {
         Visibility = visibility;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-    }
+    }/*
     /// <summary>
     ///     Update version number for book
     /// </summary>
@@ -160,7 +157,7 @@ public class Book
     {
         VersionNumber = versionNumber;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-    }
+    }*/
     /// <summary>
     ///     Update book release type for book
     /// </summary>
@@ -170,22 +167,51 @@ public class Book
         BookReleaseType = bookReleaseType;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
+
     /// <summary>
     ///     Update information for book and when title has changed slug just has  change
     /// </summary>
-    /// <param name="userId"></param>
     /// <param name="title"></param>
     /// <param name="avatarUrl"></param>
     /// <param name="description"></param>
     /// <param name="slug"></param>
-    public void Update(Guid userId, string title, string? avatarUrl, string? description, string slug)
+    /// <param name="bookPolicy"></param>
+    /// <param name="priceReaderBook"></param>
+    /// <param name="visibility"></param>
+    /// <param name="releaseType"></param>
+    /// <param name="tagNames"></param>
+    /// <param name="genreIds"></param>
+    public void Update( string title, string? avatarUrl, string? description, 
+        string slug, BookPolicy bookPolicy, decimal? priceReaderBook, bool visibility,
+        BookReleaseType releaseType,  IReadOnlyCollection<string>? tagNames, 
+        IReadOnlyCollection<Guid> genreIds)
     {
+        if (!genreIds.Any())
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
+        }
+        if (HasDuplicates(genreIds))
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookGenre);
+        }
+        _genres = genreIds.Select(BookGenres.Create).ToList();
+        if (tagNames is not null)
+        {
+            if (HasDuplicates(tagNames))
+            {
+                ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookTags);
+            }
+
+            _tags = tagNames.Select(Tag.CreateTag).ToList();
+        }
         if (Title != title)
         {
             Title = title;
             Slug = slug;
         }
-
+        PolicyReadBook = PolicyReadBook.CreatePolicy(bookPolicy, priceReaderBook);
+        BookReleaseType = releaseType;
+        Visibility = visibility;
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
@@ -230,22 +256,18 @@ public class Book
     /// <param name="title"></param>
     /// <param name="avatarUrl"></param>
     /// <param name="description"></param>
-    /// <param name="versionNumber"></param>
     /// <param name="readerBookPolicy"></param>
     /// <param name="priceReaderBookPolicy"></param>
     /// <param name="bookReleaseType"></param>
     /// <param name="tagNames"></param>
-    /// <param name="visibility"></param>
     /// <param name="genreIds"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
     public static Book Create(Guid createdUserid, string title, string? avatarUrl, string? description,
-        int versionNumber, BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
-        BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames, bool visibility, 
+        BookPolicy readerBookPolicy, decimal? priceReaderBookPolicy,
+        BookReleaseType bookReleaseType, IReadOnlyCollection<string>? tagNames,
         IReadOnlyCollection<Guid> genreIds,string slug)
     {
-        static bool HasDuplicates<T>(IEnumerable<T> source) =>
-            source.GroupBy(x => x).Any(g => g.Count() > 1);
         if (!genreIds.Any())
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YourBookMustHasMoreThanOneGenre);
@@ -265,7 +287,9 @@ public class Book
 
             tags = tagNames.Select(Tag.CreateTag).ToList();
         }
-        return new Book(createdUserid, title, avatarUrl, description, versionNumber, 
-            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tags, visibility,genres, slug);
+        return new Book(createdUserid, title, avatarUrl, description, 
+            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tags,genres, slug);
     }
+    static bool HasDuplicates<T>(IEnumerable<T> source) =>
+        source.GroupBy(x => x).Any(g => g.Count() > 1);
 }

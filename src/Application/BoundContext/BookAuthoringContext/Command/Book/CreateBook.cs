@@ -15,12 +15,10 @@ public record CreateBookAuthoringCommand(
     string Title,
     string? AvatarUrl,
     string? Description,    
-    int VersionNumber,
     BookPolicy ReaderBookPolicy,
     decimal? ReaderBookPolicyPrice,
     BookReleaseType BookReleaseType,
     IReadOnlyCollection<string> TagsName,
-    bool Visibility,
     IReadOnlyCollection<Guid> GenreIds) : IBookAuthoringCommand<BookViewModel>;
 
 public class CreateBookCommandHandler(IBookRepository bookRepository,
@@ -49,12 +47,10 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
             title: request.Title,
             avatarUrl: request.AvatarUrl,
             description: request.Description,
-            versionNumber: request.VersionNumber,
             readerBookPolicy: request.ReaderBookPolicy,
             priceReaderBookPolicy: request.ReaderBookPolicyPrice,
             bookReleaseType: request.BookReleaseType,
             tagNames: request.TagsName,
-            visibility: request.Visibility,
             genreIds: genresByIds.Select(x=>x.Id).ToList(),
             slug: request.Title.CreateSlug()
         );

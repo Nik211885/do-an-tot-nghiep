@@ -23,6 +23,18 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithName("CreateNewBook")
             .WithTags("Book")
             .WithDescription("Create New book");
+        apis.MapPost("book/update", BookAuthoringService.UpdateBook)
+            .WithName("UpdateNewBook")
+            .WithTags("Book")
+            .WithDescription("Update New book");
+        apis.MapPut("book/change-release-type", BookAuthoringService.ChangeReleaseTypeBook)
+            .WithTags("Book")
+            .WithName("ChangeReleaseType")
+            .WithDescription("Change release type");
+        apis.MapPut("book/change-policy", BookAuthoringService.ChangeBookPolicy)
+            .WithTags("Book")
+            .WithName("ChangePolicy")
+            .WithDescription("Change policy");
         
         // endpoint for genre
         apis.MapPost("genre/create",  BookAuthoringService.CreateGenre)
@@ -40,28 +52,28 @@ public class BookAuthoringEndpoint : IEndpoints
         
         // endpoint for chapter
         apis.MapPost("chapter/create", BookAuthoringService.CreateChapter)
-            .WithName("Chapter")
+            .WithTags("Chapter")
             .WithName("CreateNewChapter")
             .WithDescription("Create New Chapter");
         apis.MapPut("chapter/update", BookAuthoringService.UpdateChapter)
-            .WithTags("Chapters")
+            .WithTags("Chapter")
             .WithName("UpdateChapter")
             .WithDescription("Update New Chapter");
         apis.MapGet("chapter/roll-back",  BookAuthoringService.RollBackChapter)
-            .WithTags("Chapters")
+            .WithTags("Chapter")
             .WithName("RollBackChapter")
             .WithDescription("Rollback Chapter");
         apis.MapGet("chapter/preview-change-content", BookAuthoringService.PreviewChangeChapter)
-            .WithTags("Chapters")
+            .WithTags("Chapter")
             .WithName("PreviewChangeChapter")
             .WithDescription("Preview Change Chapter");
         apis.MapPut("chapter/rename-version", BookAuthoringService.RenameChapterVersion)
-            .WithTags("Chapters")
+            .WithTags("Chapter")
             .WithName("RenameChapterVersion")
             .WithDescription("Rename Chapter Version");
         apis.MapPost("chapter/submit-review", BookAuthoringService.SubmitAndReview)
             .WithName("SubmitReview")
-            .WithTags("Chapters")
+            .WithTags("Chapter")
             .WithDescription("Submit Review");
     }
 }
@@ -75,6 +87,15 @@ public static class BookAuthoringService
     {
         var result = await service.FactoryHandler
             .Handler<CreateBookAuthoringCommand, BookViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
+        UpdateBook([FromBody] UpdateBookCommand command, 
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<UpdateBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);
     }
     
@@ -160,6 +181,23 @@ public static class BookAuthoringService
     {
         var result = await service.FactoryHandler
             .Handler<SubmitAndReviewChapterCommand, ChapterViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        ChangeReleaseTypeBook([AsParameters] ChangeBookReleaseTypeCommand request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<ChangeBookReleaseTypeCommand, BookViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        ChangeBookPolicy([AsParameters] ChangePolicyBookCommand request,
+            [FromServices] BookAuthoringServiceWrapper service) 
+    {
+        var result = await service.FactoryHandler
+            .Handler<ChangePolicyBookCommand, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
 }
