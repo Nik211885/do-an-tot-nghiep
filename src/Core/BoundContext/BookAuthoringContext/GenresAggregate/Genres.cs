@@ -64,9 +64,14 @@ public class Genres : BaseEntity, IAggregateRoot
         LastUpdateDateTime = DateTimeOffset.UtcNow;
     }
 
-    public void CoutBook()
+    public void AddCoutForBook()
     {
         CountBook++;
+    }
+
+    public void RemoveCoutForBook()
+    {
+        CountBook--;
     }
 
     public void ChangeActive()

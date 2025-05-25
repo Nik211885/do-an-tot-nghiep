@@ -38,7 +38,7 @@ public class GetPreviewChangeContentQueryHandler(
             //roll back title and content
             // save in cache
             chapterDataRollBack = chapter.ChapterVersionRollBack(chapterVersionId: request.ChapterVersionId);
-            await _cache.SetAsync(chapterRollBackCacheKey,chapterDataRollBack, 2);
+            await _cache.SetAsync(chapterRollBackCacheKey,chapterDataRollBack, 300);
             _logger.LogInformation("Save chapter diff content in cache server key: {key} data: {data}",
                 chapterRollBackCacheKey, chapterDataRollBack);
         }

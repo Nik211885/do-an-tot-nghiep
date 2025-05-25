@@ -1,6 +1,7 @@
 ﻿using Application.BoundContext.BookAuthoringContext.Command.Book;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Helper;
+using Application.Interfaces.Cache;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Core.Interfaces.Repositories.BookAuthoringContext;
@@ -18,6 +19,7 @@ public record CreateGenreCommand(
     string Name,
     string Description,
     string AvatarUrl) : IBookAuthoringCommand<GenreViewModel>;
+
 /// <summary>
 /// 
 /// </summary>
@@ -25,11 +27,14 @@ public record CreateGenreCommand(
 /// <param name="logger"></param>
 /// <param name="identityProvider"></param>
 
-public class CreateGenreCommandHandle(IGenresRepository genresRepository,
+public class CreateGenreCommandHandle(
+    IGenresRepository genresRepository,
     ILogger<CreateBookCommandHandler> logger,
+    ICache cache,
     IIdentityProvider identityProvider)
     : ICommandHandler<CreateGenreCommand, GenreViewModel>
 {
+    private readonly ICache _cache = cache;
     private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly ILogger<CreateBookCommandHandler> _logger = logger;
     private readonly IGenresRepository _genresRepository = genresRepository;
@@ -48,6 +53,8 @@ public class CreateGenreCommandHandle(IGenresRepository genresRepository,
         await _genresRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         _logger.LogInformation("Create genre success with id is {genreIdd} and user created is {userId}",
             genre.Id, _identityProvider.UserIdentity());
+        _logger.LogInformation("Remove genre from cache");
+        await _cache.RemoveAsync(CacheKey.Genre);
         return genre.MapToViewModel();
     }
 }

@@ -45,4 +45,9 @@ public static class BookViewModelMappingExtension
             tags: book.Tags, 
             genreIds: book.Genres.Select(x=>x.GenreId).ToList());
     }
+
+    public static IReadOnlyCollection<BookViewModel> MapToViewModel(this IReadOnlyCollection<Book> books)
+    {
+        return books.Select(MapToViewModel).ToList();
+    }
 }

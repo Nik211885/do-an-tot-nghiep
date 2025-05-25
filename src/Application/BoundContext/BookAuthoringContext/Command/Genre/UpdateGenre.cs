@@ -3,6 +3,7 @@ using Application.BoundContext.BookAuthoringContext.Message;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Helper;
+using Application.Interfaces.Cache;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
@@ -19,9 +20,11 @@ public record UpdateGenreCommand(Guid Id, UpdateGenreRequest Request)
 
 public class UpdateGenreCommandHandler(
     IGenresRepository genresRepository,
+    ICache cache,
     ILogger<UpdateGenreCommandHandler> logger)
     : ICommandHandler<UpdateGenreCommand, GenreViewModel>
 {
+    private readonly ICache _cache = cache;
     private readonly IGenresRepository _genresRepository = genresRepository;
     private readonly ILogger<UpdateGenreCommandHandler> _logger = logger;
     public async Task<GenreViewModel> Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ public class UpdateGenreCommandHandler(
             );
         _genresRepository.Update(genre);
         await _genresRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
+        await _cache.RemoveAsync(CacheKey.Genre);
+        _logger.LogInformation("Update genre success, remove genre from cache");
         return genre.MapToViewModel();
     }
 }

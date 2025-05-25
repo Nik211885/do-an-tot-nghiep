@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using EFCore.BulkExtensions;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using Infrastructure.Data.DbContext;
@@ -36,6 +37,11 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
     {
         _bookAuthoringDbContext.Genres.Update(genre);
         return genre;
+    }
+
+    public async Task UpdateBulkAsync(IReadOnlyCollection<Genres> genres, CancellationToken cancellationToken)
+    {
+        await _bookAuthoringDbContext.BulkUpdateAsync(genres, cancellationToken: cancellationToken);
     }
 
     private static class GenreFilter

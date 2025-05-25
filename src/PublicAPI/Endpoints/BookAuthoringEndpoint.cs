@@ -2,9 +2,12 @@
 using Application.BoundContext.BookAuthoringContext.Command.Chapter;
 using Application.BoundContext.BookAuthoringContext.Command.Genre;
 using Application.BoundContext.BookAuthoringContext.Queries;
+using Application.BoundContext.BookAuthoringContext.Query.Book;
 using Application.BoundContext.BookAuthoringContext.Query.Chapter;
+using Application.BoundContext.BookAuthoringContext.Query.Genre;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.IdentityProvider;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +38,15 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Book")
             .WithName("ChangePolicy")
             .WithDescription("Change policy");
+        apis.MapGet("book/my-book", BookAuthoringService.GetAllMyBooks)
+            .WithTags("Book")
+            .WithName("GetMyBook")
+            .WithDescription("Get My books");
+        apis.MapGet("book/slug", BookAuthoringService.GetBookDetailBySlug)
+            .WithTags("Book")
+            .WithName("GetBookBySlug")
+            .WithDescription("Get book by Slug");
+        
         
         // endpoint for genre
         apis.MapPost("genre/create",  BookAuthoringService.CreateGenre)
@@ -49,6 +61,15 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Genres")
             .WithName("ChangeActiveGenres")
             .WithDescription("Change Active Genre");
+        apis.MapGet("genre/all", BookAuthoringService.GetAllGenres)
+            .WithTags("Genres")
+            .WithName("GetAllGenres")
+            .WithDescription("Get all Genres");
+        apis.MapGet("genre/slug", BookAuthoringService.GetGenreBySlug)
+            .WithTags("Genres")
+            .WithName("GetGenreBySlug")
+            .WithDescription("Get Genre by Slug");
+            
         
         // endpoint for chapter
         apis.MapPost("chapter/create", BookAuthoringService.CreateChapter)
@@ -75,6 +96,18 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithName("SubmitReview")
             .WithTags("Chapter")
             .WithDescription("Submit Review");
+        apis.MapGet("chapter/by-book-slug", BookAuthoringService.GetAllChapterByBookSlug)
+            .WithTags("Chapter")   
+            .WithName("GetChapterByBookSlug")
+            .WithDescription("Get Chapter by Book Slug");
+        apis.MapGet("chapter/chapter-version",BookAuthoringService.GetAllChapterVersionByChapterId)
+            .WithTags("Chapter")
+            .WithName("GetChapterVersionByChapterId")
+            .WithDescription("Get Chapter Version by Chapter Id");
+        apis.MapGet("chapter/slug", BookAuthoringService.GetChapterBySlug)
+            .WithTags("Chapter")
+            .WithName("GetChapterBySlug")
+            .WithDescription("Get Chapter by Slug");
     }
 }
 
@@ -192,6 +225,7 @@ public static class BookAuthoringService
             .Handler<ChangeBookReleaseTypeCommand, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
+    [Authorize]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         ChangeBookPolicy([AsParameters] ChangePolicyBookCommand request,
             [FromServices] BookAuthoringServiceWrapper service) 
@@ -200,6 +234,79 @@ public static class BookAuthoringService
             .Handler<ChangePolicyBookCommand, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<BookViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetAllMyBooks([FromServices] IIdentityProvider identityProvider,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var request = new GetAllBooksByUserIdQuery(identityProvider.UserIdentity());
+        var result = await service.FactoryHandler
+            .Handler<GetAllBooksByUserIdQuery, IReadOnlyCollection<BookViewModel>>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetBookDetailBySlug([AsParameters] GetBookDetailBySlugQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetBookDetailBySlugQuery, BookViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<ChapterViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetAllChapterByBookSlug([AsParameters] GetAllChapterByBookSlugQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetAllChapterByBookSlugQuery, IReadOnlyCollection<ChapterViewModel>>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetAllChapterVersionByChapterId([AsParameters] GetAllChapterVersionByChapterIdQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetAllChapterVersionByChapterIdQuery, ChapterViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetChapterBySlug([AsParameters] GetChapterBySlugQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetChapterBySlugQuery, ChapterViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterDiffContentViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetPreviewChangeContent([AsParameters] GetPreviewChangeContentQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetPreviewChangeContentQuery, ChapterDiffContentViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<GenreViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetAllGenres([AsParameters] GetAllGenresQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetAllGenresQuery, IReadOnlyCollection<GenreViewModel>>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+        public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+            GetGenreBySlug([AsParameters] GetGenreBySlugQuery request,
+                [FromServices] BookAuthoringServiceWrapper service)
+        {
+            var result = await service.FactoryHandler
+                .Handler<GetGenreBySlugQuery,GenreViewModel>(request);
+            return TypedResults.Ok(result);
+        }
 }
 
 public class BookAuthoringServiceWrapper(IFactoryHandler factoryHandler,

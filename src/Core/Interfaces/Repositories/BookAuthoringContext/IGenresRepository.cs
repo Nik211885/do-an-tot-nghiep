@@ -31,4 +31,11 @@ public interface IGenresRepository: IRepository<Genres>
     /// <param name="genre"></param>
     /// <returns></returns>
     Genres Update(Genres genre);
+
+    /// <summary>
+    ///  Update bulk for genres extension for it will change data after call method
+    /// </summary>
+    /// <param name="genres"></param>
+    /// <param name="cancellationToken"></param>
+    Task UpdateBulkAsync(IReadOnlyCollection<Genres> genres, CancellationToken cancellationToken);
 }   

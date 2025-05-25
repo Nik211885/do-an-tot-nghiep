@@ -39,4 +39,9 @@ public static class GenreViewModelMappingExtensions
             lastUpdateDateTime: genres.LastUpdateDateTime
         );
     }
+
+    public static IReadOnlyCollection<GenreViewModel> MapToViewModel(this IReadOnlyCollection<Genres> genres)
+    {
+        return genres.Select(MapToViewModel).ToList();
+    }
 }

@@ -1,4 +1,5 @@
 using Core.Entities;
+using Core.Events.BookAuthoringContext;
 using Core.Exception;
 using Core.Interfaces;
 using Core.Message;
@@ -65,6 +66,8 @@ public class Book
         IsComplete = false;
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new CreatedBookDomainEvent(this));
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id, genres.ToArray()));
     }   
     /// <summary>
     ///    Update policy reader book  and follow policy factory rule 
@@ -194,7 +197,20 @@ public class Book
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.DuplicateBookGenre);
         }
-        _genres = genreIds.Select(BookGenres.Create).ToList();
+        
+        var newGenreIds = new HashSet<Guid>(genreIds);
+        var oldGenreIds = new HashSet<Guid>(_genres.Select(g => g.GenreId));
+        
+        var removedGenres = _genres.Where(g => !newGenreIds.Contains(g.GenreId)).ToArray();
+        
+        var addedGenreIds = newGenreIds.Except(oldGenreIds).ToList();
+        var addedGenres = addedGenreIds.Select(BookGenres.Create).ToArray();   
+        
+        _genres.RemoveAll(g => removedGenres.Contains(g));
+        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,  removedGenres));
+        _genres.AddRange(addedGenres);
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id,removedGenres));
+        
         if (tagNames is not null)
         {
             if (HasDuplicates(tagNames))
@@ -215,6 +231,7 @@ public class Book
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new UpdatedBookDomainEvent(this));
     }
     /// <summary>
     ///     Add new genre for book and one genre just has constance one book
@@ -226,8 +243,10 @@ public class Book
     {
         var genreExits = _genres.FirstOrDefault(x=>x.GenreId == genreId);
         ThrowHelper.ThrowBadRequestWhenArgumentNotNull(genreExits,BookAuthoringContextMessage.BookCanNotDuplicateGenre);
-        _genres.Add(BookGenres.Create(genreId));
+        var genreAdd = BookGenres.Create(genreId);
+        _genres.Add(genreAdd);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id, genreAdd));
     }
     /// <summary>
     ///     Remove genre for book make sure it have more than one
@@ -245,6 +264,7 @@ public class Book
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(genreExits,BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
         _genres.Remove(genreExits);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,genreExits));
     }
     /// <summary>
     ///    Factory create new instance book with constructed primary
@@ -287,8 +307,10 @@ public class Book
 
             tags = tagNames.Select(Tag.CreateTag).ToList();
         }
-        return new Book(createdUserid, title, avatarUrl, description, 
-            readerBookPolicy,priceReaderBookPolicy,bookReleaseType, tags,genres, slug);
+
+        return new Book(createdUserid, title, avatarUrl, description,
+            readerBookPolicy, priceReaderBookPolicy, bookReleaseType, tags, genres, slug);
+        
     }
     static bool HasDuplicates<T>(IEnumerable<T> source) =>
         source.GroupBy(x => x).Any(g => g.Count() > 1);

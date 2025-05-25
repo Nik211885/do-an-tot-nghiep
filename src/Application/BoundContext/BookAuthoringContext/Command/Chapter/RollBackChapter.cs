@@ -34,7 +34,7 @@ public class RollBackChapterCommandHandler(
                 chapterDiffDataKey, request);
             // Calculate diff data   
             chapterDiffData = chapter.ChapterVersionRollBack(request.ChapterVersionId);
-            await _cache.SetAsync(chapterDiffDataKey,chapterDiffData, 2);
+            await _cache.SetAsync(chapterDiffDataKey,chapterDiffData, 300);
             
             _logger.LogInformation("Save chapter diff content in cache server key: {key} data: {data}",
                 chapterDiffDataKey, chapterDiffData);

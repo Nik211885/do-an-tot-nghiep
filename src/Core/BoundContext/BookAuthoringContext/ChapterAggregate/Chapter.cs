@@ -1,5 +1,5 @@
 using Core.Entities;
-using Core.Events.WriteBookContext;
+using Core.Events.BookAuthoringContext;
 using Core.Exception;
 using Core.Interfaces;
 using Core.Message;

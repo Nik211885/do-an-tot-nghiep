@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
+﻿using System.Text.Json.Serialization;
+using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.ViewModel;
 
@@ -10,15 +11,17 @@ public class ChapterVersionViewModel(
     Guid id, 
     string name, 
     DateTimeOffset createdDateTime,
-    string diffTitle,
-    string diffContent,
+    string? diffTitle,
+    string? diffContent,
     uint version)
 {
     public Guid Id { get; } = id;
     public string Name { get; } = name;
     public DateTimeOffset CreatedDateTime { get; } = createdDateTime;
-    public string DiffTitle { get; } = diffTitle;
-    public string DiffContent { get; } = diffContent;
+    public string? DiffTitle { get; } = diffTitle;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? DiffContent { get; } = diffContent;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public uint Version { get; } = version;
 }
 
@@ -41,6 +44,7 @@ public class ChapterViewModel(
     public ChapterStatus ChapterStatus { get; } = chapterStatus;
     public string Slug { get; } = slug;
     public DateTimeOffset CreatedDateTime { get; } = createDateTime;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public IReadOnlyCollection<ChapterVersionViewModel> ChapterVersions { get; } = chapterVersions;
 }
 
@@ -77,6 +81,12 @@ public static class MappingChapterViewModelExtensions
         this IReadOnlyCollection<ChapterVersion> chapterVersions)
     {
         return chapterVersions.Select(MapToVersionViewModel).ToArray();
+    }
+
+    public static IReadOnlyCollection<ChapterViewModel> MapToViewModel(
+        this IReadOnlyCollection<Chapter> chapters)
+    {
+        return chapters.Select(MapToViewModel).ToList();
     }
 }
 

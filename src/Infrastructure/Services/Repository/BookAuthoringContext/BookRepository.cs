@@ -13,6 +13,8 @@ public class BookRepository(BookAuthoringDbContext bookAuthoringDbContext)
     {
         var bookById = await _bookAuthoringDbContext.Books
             .Where(book => book.Id == id)
+            .Include(b=>b.Genres)
+            .Include(b=>b.Tags)
             .FirstOrDefaultAsync(cancellationToken);
         return bookById;
     }

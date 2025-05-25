@@ -1,4 +1,4 @@
-﻿namespace Core.Events.WriteBookContext;
+﻿namespace Core.Events.BookAuthoringContext;
 
 public class RemovedChapterDomainEvent(Guid bookId, Guid chapterId) : IEvent
 {
