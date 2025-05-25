@@ -1,4 +1,5 @@
-﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Helper;
 using Application.Interfaces.CQRS;
@@ -22,8 +23,7 @@ public class UpdateChapterCommandHandler(IChapterRepository chapterRepository,
     public async Task<ChapterViewModel> Handle(UpdateChapterCommand request, CancellationToken cancellationToken)
     {
         var chapter = await _chapterRepository.FindById(request.Id, cancellationToken);
-        ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương",
-            new (){["Định danh"] = request.Id.ToString()});
+        ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.Id));
         var requestBody = request.Request;
         _logger.LogInformation("Create delta diff for update chapter request {request}", request);
         chapter.UpdateChapter(

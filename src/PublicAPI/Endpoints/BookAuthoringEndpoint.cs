@@ -2,11 +2,9 @@
 using Application.BoundContext.BookAuthoringContext.Command.Chapter;
 using Application.BoundContext.BookAuthoringContext.Command.Genre;
 using Application.BoundContext.BookAuthoringContext.Queries;
-using Application.BoundContext.BookAuthoringContext.Query;
 using Application.BoundContext.BookAuthoringContext.Query.Chapter;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.CQRS;
-using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +25,6 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithDescription("Create New book");
         
         // endpoint for genre
-        apis.MapGet("genre", BookAuthoringService.GetAllGenreActive)
-            .WithTags("Genres")
-            .WithName("ListGenreActive")
-            .WithDescription("Get all genre active");
         apis.MapPost("genre/create",  BookAuthoringService.CreateGenre)
             .WithTags("Genres")
             .WithName("CreateNewGenres")
@@ -53,28 +47,27 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Chapters")
             .WithName("UpdateChapter")
             .WithDescription("Update New Chapter");
-        apis.MapGet("chapter-roll-back",  BookAuthoringService.RollBackChapter)
+        apis.MapGet("chapter/roll-back",  BookAuthoringService.RollBackChapter)
             .WithTags("Chapters")
             .WithName("RollBackChapter")
             .WithDescription("Rollback Chapter");
-        apis.MapGet("chapter-preview-change-content", BookAuthoringService.PreviewChangeChapter)
+        apis.MapGet("chapter/preview-change-content", BookAuthoringService.PreviewChangeChapter)
             .WithTags("Chapters")
             .WithName("PreviewChangeChapter")
             .WithDescription("Preview Change Chapter");
+        apis.MapPut("chapter/rename-version", BookAuthoringService.RenameChapterVersion)
+            .WithTags("Chapters")
+            .WithName("RenameChapterVersion")
+            .WithDescription("Rename Chapter Version");
+        apis.MapPost("chapter/submit-review", BookAuthoringService.SubmitAndReview)
+            .WithName("SubmitReview")
+            .WithTags("Chapters")
+            .WithDescription("Submit Review");
     }
 }
 
 public static class BookAuthoringService
 {
-    [Authorize]
-    public static async Task<Results<Ok<IReadOnlyCollection<Genres>>, ProblemHttpResult>> GetAllGenreActive(
-        [FromServices] BookAuthoringServiceWrapper service
-        )
-    {
-        var query = new GetAllGenreActiveQuery();
-        var result = await service.FactoryHandler.Handler<GetAllGenreActiveQuery,IReadOnlyCollection<Genres>>(query);
-        return TypedResults.Ok(result);
-    }
     [Authorize]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
         CreateBook([FromBody] CreateBookAuthoringCommand command, 
@@ -149,6 +142,24 @@ public static class BookAuthoringService
     {
         var result = await service.FactoryHandler
             .Handler<GetPreviewChangeContentQuery, ChapterDiffContentViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        RenameChapterVersion([AsParameters]  RenameChapterVersionCommand request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<RenameChapterVersionCommand, ChapterViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        SubmitAndReview([AsParameters] SubmitAndReviewChapterCommand request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<SubmitAndReviewChapterCommand, ChapterViewModel>(request);
         return TypedResults.Ok(result);
     }
 }

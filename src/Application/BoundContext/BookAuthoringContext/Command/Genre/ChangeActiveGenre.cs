@@ -1,4 +1,5 @@
-﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
@@ -22,7 +23,7 @@ public class ChangeActiveGenreCommandHandler(IGenresRepository genresRepository,
     {
         var genre = await _genresRepository
             .FindByIdAsync(id:request.Id, cancellationToken: cancellationToken);
-        ThrowHelper.ThrowNotFoundWhenItemIsNull(genre, "Thể loại", new (){["Định danh"] = request.Id.ToString()});
+        ThrowHelper.ThrowNotFoundWhenItemIsNull(genre, GenreValidationMessage.NoFoundGenreById(request.Id));
         _logger.LogInformation("User {userId} has change active for genre {genreName}", 
             _identityProvider.UserIdentity(), genre.Name);
         genre.ChangeActive();

@@ -44,5 +44,8 @@ public static class BookAuthoringContextMessage
         "Thẻ này không có trong tác phẩm của bạn";
 
     public const string YouCanNotRollBackInCurrentVersion
-        = "Bạn đang ở phiên bản này rồi không cần khôi phục!";  
+        = "Bạn đang ở phiên bản này rồi không cần khôi phục!";
+
+    public const string CanNoFindYourChapterVersion
+        = "Không tìm thấy phiên bản mà bạn đã chọn!";
 }

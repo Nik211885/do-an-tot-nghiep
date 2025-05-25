@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
+﻿using Application.BoundContext.BookAuthoringContext.Validator.Chapter;
+using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ public class ChapterVersionConfiguration : IEntityTypeConfiguration<ChapterVersi
         builder.ToTable("ChapterVersions", DbSchema.BookAuthoring);
         builder.Ignore(c=>c.DomainEvents);
         builder.Property(c => c.NameVersion)
-            .HasMaxLength(100);
+            .HasMaxLength(LengthPropForChapter.MaxNameVersionChapter);
         builder.Property<Guid>("ChapterId");
     }
 }

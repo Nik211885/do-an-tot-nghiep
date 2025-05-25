@@ -54,10 +54,12 @@ public class ChapterVersion : BaseEntity
         }
         return new ChapterVersion(nameVersion, diffTitle, diffContent, version);
     }
-    
-    public void UpdateNameVersion(string newNameVersion)
-    {
-        NameVersion = newNameVersion;
-    }
 
+    public void RenameVersion(string nameVersion)
+    {
+        if (!string.IsNullOrWhiteSpace(NameVersion))
+        {
+            NameVersion = nameVersion;
+        }
+    }
 }

@@ -1,4 +1,6 @@
-﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.Validator;
+using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Helper;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
@@ -13,20 +15,20 @@ public record CreateChapterCommand(Guid BookId, string Title, string Content)
     : IBookAuthoringCommand<ChapterViewModel>;
 
 public class CreateChapterCommandHandler(IChapterRepository chapterRepository,
-    IBookRepository bookRepository,
-    ILogger<CreateChapterCommandHandler> logger,
-    IIdentityProvider identityProvider) 
+    IBookAuthoringQueryValidator bookAuthoringQueryValidator,
+    ILogger<CreateChapterCommandHandler> logger) 
     : ICommandHandler<CreateChapterCommand, ChapterViewModel>
 {
+    private readonly IBookAuthoringQueryValidator _bookAuthoringQueryValidator = bookAuthoringQueryValidator;
     private readonly IChapterRepository _chapterRepository = chapterRepository;
-    private readonly IBookRepository _bookRepository = bookRepository;
     private readonly ILogger<CreateChapterCommandHandler> _logger = logger;
-    private readonly IIdentityProvider _identityProvider = identityProvider;
     public async Task<ChapterViewModel> Handle(CreateChapterCommand request, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.FindByIdAsync(request.BookId, cancellationToken);  
-        ThrowHelper.ThrowNotFoundWhenItemIsNull(book, "Sách",
-            new(){["Định danh"] = request.BookId.ToString()});
+        var bookIsExited = await _bookAuthoringQueryValidator.BookIsExitedAsync(request.BookId, cancellationToken);
+        if (!bookIsExited)
+        {
+            ThrowHelper.ThrowNotFound(BookValidationMessages.NoFoundBookById(request.BookId));
+        }
         var chapter = ChapterCore.Create(
             bookId: request.BookId,
             title: request.Title,
@@ -34,7 +36,7 @@ public class CreateChapterCommandHandler(IChapterRepository chapterRepository,
             slug: request.Title.CreateSlug()
         );
         _logger.LogInformation("Create new chapter {chapter} for book {bookId}",
-            request, book.Id);
+            request, request.BookId);
         _chapterRepository.Create(chapter);
         await _chapterRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         _logger.LogInformation("Create new chapter {chapter} success",chapter);

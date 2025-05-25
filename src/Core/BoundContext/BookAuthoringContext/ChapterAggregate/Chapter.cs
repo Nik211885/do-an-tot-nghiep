@@ -85,6 +85,12 @@ public class Chapter
         _currentVersion = nextVersion;
         _chapterVersions.Add(chapterVersion);
     }
+    public void UpdateNameVersion(Guid chapterVersionId, string newNameVersion)
+    {
+        var chapterVersion = _chapterVersions.Find(x => x.Id == chapterVersionId);
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(chapterVersion, BookAuthoringContextMessage.CanNoFindYourChapterVersion);
+        chapterVersion.RenameVersion(newNameVersion);
+    }
     
     public void SubmitAndReview()
     {

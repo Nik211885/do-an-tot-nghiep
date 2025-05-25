@@ -26,6 +26,19 @@ internal static class ThrowHelper
             throw new NotFoundException(entityName, identifier);
         }
     }
+    public static void ThrowNotFoundWhenItemIsNull([NotNull]object? entity, 
+        Dictionary<string, Dictionary<string, string>> identifier)
+    {
+        if (entity is null)
+        {
+            throw new NotFoundException(identifier.Keys.First(), identifier.Values.First());
+        }
+    }
+
+    public static void ThrowNotFound(Dictionary<string, Dictionary<string, string>> identifier)
+    {
+        throw new NotFoundException(identifier.Keys.First(), identifier.Values.First());
+    }
 
     public static void ThrowIfBadRequest(string message)
     {

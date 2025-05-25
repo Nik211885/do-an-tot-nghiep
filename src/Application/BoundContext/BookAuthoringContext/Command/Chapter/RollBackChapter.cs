@@ -1,4 +1,5 @@
-﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Helper;
 using Application.Interfaces.Cache;
@@ -23,8 +24,7 @@ public class RollBackChapterCommandHandler(
     public async Task<ChapterViewModel> Handle(RollBackChapterCommand request, CancellationToken cancellationToken)
     {
         var chapter = await _chapterRepository.FindById(request.ChapterId, cancellationToken);
-        ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương",
-            new (){["Định danh"] = request.ChapterId.ToString()});
+        ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.ChapterId));
         
         var chapterDiffDataKey = string.Format(CacheKey.ChapterRollBack, request.ChapterId, request.ChapterVersionId);
         var chapterDiffData = await _cache.GetAsync<ChapterRollBackData>(chapterDiffDataKey);

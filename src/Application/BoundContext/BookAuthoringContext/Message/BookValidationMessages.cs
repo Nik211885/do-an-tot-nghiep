@@ -4,6 +4,15 @@ namespace Application.BoundContext.BookAuthoringContext.Message;
 
 public static class BookValidationMessages
 {
+    public static Dictionary<string, Dictionary<string, string>>
+        NoFoundBookById(Guid id) =>
+        new ()
+        {
+            ["Sách"]= new ()
+            {
+                ["Định danh"] = id.ToString()
+            }
+        };
     public const string TitleRequired = "Tiêu đề sách không được để trống.";
     public static readonly string TitleMaxLength = $"Tiêu đề sách không được vượt quá {LengthPropForBook.TitleMaxLenght} ký tự.";
     public static readonly string AvatarUrlMaxLength = $"Đường dẫn ảnh đại diện không được vượt quá {LengthPropForBook.AvatarUrlMaxLenght} ký tự.";
