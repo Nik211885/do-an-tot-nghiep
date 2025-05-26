@@ -17,11 +17,13 @@ export class BookBasicInfoComponent {
 
   basicInfoForm: FormGroup;
 
-  get coverImageUrl(): string | null {
-    const url = this.basicInfoForm.get('coverImage')?.value;
-    return url && url.trim() !== '' ? url : null;
+  getImageUpload(fileInfo: any){
+    const url = fileInfo['secure_url'];
+    if(url){
+      this.basicInfoForm.get("coverImage")?.setValue(url);
+    }
+    return url;
   }
-
   constructor(private fb: FormBuilder) {
     this.basicInfoForm = this.fb.group({
       title: ['', [Validators.required]],
@@ -42,6 +44,7 @@ export class BookBasicInfoComponent {
 
   onNext(): void {
     if (this.basicInfoForm.valid) {
+      console.log(this.basicInfoForm.value);
       this.nextStep.emit(this.basicInfoForm.value);
     }
   }

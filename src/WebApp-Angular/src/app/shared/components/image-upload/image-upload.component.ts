@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ImageCropperComponent, ImageCroppedEvent, ImageTransform } from 'ngx-image-cropper';
 import { ImageUploadService } from './image-upload.service';
 import { ImageCropData, CropDimensions } from './image-upload.model';
+import { UploadFileService } from '../../../core/services/upload-file.service';
 
 @Component({
   selector: 'app-image-upload',
@@ -13,8 +14,12 @@ import { ImageCropData, CropDimensions } from './image-upload.model';
 })
 export class ImageUploadComponent implements OnInit {
   @Input() titleForUploadFile: string = "";
+  @Output() imageUpload = new EventEmitter<any>();
+
   imageChangedEvent: any = '';
   croppedImage: any = '';
+  croppedFile: File | null = null; // ✅ Thêm biến này để chứa file sau khi crop
+
   showCropper = false;
   originalFile: File | null = null;
   originalFileName: string = '';
@@ -34,7 +39,10 @@ export class ImageUploadComponent implements OnInit {
   isDragging = false;
   errorMessage = '';
 
-  constructor(private imageUploadService: ImageUploadService) {}
+  constructor(
+    private imageUploadService: ImageUploadService,
+    private uploadFileService: UploadFileService
+  ) {}
 
   ngOnInit(): void {
     this.imageUploadService.formData$.subscribe(formData => {
@@ -53,6 +61,7 @@ export class ImageUploadComponent implements OnInit {
         this.imageChangedEvent = event;
         this.originalFile = file;
         this.originalFileName = file.name;
+
         setTimeout(() => {
           this.showCropper = true;
           this.isLoading = false;
@@ -93,6 +102,7 @@ export class ImageUploadComponent implements OnInit {
         };
 
         this.imageChangedEvent = fileInput;
+
         setTimeout(() => {
           this.showCropper = true;
           this.isLoading = false;
@@ -120,13 +130,15 @@ export class ImageUploadComponent implements OnInit {
   imageCropped(event: ImageCroppedEvent) {
     if (event.blob && this.originalFileName) {
       const file = new File([event.blob], this.originalFileName, { type: event.blob.type });
+      this.croppedFile = file; // ✅ Lưu lại file để upload
+      this.croppedImage = URL.createObjectURL(event.blob); // dùng để preview
+
       const cropData: ImageCropData = {
         file: file,
         filename: this.originalFileName,
         base64: this.croppedImage
       };
       this.imageUploadService.setCroppedImage(cropData);
-      this.croppedImage = URL.createObjectURL(event.blob);
 
       if (event.width && event.height) {
         this.cropDimensions = {
@@ -138,12 +150,19 @@ export class ImageUploadComponent implements OnInit {
   }
 
   saveCroppedImage(): void {
+    if (this.croppedFile) {
+      this.uploadFileService.uploadFile(this.croppedFile).subscribe(res => {
+        console.log(res)
+        this.imageUpload.emit(res);
+      });
+    }
     this.showCropper = false;
   }
 
   resetImage(): void {
     this.imageChangedEvent = '';
     this.croppedImage = '';
+    this.croppedFile = null;
     this.showCropper = false;
     this.originalFile = null;
     this.originalFileName = '';

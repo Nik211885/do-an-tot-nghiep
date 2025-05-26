@@ -23,6 +23,12 @@ export interface Chapter {
   updatedAt?: Date;
 }
 
+export interface Genre{
+  id: string;
+  name: string;
+  description: string;
+}
+
 export const AVAILABLE_GENRES = [
   'Giả tưởng',
   'Khoa học viễn tưởng',

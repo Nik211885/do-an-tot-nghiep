@@ -1,55 +1,41 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import {
+  HttpInterceptorFn,
   HttpRequest,
-  HttpHandler,
+  HttpHandlerFn,
   HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  constructor(
-    private router: Router
-  ) {}
+export const errorInterceptorFn: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
+  const router = inject(Router);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        // Handle different error status codes
-        switch (error.status) {
-          case 401: // Unauthorized
-            // Let AuthInterceptor handle token refresh
-            this.router.navigate(['error/unauthorized']);
-            break;
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) => {
+      switch (error.status) {
+        case 401:
+          // Let AuthInterceptor handle token refresh
+          router.navigate(['error/unauthorized']);
+          break;
+        case 403:
+          router.navigate(['error/forbidden']);
+          break;
+        case 404:
+          router.navigate(['error/not-found']);
+          break;
+        case 500:
+          router.navigate(['error/internal-server']);
+          break;
+        default:
+          router.navigate([`error/${error.status}`]);
+          break;
+      }
 
-          case 403: // Forbidden
-            this.router.navigate(['error/forbidden']);
-            break;
+      console.error('HTTP Error:', error);
 
-          case 404: // Not Found
-            // Could navigate to a not-found page
-            this.router.navigate(['error/not-found']);
-            break;
-
-          case 500: // Server Error
-            // Could show a server error notification
-            this.router.navigate(['error/internal-server']);
-            break;
-          default: 
-            this.router.navigate([`error/${error.status}`]);
-            break;
-        }
-
-        // Log error for debugging
-        console.error('HTTP Error:', error);
-
-        // Pass the error along
-        return throwError(() => error);
-      })
-    );
-  }
-}
+      return throwError(() => error);
+    })
+  );
+};

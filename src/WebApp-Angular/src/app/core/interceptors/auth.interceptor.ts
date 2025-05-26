@@ -1,89 +1,122 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import {
+  HttpInterceptorFn,
   HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
+  HttpHandlerFn,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
-import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../../environments/environment';
+import {
+  catchError,
+  filter,
+  finalize,
+  switchMap,
+  take,
+  throwError,
+  BehaviorSubject
+} from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+let isRefreshing = false;
+const refreshTokenSubject = new BehaviorSubject<any>(null);
 
-  constructor(private authService: AuthService) {}
+export const authInterceptorFn: HttpInterceptorFn = (request, next: HttpHandlerFn) => {
+  const authService = inject(AuthService);
+  const baseUrl = environment.apiUrl;
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (this.shouldSkipToken(request)) {
-      return next.handle(request);
+  // Nếu request tới Cloudinary, bỏ qua interceptor, xóa header X-Skip-Auth-Interceptor nếu có
+  if (request.url.includes('cloudinary.com')) {
+    if (request.headers.has('X-Skip-Auth-Interceptor')) {
+      const headers = request.headers.delete('X-Skip-Auth-Interceptor');
+      const cleanRequest = request.clone({ headers });
+      return next(cleanRequest);
     }
+    return next(request);
+  }
 
-    request = this.addToken(request);
+  // Nếu có header X-Skip-Auth-Interceptor thì xóa header và gửi tiếp
+  if (request.headers.has('X-Skip-Auth-Interceptor')) {
+    const headers = request.headers.delete('X-Skip-Auth-Interceptor');
+    const cleanRequest = request.clone({ headers });
+    return next(cleanRequest);
+  }
 
-    return next.handle(request).pipe(
-      catchError(error => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          return this.handle401Error(request, next);
+  // Bỏ qua các request không cần token
+  if (
+    request.url.includes('/auth/realms/') ||
+    request.url.endsWith('/public-api')
+  ) {
+    return next(request);
+  }
+
+  // Gắn baseUrl nếu url không phải là url đầy đủ
+  if (!request.url.startsWith('http')) {
+    request = request.clone({
+      url: baseUrl + request.url
+    });
+  }
+
+  // Gắn token nếu có
+  const token = authService.getToken();
+  if (token) {
+    request = request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  return next(request).pipe(
+    catchError((error) => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        return handle401Error(request, next, authService);
+      }
+      return throwError(() => error);
+    })
+  );
+};
+
+function handle401Error(request: HttpRequest<any>, next: HttpHandlerFn, authService: AuthService) {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    refreshTokenSubject.next(null);
+
+    return authService.refreshToken().pipe(
+      switchMap((success) => {
+        refreshTokenSubject.next(success);
+        if (success) {
+          const newToken = authService.getToken();
+          const newReq = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${newToken}`
+            }
+          });
+          return next(newReq);
         }
-        return throwError(() => error);
+        authService.logout();
+        return throwError(() => new Error('Session expired'));
+      }),
+      catchError((err) => {
+        authService.logout();
+        return throwError(() => err);
+      }),
+      finalize(() => {
+        isRefreshing = false;
       })
     );
-  }
-
-  private shouldSkipToken(request: HttpRequest<any>): boolean {
-    return (
-      request.url.includes('/auth/realms/') ||
-      request.url.endsWith('/public-api') ||
-      request.headers.has('X-Skip-Auth-Interceptor')
-    );
-  }
-
-  private addToken(request: HttpRequest<any>): HttpRequest<any> {
-    const token = this.authService.getToken();
-
-    if (token) {
-      return request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
-
-    return request;
-  }
-
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      return this.authService.refreshToken().pipe(
-        switchMap(success => {
-          this.refreshTokenSubject.next(success);
-          if (success) {
-            return next.handle(this.addToken(request));
+  } else {
+    return refreshTokenSubject.pipe(
+      filter(result => result !== null),
+      take(1),
+      switchMap(() => {
+        const newToken = authService.getToken();
+        const newReq = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${newToken}`
           }
-          this.authService.logout();
-          return throwError(() => new Error('Session expired'));
-        }),
-        catchError(err => {
-          this.authService.logout();
-          return throwError(() => err);
-        }),
-        finalize(() => {
-          this.isRefreshing = false;
-        })
-      );
-    } else {
-      return this.refreshTokenSubject.pipe(
-        filter(result => result !== null),
-        take(1),
-        switchMap(() => next.handle(this.addToken(request)))
-      );
-    }
+        });
+        return next(newReq);
+      })
+    );
   }
 }

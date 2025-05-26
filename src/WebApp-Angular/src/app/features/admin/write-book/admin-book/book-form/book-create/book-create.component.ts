@@ -40,47 +40,47 @@ export class BookCreateComponent {
     tags: [],
     genres: []
   };
-  
+
   constructor(
     private bookService: BookService,
     private toastService: ToastService,
     private router: Router
   ) {}
-  
+
   onBasicInfoNext(basicInfo: Partial<Book>): void {
     this.book = { ...this.book, ...basicInfo };
     this.currentStep = FormStep.PRICING_INFO;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   onPricingInfoNext(pricingInfo: Partial<Book>): void {
     this.book = { ...this.book, ...pricingInfo };
     this.currentStep = FormStep.STATUS_INFO;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   onStatusInfoNext(statusInfo: Partial<Book>): void {
     this.book = { ...this.book, ...statusInfo };
     this.currentStep = FormStep.TAGS_GENRES;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   onPreviousStep(): void {
     this.currentStep--;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   onBookSubmit(tagsGenres: Partial<Book>): void {
     this.book = { ...this.book, ...tagsGenres };
-    
+
     this.bookService.createBook(this.book).subscribe({
       next: (createdBook) => {
-        this.toastService.success('Book created successfully!');
+        this.toastService.success('Tạo mới sách thành công');
         this.router.navigate(['/write-book/books', createdBook.id]);
       },
       error: (error) => {
         console.error('Error creating book:', error);
-        this.toastService.error('Failed to create book. Please try again.');
+        this.toastService.error(error['error']);
       }
     });
   }

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AVAILABLE_GENRES, Book } from '../../../models/book.model';
+import {AVAILABLE_GENRES, Book, Genre} from '../../../models/book.model';
+import {GenresService} from '../../../services/genere.service';
 
 @Component({
   selector: 'app-book-tags-genres',
@@ -10,54 +11,62 @@ import { AVAILABLE_GENRES, Book } from '../../../models/book.model';
   templateUrl: './book-tags-genres.component.html',
   styleUrl: './book-tags-genres.component.css'
 })
-export class BookTagsGenresComponent {
+export class BookTagsGenresComponent implements OnInit {
   @Input() book: Book | null = null;
   @Output() submitBook = new EventEmitter<Partial<Book>>();
   @Output() previousStep = new EventEmitter<void>();
-  AVAILABLE_GENRES = AVAILABLE_GENRES;
+  genres: Genre[] = [];
   tags: string[] = [];
   selectedGenres: string[] = [];
   tagsForm: FormGroup;
   tagsFormSubmitted = false;
-  
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb: FormBuilder, private genreService: GenresService) {
     this.tagsForm = this.fb.group({
       newTag: ['', [Validators.minLength(2), Validators.maxLength(20)]]
     });
   }
-  
+
   ngOnInit(): void {
+    this.genreService.getAllGenre().subscribe({
+      next: (genres) => {
+        this.genres = genres;
+      },
+      error: (err) => {
+        console.error('Error fetching genres:', err);
+      }
+    });
     if (this.book) {
       this.tags = [...(this.book.tags || [])];
       this.selectedGenres = [...(this.book.genres || [])];
     }
   }
-  
+
   addTag(): void {
     const tagControl = this.tagsForm.get('newTag');
     const newTag = tagControl?.value?.trim();
-    
+
     if (newTag && tagControl?.valid && !this.tags.includes(newTag)) {
       this.tags.push(newTag);
       tagControl.setValue('');
     }
   }
-  
+
   removeTag(tag: string): void {
     this.tags = this.tags.filter(t => t !== tag);
   }
-  
-  toggleGenre(genre: string): void {
-    if (this.selectedGenres.includes(genre)) {
-      this.selectedGenres = this.selectedGenres.filter(g => g !== genre);
+
+  toggleGenre(genre: Genre): void {
+    if (this.selectedGenres.includes(genre.id)) {
+      this.selectedGenres = this.selectedGenres.filter(g => g !== genre.id);
     } else {
-      this.selectedGenres.push(genre);
+      this.selectedGenres.push(genre.id);
     }
   }
-  
+
   onSubmit(): void {
     this.tagsFormSubmitted = true;
-    
+
     if (this.tags.length > 0 && this.selectedGenres.length > 0) {
       this.submitBook.emit({
         tags: this.tags,
@@ -65,7 +74,7 @@ export class BookTagsGenresComponent {
       });
     }
   }
-  
+
   onPrevious(): void {
     this.previousStep.emit();
   }

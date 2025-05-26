@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:3000',
+    apiUrl: 'http://localhost:5106',
     keyCloak:{
       url:"http://localhost:8080",
       realm: "NikBook",

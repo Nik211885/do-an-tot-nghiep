@@ -28,7 +28,9 @@
     </div>
     </div>
 
-  <app-image-upload titleForUploadFile="Tải ảnh bìa sách"></app-image-upload>
+  <app-image-upload
+    (imageUpload)="getImageUpload($event)"
+    titleForUploadFile="Tải ảnh bìa sách"></app-image-upload>
 
     <div class="mt-8 flex justify-end">
     <button
