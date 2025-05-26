@@ -115,18 +115,20 @@ public static class BookAuthoringService
 {
     [Authorize]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
-        CreateBook([FromBody] CreateBookAuthoringCommand command, 
+        CreateBook([FromBody] CreateBookCommand command, 
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler
-            .Handler<CreateBookAuthoringCommand, BookViewModel>(command);
+            .Handler<CreateBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);
     }
     [Authorize]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
-        UpdateBook([FromBody] UpdateBookCommand command, 
+        UpdateBook([FromQuery] Guid id,
+            [FromBody] UpdateBookRequest request, 
             [FromServices] BookAuthoringServiceWrapper service)
     {
+        var command = new UpdateBookCommand(id, request);
         var result = await service.FactoryHandler
             .Handler<UpdateBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);

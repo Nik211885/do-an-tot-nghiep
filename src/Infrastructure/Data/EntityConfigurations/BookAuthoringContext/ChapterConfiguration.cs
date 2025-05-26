@@ -28,5 +28,7 @@ public class ChapterConfiguration : IEntityTypeConfiguration<Chapter>
             .WithMany()
             .HasForeignKey(c=>c.BookId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.Property<uint>("_currentVersion")
+            .HasColumnName("CurrentVersion");
     }
 }

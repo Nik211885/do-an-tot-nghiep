@@ -13,6 +13,6 @@ public class ChapterVersionConfiguration : IEntityTypeConfiguration<ChapterVersi
         builder.Ignore(c=>c.DomainEvents);
         builder.Property(c => c.NameVersion)
             .HasMaxLength(LengthPropForChapter.MaxNameVersionChapter);
-        builder.Property<Guid>("ChapterId");
+        builder.Property<Guid>("ChapterId").IsRequired();
     }
 }

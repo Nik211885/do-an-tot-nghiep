@@ -52,7 +52,7 @@ public class ChapterVersion : BaseEntity
         {
             return null;
         }
-        return new ChapterVersion(nameVersion, diffTitle, diffContent, version);
+        return new ChapterVersion(nameVersion, diffContent, diffTitle, version);
     }
 
     public void RenameVersion(string nameVersion)

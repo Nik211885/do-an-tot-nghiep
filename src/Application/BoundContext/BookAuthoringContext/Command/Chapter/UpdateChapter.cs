@@ -29,8 +29,8 @@ public class UpdateChapterCommandHandler(IChapterRepository chapterRepository,
         chapter.UpdateChapter(
             newContent: requestBody.Content,
             title: requestBody.Title,
-            diffTitle: requestBody.Content.GetDelta(chapter.Content),
-            diffContent: requestBody.Title.GetDelta(chapter.Title),
+            diffTitle: requestBody.Title.GetDelta(chapter.Title),
+            diffContent: requestBody.Content.GetDelta(chapter.Content),
             slug: requestBody.Title.CreateSlug()
         );
         _logger.LogInformation("Update chapter for chapter {chapter}", chapter);

@@ -9,6 +9,7 @@ using Core.Interfaces.Repositories;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Data.DbContext;
+using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.Cache;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
@@ -36,6 +37,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
+        services.AddScoped<DispatcherDomainEventInterceptors>();
         services.AddTransient<IEmailSender, EmailSender>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();

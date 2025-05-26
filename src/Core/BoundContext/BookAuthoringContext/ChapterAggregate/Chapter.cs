@@ -9,7 +9,7 @@ public class Chapter
     : BaseEntity, IAggregateRoot
 {
     private uint _currentVersion;
-    public Guid BookId { get; private set; }
+    public Guid BookId { get; private set; }    
     public string Content { get; private set; }
     public string Title { get; private set; }
     public bool IsLocked { get; private set; }
@@ -17,7 +17,7 @@ public class Chapter
     public string Slug { get; private set; }
     public DateTimeOffset CreateDateTime { get; private set; }
     private List<ChapterVersion> _chapterVersions;
-    public IReadOnlyCollection<ChapterVersion> ChapterVersions => _chapterVersions;
+    public IReadOnlyCollection<ChapterVersion> ChapterVersions => _chapterVersions ?? [];
     protected Chapter(){}
     private Chapter(Guid bookId, string content, string title, string slug)
     {
@@ -33,17 +33,13 @@ public class Chapter
     public IReadOnlyCollection<ChapterVersion> GetChapterVersionMakeRollBack(Guid chapterVersionId)
     {
         var chapterVersionBackIndex = _chapterVersions.FindIndex(x => x.Id == chapterVersionId);
-        if (chapterVersionId.Version == _currentVersion)
-        {
-            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YouCanNotRollBackInCurrentVersion);
-        }
         if (chapterVersionBackIndex < 0)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterFindBackVersion);
         }
         // In fact don't have this key
         var chapterVersion = _chapterVersions.Skip(chapterVersionBackIndex).ToList();
-        if (chapterVersion.Any())
+        if (!chapterVersion.Any())
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.ChapterFindBackVersion);
         }

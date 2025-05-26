@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Application.BoundContext.BookAuthoringContext.Validator.Book;
 
-public class CreateBookCommandValidator : AbstractValidator<CreateBookAuthoringCommand>
+public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {
     public CreateBookCommandValidator()
     {

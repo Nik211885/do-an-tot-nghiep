@@ -1,5 +1,7 @@
 ﻿using Infrastructure.Configurations;
 using Infrastructure.Data.DbContext;
+using Infrastructure.Data.Interceptors;
+using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -23,6 +25,7 @@ public class BookAuthoringDbContextDesignTime : IDesignTimeDbContextFactory<Book
         return new BookAuthoringDbContext(optionsBuilder.Options,
             new DbConnectionStringSelector(
                 Options.Create(new DatabaseConnectionString()
-                    {Master = masterConnectionString})));
+                    {Master = masterConnectionString})),
+            new DispatcherDomainEventInterceptors(new EventDispatcher(null,null)));
     }
 }

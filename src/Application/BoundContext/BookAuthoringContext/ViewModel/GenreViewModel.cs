@@ -1,42 +1,35 @@
-﻿using Core.BoundContext.BookAuthoringContext.GenresAggregate;
+﻿using System;
+using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.ViewModel;
 
-public class GenreViewModel(Guid id, 
-    string name,
-    string description, 
-    string slug,
-    string avatarUrl,
-    bool isActive, 
-    int countBook,
-    DateTimeOffset createDateTime,
-    DateTimeOffset lastUpdateDateTime)
-{
-    public Guid Id { get; } = id;
-    public string Name { get; } = name;
-    public string Description { get; } = description;
-    public string Slug { get; }  = slug;
-    public string AvatarUrl { get; } = avatarUrl;
-    public bool IsActive { get; }  = isActive;
-    public DateTimeOffset CreatedDateTime { get; } = createDateTime;
-    public int CoutBook { get; } = countBook;
-    public DateTimeOffset LastUpdateDateTime { get; } = lastUpdateDateTime;
-}
+public record GenreViewModel(
+    Guid Id,
+    string Name,
+    string Description,
+    string Slug,
+    string AvatarUrl,
+    bool IsActive,
+    int CoutBook,
+    DateTimeOffset CreatedDateTime,
+    DateTimeOffset LastUpdateDateTime
+);
+
 
 public static class GenreViewModelMappingExtensions
 {
     public static GenreViewModel MapToViewModel(this Genres genres)
     {
         return new GenreViewModel(
-            id: genres.Id,
-            name: genres.Name,
-            description: genres.Description,
-            slug: genres.Slug,
-            avatarUrl: genres.AvatarUrl,
-            isActive: genres.IsActive,
-            countBook:genres.CountBook,
-            createDateTime: genres.CreatedDateTime,
-            lastUpdateDateTime: genres.LastUpdateDateTime
+            Id: genres.Id,
+            Name: genres.Name,
+            Description: genres.Description,
+            Slug: genres.Slug,
+            AvatarUrl: genres.AvatarUrl,
+            IsActive: genres.IsActive,
+            CoutBook: genres.CountBook,
+            CreatedDateTime: genres.CreatedDateTime,
+            LastUpdateDateTime: genres.LastUpdateDateTime
         );
     }
 

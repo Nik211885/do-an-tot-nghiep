@@ -72,7 +72,9 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
             .Where(c => c.Id == id)
             .Select(c => new ChapterViewModel(
                 c.Id, c.BookId, c.Content, c.Title, c.IsLocked, c.Status, c.Slug,
-                c.CreateDateTime, c.ChapterVersions.Select(cv => new ChapterVersionViewModel(
+                c.CreateDateTime, c.ChapterVersions.
+                    OrderByDescending(cv=>cv.CreatedDateTime)
+                    .Select(cv => new ChapterVersionViewModel(
                     cv.Id,
                     cv.NameVersion,
                     cv.CreatedDateTime,

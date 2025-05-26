@@ -209,7 +209,7 @@ public class Book
         _genres.RemoveAll(g => removedGenres.Contains(g));
         RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,  removedGenres));
         _genres.AddRange(addedGenres);
-        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id,removedGenres));
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id,addedGenres));
         
         if (tagNames is not null)
         {

@@ -1,14 +1,15 @@
 ﻿using Core.BoundContext.OrderContext.BuyerAggregate;
 using Core.BoundContext.OrderContext.OrderAggregate;
 using Core.Interfaces.Repositories.OrderContext;
+using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DbContext;
 
 public class OrderDbContext(DbContextOptions<OrderDbContext> options, 
-    IDbConnectionStringSelector dbConnectionStringSelector)
-    : BaseDbContext(options, dbConnectionStringSelector)
+    IDbConnectionStringSelector dbConnectionStringSelector,DispatcherDomainEventInterceptors interceptors)
+    : BaseDbContext(options, dbConnectionStringSelector,interceptors)
 {
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }

@@ -28,7 +28,7 @@ public static class DiffPatchMatchHelper
     {
         var chapterVersionNeedRollBack = chapter.GetChapterVersionMakeRollBack(chapterVersionId);
         //roll back title and content
-        var (titleRollBack, contentRollBack) = chapterVersionNeedRollBack.Aggregate(
+        var (titleRollBack, contentRollBack) = chapterVersionNeedRollBack.Reverse().Aggregate(
             (title: chapter.Title, content: chapter.Content),
             (acc, c) => (
                 acc.title.RollBackContent(c.DiffTitle),

@@ -32,31 +32,28 @@ public class DispatcherDomainEventInterceptors(IEventDispatcher eventDispatcher)
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="eventData"></param>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
-    {
-        DispatchDomainEvents(eventData.Context, CancellationToken.None).GetAwaiter().GetResult();
-        return base.SavedChanges(eventData, result);
-    }
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     private async Task DispatchDomainEvents(Microsoft.EntityFrameworkCore.DbContext? context, CancellationToken cancellationToken)
     {
         if (context == null) return;
         
-        var eventBases = context.ChangeTracker.Entries<BaseEntity>()
-            .Where(x => x.Entity.DomainEvents is not null 
-                        && x.Entity.DomainEvents.Any())
-            .SelectMany(x => x.Entity.DomainEvents 
-                             ?? Enumerable.Empty<IEvent>()).ToList().AsReadOnly();
-        if (eventBases.Any())
+        var entities = context.ChangeTracker
+                .Entries<BaseEntity>()
+                .Where(x => x.Entity.DomainEvents is not null && x.Entity.DomainEvents.Any())
+                .Select(x => x.Entity)
+                .ToList();
+        var events = entities
+                .SelectMany(e => e.DomainEvents!)
+                .ToList();
+        if (events.Any())
         {
-            await _eventDispatcher.Dispatch(eventBases,cancellationToken);
+            await _eventDispatcher.Dispatch(events.AsReadOnly(), cancellationToken);
+        }
+
+        foreach (var entity in entities)
+        {
+            entity.ClearDomainEvents();
         }
     }
 }

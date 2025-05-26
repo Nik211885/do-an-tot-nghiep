@@ -11,14 +11,23 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
     : Repository<Genres>(bookAuthoringDbContext), IGenresRepository
 {
     private readonly BookAuthoringDbContext _bookAuthoringDbContext = bookAuthoringDbContext;
+    public async Task<Genres?> FindActiveByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var genre = await _bookAuthoringDbContext.Genres
+                    .Where(GenreFilter.ById(id))
+                    .FirstOrDefaultAsync(cancellationToken);
+        return genre;
+    }
+
     public async Task<Genres?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var genre = await _bookAuthoringDbContext.Genres
+            .IgnoreQueryFilters()
             .Where(GenreFilter.ById(id))
             .FirstOrDefaultAsync(cancellationToken);
         return genre;
     }
-
+    
     public async Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids)
     {
         var genre = await _bookAuthoringDbContext.Genres

@@ -27,7 +27,7 @@ public class GetPreviewChangeContentQueryHandler(
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương",
             new (){["Định danh"] = request.ChapterId.ToString()});
         // Check in server has cache diff create key for cache
-        var chapterRollBackCacheKey = string.Format(CacheKey.ChapterRollBack, request.ChapterId, request.ChapterVersionId);
+        var chapterRollBackCacheKey = string.Format(CacheKey.ChapterRollBack, request.ChapterId.ToString(), request.ChapterVersionId.ToString());
         var chapterDataRollBack = await _cache.GetAsync<ChapterRollBackData>(chapterRollBackCacheKey);
         // Chapter version you want  to roll back
         var chapterVersionRollBack = chapter.ChapterVersions.First(x => x.Id == request.ChapterVersionId);
@@ -50,13 +50,13 @@ public class GetPreviewChangeContentQueryHandler(
             .FirstOrDefault(p => p.curr.Id == chapterVersionRollBack.Id)?.prev;
         // First restore to version need watch preview
         var response = new ChapterDiffContentViewModel(
-            chapterId: chapter.Id,
-            chapterVersionId: chapterVersionRollBack.Id,
-            chapterName: chapterVersionRollBack.NameVersion,
-            content: chapterDataRollBack.Content.PrettyContent(chapterVersionCompare?.DiffContent),
-            title: chapterDataRollBack.Title.PrettyContent(chapterVersionCompare?.DiffTitle),
-            lastUpdatedDateTime: chapterVersionRollBack.CreatedDateTime,
-            version: chapterVersionRollBack.Version
+            ChapterId: chapter.Id,
+            ChapterVersionId: chapterVersionRollBack.Id,
+            ChapterVersionName: chapterVersionRollBack.NameVersion,
+            ContentPretty: chapterDataRollBack.Content.PrettyContent(chapterVersionCompare?.DiffContent),
+            TitlePretty: chapterDataRollBack.Title.PrettyContent(chapterVersionCompare?.DiffTitle),
+            LastModified: chapterVersionRollBack.CreatedDateTime,
+            Version: chapterVersionRollBack.Version
         );
         return response;
     }

@@ -5,6 +5,13 @@ namespace Core.Interfaces.Repositories.BookAuthoringContext;
 public interface IGenresRepository: IRepository<Genres>
 {
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<Genres?> FindActiveByIdAsync(Guid id, CancellationToken cancellationToken);
+    /// <summary>
     ///      Get genres by id ignore query filter with soft deleted
     /// </summary>
     /// <param name="id"></param>

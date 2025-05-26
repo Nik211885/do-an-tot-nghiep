@@ -30,7 +30,7 @@ public class ChapterRepository(BookAuthoringDbContext bookAuthoringDbContext)
 
     public Chapter Update(Chapter chapter)
     {
-        _bookAuthoringDbContext.Chapters.Update(chapter);
+        _bookAuthoringDbContext.Entry(chapter).State = EntityState.Modified;
         return chapter;
     }
 }

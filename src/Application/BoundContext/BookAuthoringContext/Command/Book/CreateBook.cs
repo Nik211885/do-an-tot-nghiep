@@ -11,7 +11,7 @@ using BookCore = Core.BoundContext.BookAuthoringContext.BookAggregate.Book;
 
 namespace Application.BoundContext.BookAuthoringContext.Command.Book;
 
-public record CreateBookAuthoringCommand(
+public record CreateBookCommand(
     string Title,
     string? AvatarUrl,
     string? Description,    
@@ -25,13 +25,13 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     IGenresRepository genresRepository,
     IIdentityProvider identityProvider,
     ILogger<CreateBookCommandHandler> logger) 
-    : ICommandHandler<CreateBookAuthoringCommand, BookViewModel>
+    : ICommandHandler<CreateBookCommand, BookViewModel>
 {
     private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IGenresRepository _genresRepository = genresRepository;
     private readonly ILogger<CreateBookCommandHandler> _logger = logger;
-    public async Task<BookViewModel> Handle(CreateBookAuthoringCommand request, CancellationToken cancellationToken)
+    public async Task<BookViewModel> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
         //
         var genresByIds = await _genresRepository

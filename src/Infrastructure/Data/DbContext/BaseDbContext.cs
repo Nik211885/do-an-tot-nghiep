@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -10,13 +11,16 @@ namespace Infrastructure.Data.DbContext;
 /// <param name="options"></param>
 /// <param name="dbConnectionStringSelector"></param>
 public class BaseDbContext(DbContextOptions options, 
-    IDbConnectionStringSelector dbConnectionStringSelector)
+    IDbConnectionStringSelector dbConnectionStringSelector,
+    DispatcherDomainEventInterceptors interceptors)
     : Microsoft.EntityFrameworkCore.DbContext(options), IUnitOfWork
 {
     /// <summary>
     /// 
     /// </summary>
     private IDbContextTransaction? _transaction;
+
+    private readonly DispatcherDomainEventInterceptors _interceptors = interceptors;
     /// <summary>
     /// 
     /// </summary>
@@ -50,7 +54,8 @@ public class BaseDbContext(DbContextOptions options,
     {
         var connectionString = GetConnectionString();
         ArgumentNullException.ThrowIfNull(connectionString);
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(connectionString)
+            .AddInterceptors(_interceptors);
     }
     
     /// <summary>
