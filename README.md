@@ -19,5 +19,9 @@
 ## Giấy phép
 
 ## Người đóng góp
+- Chat GPT
+- Claude Ai
+- Trong dự án này 90% code fontend là nhờ chat bot, việc không tối ưu cho các thao tác của người dùng có thể xảy ra, nhưng trên hết tôi nghĩ điều đấy ổn, cho người không rõ các công nghệ fontend như tôi, do thời gian làm có hạn nên việc refact lại chắc là một thời gian sau,
+- Bạn có nghĩ các vấn đề về AI khi nó có thể làm hầu như các thao tác của một số lập trình viên, trong khoảng từ 1-3 năm kinh nghiệm ít nhất là ở thời điểm hiện tại. Không chắc, mọi thứ rồi phát triển theo chiều hướng nào nữa nhưng việc tiếp tục là không thể dừng lại, có thể là một new path
 
 ## Tài liệu tham khảo
