@@ -34,6 +34,7 @@ export class BookCreateComponent {
   book: Book = {
     title: '',
     description: '',
+    slug: '',
     isPaid: false,
     requiresRegistration: false,
     isCompleted: false,
@@ -76,7 +77,7 @@ export class BookCreateComponent {
     this.bookService.createBook(this.book).subscribe({
       next: (createdBook) => {
         this.toastService.success('Tạo mới sách thành công');
-        this.router.navigate(['/write-book/books', createdBook.id]);
+        this.router.navigate(['/write-book/books', createdBook.slug]);
       },
       error: (error) => {
         console.error('Error creating book:', error);

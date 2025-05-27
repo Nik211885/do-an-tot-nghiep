@@ -21,7 +21,7 @@
       </svg>
     </div>
 
-    <form *ngIf="!isLoading && chapterForm" [formGroup]="chapterForm" (ngSubmit)="onSubmit()" class="animate-fade-in">
+    <form *ngIf="!isLoading && chapterForm" [formGroup]="chapterForm"  class="animate-fade-in">
       <div class="bg-white shadow-sm rounded-lg p-6">
         <div class="form-group mb-6">
           <label for="title" class="form-label">Tiêu đề chương <span class="text-red-500">*</span></label>
@@ -75,7 +75,7 @@
           type="button"
           (click)="onSaveDraft()"
           class="btn btn-secondary border-book-primary-300 text-book-primary-700 hover:bg-book-primary-50"
-          [disabled]="isSaving"
+          [disabled]="isSaving || chapterForm.invalid"
         >
           <span *ngIf="isSaving" class="mr-2">
             <svg class="animate-spin h-4 w-4 text-book-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -86,7 +86,8 @@
           Lưu bản nháp
         </button>
         <button
-          type="submit"
+          type="button"
+          (click)="submitAndReview()"
           class="btn btn-primary"
           [disabled]="isSaving || chapterForm.invalid"
           [ngClass]="{'opacity-50 cursor-not-allowed': isSaving || chapterForm.invalid}"
@@ -97,7 +98,7 @@
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           </span>
-          {{ isEditing ? 'Lưu bản nháp' : 'Xuất bản' }}
+          Xuất bản
         </button>
       </div>
     </form>
@@ -119,9 +120,10 @@
         </svg>
       </button>
     </div>
-    @for (item of chapterVersion; track $index) {
+    @for (item of chapterVersion(); track $index) {
       <app-chapter-version
         [chapterVersion]="item"
+        [chapterId]="chapter()?.id!"
         (chapterVersionClickedEvent)="onChapterVersionClicked($event)"
         (renameChapterVersionEvent)="renameChapterVersion($event)"
         (rollBackChapterVersionEvent)="rollBackChapterVersion($event)"
@@ -148,5 +150,6 @@
 [chapterVersion]="currentChapterDiff"
 (chapterRenameEvent)="renameChapterVersion($event)"
 (chapterRollBackEvent)="rollBackChapterVersion($event)"
+                  [chapterId]="chapter()?.id!"
 >
 </app-chapter-diff>

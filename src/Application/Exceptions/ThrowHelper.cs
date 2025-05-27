@@ -17,7 +17,10 @@ internal static class ThrowHelper
             throw new NotFoundException(entityName, null);
         }
     }
-    
+    public static void ThrowNotFound(string entity)
+    {
+        throw new NotFoundException(entity, null);
+    }
     public static void ThrowNotFoundWhenItemIsNull([NotNull]object? entity, string entityName,
         Dictionary<string, string> identifier)
     {

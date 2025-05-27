@@ -26,7 +26,11 @@ public class RedisCache(IConnectionMultiplexer connectionMultiplexer) : ICache
         {
             return Task.FromResult(default(TValue));
         }
-        var valueObj = JsonSerializer.Deserialize<TValue>(value!);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+        var valueObj = JsonSerializer.Deserialize<TValue>(value!,options);
         return Task.FromResult(valueObj);
     }
 

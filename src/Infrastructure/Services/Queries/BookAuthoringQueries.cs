@@ -1,8 +1,10 @@
-﻿using Application.BoundContext.BookAuthoringContext.Queries;
+﻿using System.Reflection.Metadata;
+using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace Infrastructure.Services.Queries;
 
@@ -14,6 +16,7 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
     {
         var genres = await _bookAuthoringDbContext.Genres
             .AsNoTracking()
+            .OrderByDescending(g=>g.CreatedDateTime)
             .ToListAsync(cancellationToken);
         return genres.MapToViewModel();
     }
@@ -34,8 +37,23 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
             .Where(x=>x.CreatedUerId == userId)
             .Include(c=>c.Tags)
             .Include(x=>x.Genres)
+            .OrderByDescending(c=>c.CreatedDateTime)
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
-        return books.MapToViewModel();
+        
+        var allGenreIds = books
+            .SelectMany(b => b.Genres.Select(bg => bg.GenreId))
+            .Distinct()
+            .ToList();
+        
+        var genres = await _bookAuthoringDbContext.Genres
+            .AsNoTracking()
+            .Where(g => allGenreIds.Contains(g.Id))
+            .ToListAsync(cancellationToken);
+        
+        var booksResult = books.MapToViewModel(genres);
+        
+        return booksResult;
     }
 
     public async Task<BookViewModel?> FindBookBySlugAsync(string slug, CancellationToken cancellationToken)
@@ -43,15 +61,36 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
         var book = await _bookAuthoringDbContext.Books
             .AsNoTracking()
             .Where(x => x.Slug == slug)
+            .Include(x=>x.Tags)
+            .Include(x=>x.Genres)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
-        return book?.MapToViewModel();
+        if (book is null)
+        {
+            return null;
+        }
+
+        var genres = await _bookAuthoringDbContext.Genres
+            .Where(g => book.Genres.Select(x => x.GenreId).Contains(g.Id))
+            .ToListAsync(cancellationToken);
+        return book.MapToViewModel(genres.MapToViewModel());
+
     }
 
     public async Task<IReadOnlyCollection<ChapterViewModel>> FindChapterByBookSlugAsync(string slug, CancellationToken cancellationToken)
     {
+        var book = await _bookAuthoringDbContext.Books
+            .AsNoTracking()
+            .Where(x=>x.Slug == slug)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (book is null)
+        {
+            return [];
+        }
         var chapter = await _bookAuthoringDbContext.Chapters
             .AsNoTracking()
-            .Where(x => x.Slug == slug )
+            .Where(x => x.BookId == book.Id)
+            .OrderByDescending(g=>g.ChapterNumber)
             .ToListAsync(cancellationToken);
         return chapter.MapToViewModel();
     }
@@ -71,7 +110,7 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
             .AsNoTracking()
             .Where(c => c.Id == id)
             .Select(c => new ChapterViewModel(
-                c.Id, c.BookId, c.Content, c.Title, c.IsLocked, c.Status, c.Slug,
+                c.Id, c.BookId, c.Content, c.Title, c.IsLocked, c.Status, c.Slug,c.ChapterNumber,
                 c.CreateDateTime, c.ChapterVersions.
                     OrderByDescending(cv=>cv.CreatedDateTime)
                     .Select(cv => new ChapterVersionViewModel(

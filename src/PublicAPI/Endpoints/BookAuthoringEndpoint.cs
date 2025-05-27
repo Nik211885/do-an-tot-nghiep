@@ -108,6 +108,10 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Chapter")
             .WithName("GetChapterBySlug")
             .WithDescription("Get Chapter by Slug");
+        apis.MapDelete("chapter/delete", BookAuthoringService.DeleteChapter)
+            .WithTags("Chapter")
+            .WithName("DeleteChapter")
+            .WithDescription("Delete Chapter");
     }
 }
 
@@ -201,13 +205,13 @@ public static class BookAuthoringService
         return TypedResults.Ok(result);
     }
     [Authorize]
-    public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+    public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         RenameChapterVersion([AsParameters]  RenameChapterVersionCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler
-            .Handler<RenameChapterVersionCommand, ChapterViewModel>(request);
-        return TypedResults.Ok(result);
+            .Handler<RenameChapterVersionCommand, string>(request);
+        return TypedResults.NoContent();
     }
     [Authorize]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
@@ -301,14 +305,22 @@ public static class BookAuthoringService
         return TypedResults.Ok(result);
     }
     [Authorize]
-        public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
-            GetGenreBySlug([AsParameters] GetGenreBySlugQuery request,
-                [FromServices] BookAuthoringServiceWrapper service)
-        {
-            var result = await service.FactoryHandler
-                .Handler<GetGenreBySlugQuery,GenreViewModel>(request);
-            return TypedResults.Ok(result);
-        }
+    public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetGenreBySlug([AsParameters] GetGenreBySlugQuery request,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler
+            .Handler<GetGenreBySlugQuery,GenreViewModel>(request);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        DeleteChapter([AsParameters] DeleteChapterCommand command,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        await service.FactoryHandler.Handler<DeleteChapterCommand, string>(command);
+        return TypedResults.NoContent();    
+    }
 }
 
 public class BookAuthoringServiceWrapper(IFactoryHandler factoryHandler,

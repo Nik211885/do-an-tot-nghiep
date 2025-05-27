@@ -20,6 +20,7 @@ public record ChapterViewModel(
     bool IsLock,
     ChapterStatus ChapterStatus,
     string Slug,
+    int ChapterNumber,
     DateTimeOffset CreatedDateTime,
     IReadOnlyCollection<ChapterVersionViewModel>? ChapterVersions
 );
@@ -36,6 +37,7 @@ public static class MappingChapterViewModelExtensions
             Title: chapter.Title,
             IsLock: chapter.IsLocked,
             ChapterStatus: chapter.Status,
+            ChapterNumber:chapter.ChapterNumber,
             Slug: chapter.Slug,
             CreatedDateTime: chapter.CreateDateTime,
             ChapterVersions: chapter.ChapterVersions.MapToVersionViewModel()

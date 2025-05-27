@@ -2,13 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import {formatVietnameseDate} from "../../../../../../core/utils/date.until"
 import { DialogService, InputDialogOptions } from '../../../../../../shared/components/dialog/dialog.component.service';
-
-export interface ChapterVersion{
-  id: string,
-  name: string,
-  dateCreateVersion: Date,
-  createVersion: string,
-}
+import {ChapterVersion} from '../../../models/book.model';
 
 @Component({
   standalone:true,
@@ -21,8 +15,9 @@ export class ChapterVersionComponent {
   constructor(private dialogService: DialogService){}
   @Output() chapterVersionClickedEvent = new EventEmitter<ChapterVersion>();
   @Output() renameChapterVersionEvent = new EventEmitter<ChapterVersion>();
-  @Output() rollBackChapterVersionEvent = new EventEmitter<string>();
+  @Output() rollBackChapterVersionEvent = new EventEmitter<[string, string]>();
   @Input() chapterVersion!: ChapterVersion;
+  @Input() chapterId!: string;
   @Input() currentVersion:boolean = false;
   isDropdownOpen: boolean = false;
   dropDownToggle(event: MouseEvent): void{
@@ -39,7 +34,7 @@ export class ChapterVersionComponent {
   }
   rollBackToVersion(event: MouseEvent){
     event.stopPropagation();
-    this.rollBackChapterVersionEvent.emit(this.chapterVersion.id)
+    this.rollBackChapterVersionEvent.emit([this.chapterVersion.id, this.chapterId])
   }
   @ViewChild('dropdownRef') dropdownRef!: ElementRef;
   @HostListener('document:click', ['$event'])

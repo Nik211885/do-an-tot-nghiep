@@ -11,6 +11,7 @@ public class Chapter
     private uint _currentVersion;
     public Guid BookId { get; private set; }    
     public string Content { get; private set; }
+    public int ChapterNumber { get; private set; }
     public string Title { get; private set; }
     public bool IsLocked { get; private set; }
     public ChapterStatus Status { get; private set; }
@@ -19,12 +20,13 @@ public class Chapter
     private List<ChapterVersion> _chapterVersions;
     public IReadOnlyCollection<ChapterVersion> ChapterVersions => _chapterVersions ?? [];
     protected Chapter(){}
-    private Chapter(Guid bookId, string content, string title, string slug)
+    private Chapter(Guid bookId, string content, string title, string slug,int chapterNumber)
     {
         BookId = bookId;
         _currentVersion = 0;
         Content = content;
         Slug = slug;
+        ChapterNumber = chapterNumber;
         Title = title;
         Status = ChapterStatus.Draft;
         IsLocked = false;
@@ -45,9 +47,9 @@ public class Chapter
         }
         return chapterVersion.AsReadOnly();
     }
-    public static Chapter Create(Guid bookId, string content, string title, string slug)
+    public static Chapter Create(Guid bookId, string content, string title, string slug, int chapterNumber)
     {
-        return new Chapter(bookId,content, title, slug);
+        return new Chapter(bookId,content, title, slug, chapterNumber);
     }
 
     /// <summary>
@@ -60,12 +62,20 @@ public class Chapter
     /// <param name="diffTitle"></param>
     /// <param name="diffContent"></param>
     /// <param name="slug"></param>
+    /// <param name="chapterNumber"></param>
     /// <param name="nameVersion"></param>
-    public void UpdateChapter(string newContent, string title, string diffTitle, string diffContent, string slug, string? nameVersion = null)
+    public void UpdateChapter(string newContent, string title, string diffTitle, string diffContent, string slug, int chapterNumber, string? nameVersion = null)
     {
         LockedCanNotBeChanged();
+        ChapterNumber = chapterNumber;
         var nextVersion = _currentVersion + 1;
         nameVersion = nameVersion ?? "Đã cập nhật";
+        var lastVersion = ChapterVersions.LastOrDefault();
+        if (diffContent == lastVersion?.DiffContent 
+            && diffTitle == lastVersion.DiffTitle)
+        {
+            return;
+        }
         var chapterVersion = ChapterVersion.Create(nameVersion,diffTitle, diffContent,nextVersion);
         if (chapterVersion is null)
         {

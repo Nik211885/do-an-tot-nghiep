@@ -11,7 +11,7 @@ using ChapterCore = Core.BoundContext.BookAuthoringContext.ChapterAggregate.Chap
 
 namespace Application.BoundContext.BookAuthoringContext.Command.Chapter;
 
-public record CreateChapterCommand(Guid BookId, string Title, string Content)
+public record CreateChapterCommand(Guid BookId, string Title, string Content, int ChapterNumber)
     : IBookAuthoringCommand<ChapterViewModel>;
 
 public class CreateChapterCommandHandler(IChapterRepository chapterRepository,
@@ -33,7 +33,8 @@ public class CreateChapterCommandHandler(IChapterRepository chapterRepository,
             bookId: request.BookId,
             title: request.Title,
             content: request.Content,
-            slug: request.Title.CreateSlug()
+            slug: request.Title.CreateSlug(),
+            chapterNumber: request.ChapterNumber
         );
         _logger.LogInformation("Create new chapter {chapter} for book {bookId}",
             request, request.BookId);

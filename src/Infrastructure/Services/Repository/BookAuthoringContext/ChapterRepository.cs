@@ -9,7 +9,7 @@ public class ChapterRepository(BookAuthoringDbContext bookAuthoringDbContext)
     : Repository<Chapter>(bookAuthoringDbContext), IChapterRepository
 {
     private readonly BookAuthoringDbContext _bookAuthoringDbContext = bookAuthoringDbContext;
-    public async Task<Chapter?> FindById(Guid id, CancellationToken cancellationToken)
+    public async Task<Chapter?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var chapterById = await _bookAuthoringDbContext.Chapters
             .Where(chapter => chapter.Id == id)
@@ -32,5 +32,10 @@ public class ChapterRepository(BookAuthoringDbContext bookAuthoringDbContext)
     {
         _bookAuthoringDbContext.Entry(chapter).State = EntityState.Modified;
         return chapter;
+    }
+
+    public void Delete(Chapter chapter)
+    {
+        _bookAuthoringDbContext.Chapters.Remove(chapter);
     }
 }

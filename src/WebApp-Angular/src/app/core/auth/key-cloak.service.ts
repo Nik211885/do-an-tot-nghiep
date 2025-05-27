@@ -71,9 +71,28 @@ export class KeyCloakService {
       })
     );
   }
-  getToken() : string | undefined{
-    return this.keyCloak.token;
+  getToken(): Observable<string> {
+    if (this.keyCloak.token) {
+      return new Observable<string>((observer) => {
+        observer.next(this.keyCloak.token as string);
+        observer.complete();
+      });
+    } else {
+      return from(this.keyCloak.updateToken(5)).pipe(
+        map(() => {
+          if (!this.keyCloak.token) {
+            throw new Error('No token available');
+          }
+          return this.keyCloak.token;
+        }),
+        catchError(err => {
+          console.error('Error refreshing token', err);
+          return throwError(() => err);
+        })
+      );
+    }
   }
+
   hasRealmRole(role:string): boolean{
     return this.keyCloak.hasRealmRole(role);
   }

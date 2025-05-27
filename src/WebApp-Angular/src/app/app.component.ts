@@ -1,7 +1,6 @@
 import { Component, inject, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { getDelta, undoDiffJson } from './core/utils/diff-content.until';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { DialogComponent } from './shared/components/dialog/dialog.component';
 

@@ -23,7 +23,7 @@ public class GetPreviewChangeContentQueryHandler(
     public async Task<ChapterDiffContentViewModel> Handle(GetPreviewChangeContentQuery request, CancellationToken cancellationToken)
     {
         // Find chapter need get pretty data roll back
-        var chapter = await _chapterRepository.FindById(request.ChapterId, cancellationToken);
+        var chapter = await _chapterRepository.FindByIdAsync(request.ChapterId, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương",
             new (){["Định danh"] = request.ChapterId.ToString()});
         // Check in server has cache diff create key for cache

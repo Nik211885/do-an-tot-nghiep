@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.BoundContext.BookAuthoringContext.Command.Chapter;
 
-public record UpdateChapterRequest(string Title, string Content);
+public record UpdateChapterRequest(string Title, string Content, int ChapterNumber);
 
 public record UpdateChapterCommand(Guid Id, UpdateChapterRequest Request)
     : IBookAuthoringCommand<ChapterViewModel>;
@@ -22,7 +22,7 @@ public class UpdateChapterCommandHandler(IChapterRepository chapterRepository,
     private readonly ILogger<UpdateChapterCommandHandler> _logger = logger;
     public async Task<ChapterViewModel> Handle(UpdateChapterCommand request, CancellationToken cancellationToken)
     {
-        var chapter = await _chapterRepository.FindById(request.Id, cancellationToken);
+        var chapter = await _chapterRepository.FindByIdAsync(request.Id, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.Id));
         var requestBody = request.Request;
         _logger.LogInformation("Create delta diff for update chapter request {request}", request);
@@ -31,7 +31,8 @@ public class UpdateChapterCommandHandler(IChapterRepository chapterRepository,
             title: requestBody.Title,
             diffTitle: requestBody.Title.GetDelta(chapter.Title),
             diffContent: requestBody.Content.GetDelta(chapter.Content),
-            slug: requestBody.Title.CreateSlug()
+            slug: requestBody.Title.CreateSlug(),
+            chapterNumber: requestBody.ChapterNumber
         );
         _logger.LogInformation("Update chapter for chapter {chapter}", chapter);
         _chapterRepository.Update(chapter);

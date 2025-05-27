@@ -1,36 +1,58 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Book } from "../../models/book.model";
-import { BookService } from '../../services/book.service';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+
+import { BookService } from '../../services/book.service';
+import { Book } from '../../models/book.model';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
+import { AuthService } from '../../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-book-list',
-  imports: [CommonModule, RouterLink],
   standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css'
+  styleUrls: ['./book-list.component.css']
 })
 export class BookListComponent implements OnInit {
   books: Book[] = [];
+  isLoading = true;
+
   constructor(
     private bookService: BookService,
+    private authService: AuthService,
     private toastService: ToastService
   ) {}
-   ngOnInit(): void {
-    this.loadBooks();
-  }
-  loadBooks(): void {
-    this.bookService.getBooks().subscribe({
-      next: (books) => {
-        this.books = books;
+
+  ngOnInit(): void {
+    this.authService.initialize().subscribe({
+      next: (initialized) => {
+        if (initialized) {
+          this.loadBooks();
+        } else {
+          this.toastService.error('Không thể khởi tạo xác thực');
+          this.isLoading = false;
+        }
       },
-      error: (error) => {
-        console.error('Error loading books:', error);
-        this.toastService.error('Failed to load books.');
+      error: () => {
+        this.toastService.error('Lỗi khởi tạo xác thực');
+        this.isLoading = false;
       }
     });
   }
 
+  loadBooks(): void {
+    this.isLoading = true;
+    this.bookService.getBooks().subscribe({
+      next: (books) => {
+        this.books = books;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading books:', error);
+        this.toastService.error('Không tải được danh sách sách.');
+        this.isLoading = false;
+      }
+    });
+  }
 }

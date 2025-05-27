@@ -15,6 +15,8 @@ import { UploadFileService } from '../../../core/services/upload-file.service';
 export class ImageUploadComponent implements OnInit {
   @Input() titleForUploadFile: string = "";
   @Output() imageUpload = new EventEmitter<any>();
+  @Output() starUpload = new EventEmitter<void>();
+  @Output() endUpload = new EventEmitter<void>();
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -150,10 +152,12 @@ export class ImageUploadComponent implements OnInit {
   }
 
   saveCroppedImage(): void {
+    this.starUpload.emit();
     if (this.croppedFile) {
       this.uploadFileService.uploadFile(this.croppedFile).subscribe(res => {
         console.log(res)
         this.imageUpload.emit(res);
+        this.endUpload.emit();
       });
     }
     this.showCropper = false;

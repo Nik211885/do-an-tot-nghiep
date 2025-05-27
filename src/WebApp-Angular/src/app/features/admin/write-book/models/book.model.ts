@@ -6,11 +6,20 @@ export interface Book {
   isPaid: boolean;
   price?: number;
   requiresRegistration: boolean;
+  slug: string;
   isCompleted: boolean;
   tags: string[];
   genres: string[];
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+
+export interface ChapterVersion{
+  id: string,
+  name: string,
+  dateCreateVersion: Date,
+  createVersion: string,
 }
 
 export interface Chapter {
@@ -19,7 +28,9 @@ export interface Chapter {
   title: string;
   content: string;
   chapterNumber: number;
+  slug: string;
   createdAt?: Date;
+  chapterVersion: ChapterVersion[];
   updatedAt?: Date;
 }
 

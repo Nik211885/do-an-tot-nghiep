@@ -21,7 +21,7 @@ public class SubmitAndReviewChapterCommandHandler(
     {
         //  in here you should moderation context know user has submmit and review you will send back integration event 
         // in to message bus
-        var chapter = await _chapterRepository.FindById(request.Id,cancellationToken);
+        var chapter = await _chapterRepository.FindByIdAsync(request.Id,cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.Id));
         chapter.SubmitAndReview();
         _logger.LogInformation("Submit and review chapterId: {chapterId}", chapter.Id);

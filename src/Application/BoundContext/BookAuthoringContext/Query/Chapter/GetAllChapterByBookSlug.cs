@@ -18,14 +18,14 @@ public class GetAllChapterByBookIdQueryHandler(
     private readonly IBookAuthoringQueries _bookAuthoringQueries = bookAuthoringQueries;
     public async Task<IReadOnlyCollection<ChapterViewModel>> Handle(GetAllChapterByBookSlugQuery request, CancellationToken cancellationToken)
     {
-        var chapterByBookKey = string.Format(CacheKey.ChapterByBookSlug, request.Slug);
-        var chapterByBook = await _cache.GetAsync<IReadOnlyCollection<ChapterViewModel>>(chapterByBookKey);
-        if (chapterByBook != null)
-        {
-            return chapterByBook;
-        }
-        chapterByBook = await _bookAuthoringQueries.FindChapterByBookSlugAsync(request.Slug, cancellationToken);
-        await _cache.SetAsync(chapterByBookKey, chapterByBook,300);
+        // var chapterByBookKey = string.Format(CacheKey.ChapterByBookSlug, request.Slug);
+        // var chapterByBook = await _cache.GetAsync<IReadOnlyCollection<ChapterViewModel>>(chapterByBookKey);
+        // if (chapterByBook != null)
+        // {
+        //     return chapterByBook;
+        // }
+        var chapterByBook = await _bookAuthoringQueries.FindChapterByBookSlugAsync(request.Slug, cancellationToken);
+        // await _cache.SetAsync(chapterByBookKey, chapterByBook,300);
         return chapterByBook;
     }
 }

@@ -15,7 +15,7 @@ public class PolicyReadBook : ValueObject
 {
     public decimal? Price { get; private set; }
     public BookPolicy Policy { get; private set; }
-
+    
     private PolicyReadBook(BookPolicy policy, decimal? price)
     {
         Policy = policy;

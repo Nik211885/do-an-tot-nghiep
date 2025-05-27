@@ -5,3 +5,4 @@
 /// </summary>  
 /// <typeparam name="TResponse"></typeparam>
 public interface ICommand<TResponse> : IRequest<TResponse> { }
+

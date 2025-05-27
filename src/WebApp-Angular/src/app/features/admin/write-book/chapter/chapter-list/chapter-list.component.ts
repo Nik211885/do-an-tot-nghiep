@@ -16,6 +16,7 @@ import { DialogService } from '../../../../../shared/components/dialog/dialog.co
 export class ChapterListComponent implements OnInit {
   book: Book | null = null;
   chapters: Chapter[] = [];
+  bookSlug?: string;
   isLoading = true;
 
   constructor(
@@ -27,19 +28,18 @@ export class ChapterListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const bookId = this.route.snapshot.paramMap.get('bookId');
-    
-    if (!bookId) {
+    this.bookSlug = this.route.snapshot.paramMap.get('slug') ?? undefined;
+    if (!this.bookSlug) {
       this.toastService.error('Không tìm thấy sách của bạn');
       this.router.navigate(['/books']);
       return;
     }
 
-    this.loadBook(bookId);
+    this.loadBook(this.bookSlug);
   }
 
-  loadBook(bookId: string): void {
-    this.bookService.getBook(bookId).subscribe({
+  loadBook(bookSlug: string): void {
+    this.bookService.getBook(bookSlug).subscribe({
       next: (book) => {
         if (!book) {
           this.toastService.error('Không tìm thấy sách của bạn');
@@ -48,7 +48,8 @@ export class ChapterListComponent implements OnInit {
         }
 
         this.book = book;
-        this.loadChapters(bookId);
+        console.log(this.book);
+        this.loadChapters(bookSlug);
       },
       error: (error) => {
         console.error('Error loading book:', error);
@@ -58,8 +59,8 @@ export class ChapterListComponent implements OnInit {
     });
   }
 
-  loadChapters(bookId: string): void {
-    this.bookService.getChapters(bookId).subscribe({
+  loadChapters(bookSlug: string): void {
+    this.bookService.getChapters(bookSlug).subscribe({
       next: (chapters) => {
         this.chapters = chapters;
         this.isLoading = false;
@@ -73,32 +74,36 @@ export class ChapterListComponent implements OnInit {
   }
 
   editChapter(chapter: Chapter): void {
-    this.router.navigate(['write-book/books', chapter.bookId, 'chapters', chapter.id, 'edit']);
-  }
-
-  async deleteChapter(chapter: Chapter) {
-    const dialog = await this.dialogService.open("Xác nhận xóa","Bạn có chắc chắn muốn xóa chương này không");
-    if(dialog.isSuccess){
-      if(chapter.id){
-        this.bookService.deleteChapter(chapter.id).subscribe({
-          next: (success)=>{
-            if(success){
-              this.toastService.success('Chương đã được xóa thành công');
-              this.chapters = this.chapters.filter(c => c.id !== chapter.id);
-            } 
-            else {
-            this.toastService.error('Không thể xóa chương này');
-            }
-          },
-          error: (error) => {
-          console.error('Error deleting chapter:', error);
-          this.toastService.error('Không thể xóa chương này');
-        }
-        })
-      }
+    if (this.bookSlug) {
+      this.router.navigate(['write-book/books', this.bookSlug, 'chapters', chapter.slug, 'edit']);
     }
   }
 
+  async deleteChapter(chapter: Chapter) {
+    const dialog = await this.dialogService.open("Xác nhận xóa", "Bạn có chắc chắn muốn xóa chương này không?");
+
+    if (dialog.isSuccess && chapter.id) {
+      console.log("Calling API to delete chapter with ID:", chapter.id);
+
+      this.bookService.deleteChapter(chapter.id).subscribe({
+        next: (result) => {
+          console.log("API result:", result);
+          if (result === true) {
+            this.toastService.success('Chương đã được xóa thành công');
+            this.chapters = this.chapters.filter(c => c.id !== chapter.id);
+          } else {
+            this.toastService.error(typeof result === 'string' ? result : 'Không thể xóa chương này');
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting chapter:', error);
+          this.toastService.error('Không thể xóa chương này');
+        }
+      });
+    } else {
+      console.log("Không gọi API vì dialog bị hủy hoặc thiếu chapter.id");
+    }
+  }
   editBook(book: Book): void {
     // In a real app, this would navigate to a book edit page
     console.log("aa")

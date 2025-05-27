@@ -23,7 +23,7 @@ public class RollBackChapterCommandHandler(
     private readonly ICache _cache = cache;
     public async Task<ChapterViewModel> Handle(RollBackChapterCommand request, CancellationToken cancellationToken)
     {
-        var chapter = await _chapterRepository.FindById(request.ChapterId, cancellationToken);
+        var chapter = await _chapterRepository.FindByIdAsync(request.ChapterId, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.ChapterId));
         
         var chapterDiffDataKey = string.Format(CacheKey.ChapterRollBack, request.ChapterId, request.ChapterVersionId);
@@ -47,7 +47,8 @@ public class RollBackChapterCommandHandler(
             title: chapterDiffData.Title,
             diffTitle: chapterDiffData.Title.GetDelta(chapter.Title),
             diffContent: chapterDiffData.Content.GetDelta(chapter.Content),
-            slug: chapterDiffData.Title.CreateSlug()
+            slug: chapterDiffData.Title.CreateSlug(),
+            chapterNumber: chapter.ChapterNumber
             );
         _logger.LogInformation("Update chapter request: {request}", request);
         _chapterRepository.Update(chapter);

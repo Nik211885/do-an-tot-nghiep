@@ -16,18 +16,12 @@ export class BookBasicInfoComponent {
   @Output() nextStep = new EventEmitter<Partial<Book>>();
 
   basicInfoForm: FormGroup;
+  isUploading = false;
 
-  getImageUpload(fileInfo: any){
-    const url = fileInfo['secure_url'];
-    if(url){
-      this.basicInfoForm.get("coverImage")?.setValue(url);
-    }
-    return url;
-  }
   constructor(private fb: FormBuilder) {
     this.basicInfoForm = this.fb.group({
-      title: ['', [Validators.required]],
-      description: ['', [Validators.required]],
+      title: ['', Validators.required],
+      description: ['', Validators.required],
       coverImage: ['']
     });
   }
@@ -42,10 +36,25 @@ export class BookBasicInfoComponent {
     }
   }
 
+  getImageUpload(fileInfo: any) {
+    const url = fileInfo['secure_url'];
+
+    if (url) {
+      this.basicInfoForm.get("coverImage")?.setValue(url);
+    }
+  }
   onNext(): void {
-    if (this.basicInfoForm.valid) {
-      console.log(this.basicInfoForm.value);
+    if (this.basicInfoForm.valid && !this.isUploading) {
       this.nextStep.emit(this.basicInfoForm.value);
     }
   }
+
+  starUploadFile() {
+    this.isUploading = true;
+  }
+
+  endUploadFile() {
+    this.isUploading = false;
+  }
 }
+

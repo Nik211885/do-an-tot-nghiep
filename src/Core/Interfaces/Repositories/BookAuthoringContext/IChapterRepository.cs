@@ -11,7 +11,7 @@ public interface IChapterRepository
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Chapter?> FindById(Guid id, CancellationToken cancellationToken);
+    Task<Chapter?> FindByIdAsync(Guid id, CancellationToken cancellationToken);
     /// <summary>
     /// 
     /// </summary>
@@ -24,4 +24,10 @@ public interface IChapterRepository
     /// <param name="chapter"></param>
     /// <returns></returns>
     Chapter Update(Chapter chapter);
+    /// <summary>
+    ///     Delete chapter
+    /// </summary>
+    /// <param name="chapter"></param>
+    /// <returns></returns>
+   void Delete(Chapter chapter);
 }
