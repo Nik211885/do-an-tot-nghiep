@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { BookBasicInfoComponent } from '../book-basic-info/book-basic-info.component';
-import { Book } from '../../../models/book.model';
+import { Bookv1 } from '../../../models/book.model';
 import { BookService } from '../../../services/book.service';
 import { Router } from '@angular/router';
 import { BookTagsGenresComponent } from '../book-tags-genres/book-tags-genres.component';
@@ -31,7 +31,7 @@ enum FormStep {
 export class BookCreateComponent {
   FormStep = FormStep;
   currentStep = FormStep.BASIC_INFO;
-  book: Book = {
+  book: Bookv1 = {
     title: '',
     description: '',
     slug: '',
@@ -48,19 +48,19 @@ export class BookCreateComponent {
     private router: Router
   ) {}
 
-  onBasicInfoNext(basicInfo: Partial<Book>): void {
+  onBasicInfoNext(basicInfo: Partial<Bookv1>): void {
     this.book = { ...this.book, ...basicInfo };
     this.currentStep = FormStep.PRICING_INFO;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onPricingInfoNext(pricingInfo: Partial<Book>): void {
+  onPricingInfoNext(pricingInfo: Partial<Bookv1>): void {
     this.book = { ...this.book, ...pricingInfo };
     this.currentStep = FormStep.STATUS_INFO;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onStatusInfoNext(statusInfo: Partial<Book>): void {
+  onStatusInfoNext(statusInfo: Partial<Bookv1>): void {
     this.book = { ...this.book, ...statusInfo };
     this.currentStep = FormStep.TAGS_GENRES;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,7 +71,7 @@ export class BookCreateComponent {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onBookSubmit(tagsGenres: Partial<Book>): void {
+  onBookSubmit(tagsGenres: Partial<Bookv1>): void {
     this.book = { ...this.book, ...tagsGenres };
 
     this.bookService.createBook(this.book).subscribe({

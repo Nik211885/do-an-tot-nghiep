@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { BookService } from '../../services/book.service';
-import { Book } from '../../models/book.model';
+import { Bookv1 } from '../../models/book.model';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { AuthService } from '../../../../../core/auth/auth.service';
 
@@ -15,7 +15,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
   styleUrls: ['./book-list.component.css']
 })
 export class BookListComponent implements OnInit {
-  books: Book[] = [];
+  books: Bookv1[] = [];
   isLoading = true;
 
   constructor(

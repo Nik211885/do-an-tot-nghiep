@@ -24,4 +24,5 @@ public interface IBookRepository
     /// <param name="book"></param>
     /// <returns></returns>
     Book Update(Book book);
+    void Delete(Book book);
 }

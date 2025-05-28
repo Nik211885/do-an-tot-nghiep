@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable, of} from 'rxjs';
-import {Book, Chapter, ChapterVersion} from '../models/book.model';
+import {Bookv1, Chapter, ChapterVersion, Genre} from '../models/book.model';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {BookPolicy, BookReleaseType, CreateBookCommand} from '../models/create-book.model';
 import {ToastService} from '../../../../shared/components/toast/toast.service';
@@ -10,13 +10,13 @@ import {CreateChapterCommand, UpdateChapterCommand} from '../models/create-chapt
   providedIn: 'root'
 })
 export class BookService {
-  private books: Book[] = [];
+  private books: Bookv1[] = [];
   private chapters: Chapter[] = [];
 
-  private booksSubject = new BehaviorSubject<Book[]>([]);
+  private booksSubject = new BehaviorSubject<Bookv1[]>([]);
   books$ = this.booksSubject.asObservable();
 
-  private currentBookSubject = new BehaviorSubject<Book | null>(null);
+  private currentBookSubject = new BehaviorSubject<Bookv1 | null>(null);
   currentBook$ = this.currentBookSubject.asObservable();
 
   constructor( private httpClient: HttpClient) {
@@ -39,7 +39,7 @@ export class BookService {
     localStorage.setItem('chapters', JSON.stringify(this.chapters));
   }
 
-  getBooks(): Observable<Book[]> {
+  getBooks(): Observable<Bookv1[]> {
     const urlGetMyBooks = "/book-authoring/book/my-book";
     return this.httpClient.get<any>(urlGetMyBooks).pipe(
       map(res=>{
@@ -57,12 +57,12 @@ export class BookService {
           genres: item.genres.map((t:any)=>t.name),
           isPaid: item.policyReadBook.policy === 'Paid',
           requiresRegistration: item.policyReadBook.policy === 'Subscription'
-        }) as Book);
+        }) as Bookv1);
       })
     )
   }
 
-  getBook(slug: string): Observable<Book | undefined> {
+  getBook(slug: string): Observable<Bookv1 | undefined> {
     const getBookDetails = "/book-authoring/book/slug?Slug="
     return this.httpClient.get<any>(`${getBookDetails}${slug}`).pipe(
       map(res=>{
@@ -80,16 +80,16 @@ export class BookService {
           genres: res.genres.map((t:any)=>t.name),
           isPaid: res.policyReadBook.policy === 'Paid',
           requiresRegistration: res.policyReadBook.policy === 'Subscription'
-        } as Book | undefined
+        } as Bookv1 | undefined
       })
     )
   }
 
-  setCurrentBook(book: Book | null): void {
+  setCurrentBook(book: Bookv1 | null): void {
     this.currentBookSubject.next(book);
   }
 
-  createBook(book: Book): Observable<Book> {
+  createBook(book: Bookv1): Observable<Bookv1> {
     const urlCreateBook = "/book-authoring/book/create";
     return this.httpClient.post<any>(urlCreateBook,{
       title: book.title,
@@ -106,7 +106,7 @@ export class BookService {
       map(this.mapToBook))
   }
 
-  updateBook(book: Book): Observable<Book> {
+  updateBook(book: Bookv1): Observable<Bookv1> {
     const index = this.books.findIndex(b => b.id === book.id);
 
     if (index !== -1) {
@@ -225,7 +225,7 @@ export class BookService {
       chapterVersion: chapterVersion
     } as Chapter;
   }
-  private mapToBook(res: any): Book {
+  private mapToBook(res: any): Bookv1 {
     return {
       id: res.id,
       title: res.title,

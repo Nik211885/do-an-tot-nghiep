@@ -25,11 +25,9 @@ public record CreateBookCommand(
 public class CreateBookCommandHandler(IBookRepository bookRepository,
     IGenresRepository genresRepository,
     IIdentityProvider identityProvider,
-    ICache cache,
     ILogger<CreateBookCommandHandler> logger) 
     : ICommandHandler<CreateBookCommand, BookViewModel>
 {
-    private readonly ICache _cache = cache;
     private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IGenresRepository _genresRepository = genresRepository;
@@ -60,8 +58,6 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
         _logger.LogInformation("Create book {book}", book);
         _bookRepository.Create(book);
         await _bookRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
-        var cacheKey = string.Format(CacheKey.BookByUserId, identityProvider.UserIdentity());
-        await _cache.RemoveAsync(cacheKey);
         _logger.LogInformation("Created book success {book}", book);
         return book.MapToViewModel();
     }

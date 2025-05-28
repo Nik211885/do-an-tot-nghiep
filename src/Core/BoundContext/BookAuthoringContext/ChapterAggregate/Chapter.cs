@@ -106,6 +106,11 @@ public class Chapter
         RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id));
     }
 
+    public void Delete()
+    {
+        // You can add or mark chapter is having deleted or soft delete
+        RaiseDomainEvent(new DeletedChapterDomainEvent(this));
+    }
     private void LockedCanNotBeChanged()
     {
         if (IsLocked)

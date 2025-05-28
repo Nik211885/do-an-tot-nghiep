@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Book, Chapter } from '../../models/book.model';
+import { Bookv1, Chapter } from '../../models/book.model';
 import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
 import { DialogService } from '../../../../../shared/components/dialog/dialog.component.service';
@@ -14,7 +14,7 @@ import { DialogService } from '../../../../../shared/components/dialog/dialog.co
   styleUrl: './chapter-list.component.css'
 })
 export class ChapterListComponent implements OnInit {
-  book: Book | null = null;
+  book: Bookv1 | null = null;
   chapters: Chapter[] = [];
   bookSlug?: string;
   isLoading = true;
@@ -104,7 +104,7 @@ export class ChapterListComponent implements OnInit {
       console.log("Không gọi API vì dialog bị hủy hoặc thiếu chapter.id");
     }
   }
-  editBook(book: Book): void {
+  editBook(book: Bookv1): void {
     // In a real app, this would navigate to a book edit page
     console.log("aa")
     this.toastService.info('Book editing is not implemented in this demo');

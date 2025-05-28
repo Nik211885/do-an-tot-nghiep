@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Book } from '../../../models/book.model';
+import { Bookv1 } from '../../../models/book.model';
 
 @Component({
   selector: 'app-book-pricing-info',
@@ -11,19 +11,19 @@ import { Book } from '../../../models/book.model';
   styleUrl: './book-pricing-info.component.css'
 })
 export class BookPricingInfoComponent {
-  @Input() book: Book | null = null;
-  @Output() nextStep = new EventEmitter<Partial<Book>>();
+  @Input() book: Bookv1 | null = null;
+  @Output() nextStep = new EventEmitter<Partial<Bookv1>>();
   @Output() previousStep = new EventEmitter<void>();
-  
+
   pricingForm: FormGroup;
-  
+
   constructor(private fb: FormBuilder) {
     this.pricingForm = this.fb.group({
       isPaid: [false, Validators.required],
       price: [null],
       requiresRegistration: [false, Validators.required]
     });
-    
+
     // Add conditional validation for price
     this.pricingForm.get('isPaid')?.valueChanges.subscribe(isPaid => {
       const priceControl = this.pricingForm.get('price');
@@ -36,7 +36,7 @@ export class BookPricingInfoComponent {
       priceControl?.updateValueAndValidity();
     });
   }
-  
+
   ngOnInit(): void {
     if (this.book) {
       this.pricingForm.patchValue({
@@ -46,13 +46,13 @@ export class BookPricingInfoComponent {
       });
     }
   }
-  
+
   onNext(): void {
     if (this.pricingForm.valid) {
       this.nextStep.emit(this.pricingForm.value);
     }
   }
-  
+
   onPrevious(): void {
     this.previousStep.emit();
   }

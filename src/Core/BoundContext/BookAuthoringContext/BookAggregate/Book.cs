@@ -66,20 +66,26 @@ public class Book
         IsComplete = false;
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new CreatedBookDomainEvent(this));
+        RaiseDomainEvent(new CreatedBookDomainEvent(this, createdUserId));
         RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id, genres.ToArray()));
-    }   
+    }
+
     /// <summary>
     ///    Update policy reader book  and follow policy factory rule 
     /// </summary>
     /// <param name="policy">Policy in book</param>
     /// <param name="price">Price when policy is paid</param>
-
+    public void Delete()
+    {
+        // Like chapter
+        RaiseDomainEvent(new DeletedBookDomainEvent(this, CreatedUerId));
+    }
     public void UpdatePolicyReadBook(BookPolicy policy, decimal? price)
     {
         var policyReadBook = PolicyReadBook.CreatePolicy(policy, price);
         PolicyReadBook = policyReadBook;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new BookUpdatePolicyReaderBookDomainEvent(Id, policyReadBook,CreatedUerId));
     }
     /// <summary>
     ///    Add new tag and follower rule factory create tag and don't have
@@ -169,6 +175,7 @@ public class Book
     {
         BookReleaseType = bookReleaseType;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
+        RaiseDomainEvent(new BookChangedReleaseTypeDomainEvent(Id,  bookReleaseType,CreatedUerId));
     }
 
     /// <summary>
@@ -231,7 +238,7 @@ public class Book
         AvatarUrl = avatarUrl;
         Description = description;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new UpdatedBookDomainEvent(this));
+        RaiseDomainEvent(new UpdatedBookDomainEvent(this,CreatedUerId));
     }
     /// <summary>
     ///     Add new genre for book and one genre just has constance one book

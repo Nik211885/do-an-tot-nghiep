@@ -46,6 +46,10 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Book")
             .WithName("GetBookBySlug")
             .WithDescription("Get book by Slug");
+        apis.MapDelete("book/delete", BookAuthoringService.DeleteBook)
+            .WithTags("Book")
+            .WithName("DeleteBook")
+            .WithDescription("Delete book");
         
         
         // endpoint for genre
@@ -319,6 +323,14 @@ public static class BookAuthoringService
             [FromServices] BookAuthoringServiceWrapper service)
     {
         await service.FactoryHandler.Handler<DeleteChapterCommand, string>(command);
+        return TypedResults.NoContent();    
+    }
+    [Authorize]
+    public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        DeleteBook([AsParameters] DeleteBookCommand command,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        await service.FactoryHandler.Handler<DeleteBookCommand, string>(command);
         return TypedResults.NoContent();    
     }
 }

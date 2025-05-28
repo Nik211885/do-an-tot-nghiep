@@ -25,6 +25,10 @@ export const writeBook: Routes = [
       {
         path: 'books/:bookSlug/chapters/:chapterSlug/edit',
         loadComponent: ()=> import("../write-book/chapter/chapter-editor/chapter-editor.component").then(m=>m.ChapterEditorComponent),
+      },
+      {
+        path: 'books-information/:id',
+        loadComponent:()=> import("../write-book/admin-book/book-detail/book-detail.component").then(m=>m.BookDetailComponent)
       }
     ]
   }

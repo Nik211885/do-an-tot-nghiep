@@ -21,6 +21,7 @@ public class DeleteChapterCommandHandler(
     {
         var chapter = await _chapterRepository.FindByIdAsync(request.Id, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, "Chương");
+        chapter.Delete();
         _chapterRepository.Delete(chapter);
         _logger.LogInformation("Delete chapter has id {@Id}", chapter.Id);
         await _chapterRepository.UnitOfWork.SaveChangeAsync(cancellationToken);

@@ -2,7 +2,9 @@
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Helper;
+using Application.Interfaces.Cache;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using Microsoft.Extensions.Logging;

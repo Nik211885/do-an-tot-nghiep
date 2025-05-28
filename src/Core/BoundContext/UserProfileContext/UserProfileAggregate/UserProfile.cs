@@ -10,6 +10,8 @@ public class UserProfile : BaseEntity, IAggregateRoot
 {
     public Guid UserId { get; private set; }
     public string? Bio { get; private set; }
+    public int CountFollowing { get; private set; }
+    public int CoutFollowers { get; private set; }
     private List<Follower> _followers;
     public IReadOnlyList<Follower> Followers => _followers.AsReadOnly();
     private List<FavoriteBook> _favoriteItems;

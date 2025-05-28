@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import {AVAILABLE_GENRES, Book, Genre} from '../../../models/book.model';
+import {AVAILABLE_GENRES, Bookv1, Genre} from '../../../models/book.model';
 import {GenresService} from '../../../services/genere.service';
 
 @Component({
@@ -12,8 +12,8 @@ import {GenresService} from '../../../services/genere.service';
   styleUrl: './book-tags-genres.component.css'
 })
 export class BookTagsGenresComponent implements OnInit {
-  @Input() book: Book | null = null;
-  @Output() submitBook = new EventEmitter<Partial<Book>>();
+  @Input() book: Bookv1 | null = null;
+  @Output() submitBook = new EventEmitter<Partial<Bookv1>>();
   @Output() previousStep = new EventEmitter<void>();
   genres: Genre[] = [];
   tags: string[] = [];

@@ -29,4 +29,9 @@ public class BookRepository(BookAuthoringDbContext bookAuthoringDbContext)
         _bookAuthoringDbContext.Books.Update(book);
         return book;
     }
+
+    public void Delete(Book book)
+    {
+        _bookAuthoringDbContext.Books.Remove(book);
+    }
 }

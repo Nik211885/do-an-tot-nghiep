@@ -1,3 +1,5 @@
+import {Genre} from './book.model';
+
 export interface CreateBookCommand{
   title: string,
   avatarUrl?: string,
@@ -19,4 +21,22 @@ export enum BookReleaseType
 {
   Serialized = 1,
   Complete = 2
+}
+
+export interface BookResponse{
+  id: string;
+  title: string;
+  avatarUrl: string;
+  description: string;
+  createDateTimeOffset: Date;
+  lastUpdateDateTime: Date;
+  isComplete: boolean;
+  slug: string;
+  policyReadBook: {
+    price?: number;
+    policy: BookPolicy;
+  };
+  bookReleaseType: BookReleaseType;
+  tags: string[];
+  genres: Genre[]
 }

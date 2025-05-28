@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Book } from '../../../models/book.model';
+import { Bookv1 } from '../../../models/book.model';
 import { CommonModule } from '@angular/common';
 import {ImageUploadComponent} from '../../../../../../shared/components/image-upload/image-upload.component';
 
@@ -12,8 +12,8 @@ import {ImageUploadComponent} from '../../../../../../shared/components/image-up
   styleUrl: './book-basic-info.component.css'
 })
 export class BookBasicInfoComponent {
-  @Input() book: Book | null = null;
-  @Output() nextStep = new EventEmitter<Partial<Book>>();
+  @Input() book: Bookv1 | null = null;
+  @Output() nextStep = new EventEmitter<Partial<Bookv1>>();
 
   basicInfoForm: FormGroup;
   isUploading = false;

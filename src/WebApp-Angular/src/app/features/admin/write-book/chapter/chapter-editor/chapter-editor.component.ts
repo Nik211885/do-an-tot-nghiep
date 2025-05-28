@@ -3,7 +3,7 @@ import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFO
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import {Book, Chapter, ChapterVersion} from '../../models/book.model';
+import {Bookv1, Chapter, ChapterVersion} from '../../models/book.model';
 import { Subscription } from 'rxjs';
 import { BookService } from '../../services/book.service';
 import { ToastService } from '../../../../../shared/components/toast/toast.service';
@@ -92,7 +92,7 @@ OnDestroy, AfterViewInit {
   } as any;
 
 
-  book: Book | null = null;
+  book: Bookv1 | null = null;
   chapter= signal<Chapter | null>(null);
   chapterForm: FormGroup | null = null;
   isLoading = true;
