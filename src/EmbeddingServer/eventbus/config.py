@@ -1,0 +1,5 @@
+﻿HOST = "localhost"
+USER_NAME = "rabbitmq"
+PASSWORD = "211885"
+REQUEST_QUEUE = "vector-embedding-to-elastic"
+RESPONSE_QUEUE = "vector-embedding-response"

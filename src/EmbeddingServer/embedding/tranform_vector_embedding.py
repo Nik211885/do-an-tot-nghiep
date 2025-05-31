@@ -14,5 +14,6 @@ def tranform_vector_embedding(sentence):
     sentence_embedding = last_hidden_state[:, 0, :]
     return sentence_embedding.cpu().numpy()
 
-embedding = tranform_vector_embedding("Le Khac Ninh")
-print("Embedding shape:", embedding.shape)
+if __name__ == '__main__':
+    vector_embedding = tranform_vector_embedding('Le Khac Ninh')
+    print(f'Vector embdding for author Le Khac Ninh is {vector_embedding}')

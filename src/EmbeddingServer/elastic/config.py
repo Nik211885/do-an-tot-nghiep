@@ -1,0 +1,1 @@
+﻿URI = "localhost:9200"
