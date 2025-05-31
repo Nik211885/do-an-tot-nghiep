@@ -1,4 +1,5 @@
-﻿using Application.BoundContext.BookAuthoringContext.Validator.Chapter;
+﻿using Application.BoundContext.BookAuthoringContext.Message;
+using Application.BoundContext.BookAuthoringContext.Validator.Chapter;
 using Core.BoundContext.BookAuthoringContext.ChapterAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

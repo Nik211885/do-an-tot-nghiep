@@ -22,4 +22,13 @@
     <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BoundContext\ModerationContext\Command\" />
+    <Folder Include="BoundContext\ModerationContext\DomainEventHandler\" />
+    <Folder Include="BoundContext\ModerationContext\IntegrationEvent\" />
+    <Folder Include="BoundContext\ModerationContext\Query\" />
+    <Folder Include="BoundContext\ModerationContext\Validatior\" />
+    <Folder Include="BoundContext\ModerationContext\ViewModel\" />
+  </ItemGroup>
+
 </Project>

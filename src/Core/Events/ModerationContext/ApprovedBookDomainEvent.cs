@@ -1,10 +1,12 @@
-﻿namespace Core.Events.ModerationContext;
+﻿using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
-public class ApprovedBookDomainEvent(Guid approvalId, Guid bookId, Guid chapterId, string? note)
+namespace Core.Events.ModerationContext;
+
+public class ApprovedBookDomainEvent(Guid approvalId, Guid bookId, Guid chapterId, ApprovalDecision decision)
     : IEvent
 {
     public Guid ApprovalId { get; } = approvalId;
     public Guid BookId { get;} = bookId;
     public Guid ChapterId { get;} = chapterId;
-    public string? Note { get;} =  note;
+    public ApprovalDecision Decision { get;} =  decision;
 }

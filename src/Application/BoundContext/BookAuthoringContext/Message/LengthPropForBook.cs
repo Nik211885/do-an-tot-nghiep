@@ -1,4 +1,4 @@
-﻿namespace Application.BoundContext.BookAuthoringContext.Validator.Book;
+﻿namespace Application.BoundContext.BookAuthoringContext.Message;
 
 public static class LengthPropForBook
 {
