@@ -13,6 +13,7 @@ public class UserProfile : BaseEntity, IAggregateRoot
     public int CountFollowing { get; private set; }
     public int CoutFollowers { get; private set; }
     private List<Follower> _followers;
+    public int CountFavoriteBook { get; private set; }
     public IReadOnlyList<Follower> Followers => _followers.AsReadOnly();
     private List<FavoriteBook> _favoriteItems;
     public IReadOnlyCollection<FavoriteBook> FavoriteItems => _favoriteItems.AsReadOnly();
@@ -22,7 +23,6 @@ public class UserProfile : BaseEntity, IAggregateRoot
         UserId = userId;
         Bio = bio;
     }
-
     public void UpdateBio(string bio)
     {
         Bio = bio;
@@ -31,7 +31,7 @@ public class UserProfile : BaseEntity, IAggregateRoot
     {
         return new UserProfile(userId, bio);
     }
-
+    
     public void AddFollower(Guid followerId)
     {
         if (followerId == UserId)

@@ -1,12 +1,9 @@
 ﻿using System.Reflection;
 using Application.Behaviors;
 using Application.Interfaces.CQRS;
-using Application;
 using Application.Exceptions;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
 
 namespace Application;
 
@@ -22,6 +19,7 @@ public static class DependencyInjectionExtension
         var assembly = Assembly.GetExecutingAssembly();
         services.AddDomainEvents(assembly);
         services.AddHandler(assembly);
+        services.AddIntegrationEventHandler(assembly);
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
         services.AddTransient<ExceptionMiddlewareHandling>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));

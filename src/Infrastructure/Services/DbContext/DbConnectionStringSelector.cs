@@ -1,19 +1,19 @@
-﻿using Infrastructure.Configurations;
+﻿using Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.DbContext;
 
-public class DbConnectionStringSelector(IOptions<DatabaseConnectionString> optionDatabaseConnectionStrings) 
+public class DbConnectionStringSelector(IOptions<DatabaseConnectionStringOptions> optionDatabaseConnectionStrings) 
     : IDbConnectionStringSelector
 {
-    private readonly DatabaseConnectionString _connectionString = optionDatabaseConnectionStrings.Value;
+    private readonly DatabaseConnectionStringOptions _connectionStringOptions = optionDatabaseConnectionStrings.Value;
     private int _currentSlaveDbIndex = 0;
     /// <summary>
     ///  In architecture, I have set up one master database
     /// </summary>
     /// <returns></returns>
     public string? GetMasterDbConnectionString()
-        => _connectionString.Master;
+        => _connectionStringOptions.Master;
     /// <summary>
     ///     Get slave db with algorithm round-robin
     /// </summary>
@@ -23,10 +23,10 @@ public class DbConnectionStringSelector(IOptions<DatabaseConnectionString> optio
     /// </returns>
     public string? GetSlaveDbConnectionString()
     {
-        var slaveConnectionStrings = _connectionString.Slaves;
+        var slaveConnectionStrings = _connectionStringOptions.Slaves;
         if (slaveConnectionStrings is null || slaveConnectionStrings.Length == 0)
         {
-            return _connectionString.Master;
+            return _connectionStringOptions.Master;
         }
         var slaveConnectionString = slaveConnectionStrings.ElementAt(_currentSlaveDbIndex);
         _currentSlaveDbIndex = (_currentSlaveDbIndex + 1) % slaveConnectionStrings.Length;

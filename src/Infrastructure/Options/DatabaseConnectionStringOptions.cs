@@ -1,8 +1,8 @@
-﻿namespace Infrastructure.Configurations;
+﻿namespace Infrastructure.Options;
 /// <summary>
 /// 
 /// </summary>
-public class DatabaseConnectionString
+public class DatabaseConnectionStringOptions
 {
     public string? Master { get; set; }
     public string[]? Slaves { get; set; }

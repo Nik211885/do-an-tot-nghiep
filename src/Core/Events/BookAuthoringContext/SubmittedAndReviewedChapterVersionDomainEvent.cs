@@ -1,6 +1,15 @@
 ﻿namespace Core.Events.BookAuthoringContext;
 
-public class SubmittedAndReviewedChapterVersionDomainEvent(Guid chapterVersionId) : IEvent
+public class SubmittedAndReviewedChapterVersionDomainEvent : IEvent
 {
-    public Guid ChapterVersionId { get; } = chapterVersionId;
+    public SubmittedAndReviewedChapterVersionDomainEvent()
+    {
+        
+    }
+    public Guid ChapterVersionId { get; }
+
+    public SubmittedAndReviewedChapterVersionDomainEvent(Guid chapterVersionId)
+    {
+        ChapterVersionId = chapterVersionId;
+    }
 }

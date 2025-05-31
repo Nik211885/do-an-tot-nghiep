@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Application.Interfaces.Cache;
 using Application.Interfaces.IdentityProvider;
-using Infrastructure.Configurations;
+using Infrastructure.Options;
 using Infrastructure.Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,14 +10,14 @@ namespace Infrastructure.Services.Keycloak;
 
 public class HttpClientKeyCloakInterceptor(IIdentityProviderServices identityProviderServices,
     ILogger<HttpClientKeyCloakInterceptor> logger,
-    IOptions<KeycloakConfiguration> keycloakConfiguration,
+    IOptions<KeycloakOptions> keycloakConfiguration,
     ICache cache) 
     : DelegatingHandler
 {
     private readonly ICache _cache = cache;
     private readonly ILogger<HttpClientKeyCloakInterceptor> _logger = logger;
     private readonly IIdentityProviderServices _identityProviderServices = identityProviderServices;
-    private readonly IOptions<KeycloakConfiguration> _keycloakConfiguration = keycloakConfiguration;
+    private readonly IOptions<KeycloakOptions> _keycloakConfiguration = keycloakConfiguration;
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         if (request.Content?.Headers.ContentType is { MediaType: "application/x-www-form-urlencoded" })

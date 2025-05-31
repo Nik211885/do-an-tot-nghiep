@@ -10,7 +10,7 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
   templateUrl: './book-detail.component.html',
   styleUrls: ['./book-detail.component.css']
 })
-export class BookListComponent implements OnInit {
+export class BookDetailComponent implements OnInit {
   bookId!: string;
   constructor( private route: ActivatedRoute) {
   }

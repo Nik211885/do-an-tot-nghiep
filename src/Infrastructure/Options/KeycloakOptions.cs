@@ -1,6 +1,6 @@
-﻿namespace Infrastructure.Configurations;
+﻿namespace Infrastructure.Options;
 
-public class KeycloakConfiguration
+public class KeycloakOptions
 {
     public string AddressUrl { get; set; }
     public string Realm { get; set; }

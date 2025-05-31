@@ -1,6 +1,6 @@
-﻿namespace Infrastructure.Configurations;
+﻿namespace Infrastructure.Options;
 
-public class CloudinaryUploadFileConfiguration
+public class CloudinaryUploadFileOptions
 {
     public string UrlUpload { get; set; }
     public string CloudName { get; set; }

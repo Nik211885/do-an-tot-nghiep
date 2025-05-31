@@ -1,18 +1,18 @@
 ﻿using System.Net.Http.Json;
 using Application.Interfaces.IdentityProvider;
 using Application.Models.KeyCloak;
-using Infrastructure.Configurations;
+using Infrastructure.Options;
 using Infrastructure.Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.Keycloak;
 
-public class KeycloakServices(IOptions<KeycloakConfiguration> keyCloakConfiguration,
+public class KeycloakServices(IOptions<KeycloakOptions> keyCloakConfiguration,
     IHttpClientFactory clientFactory,
     ILogger<KeycloakServices> logger) : IIdentityProviderServices
 {
-    private readonly KeycloakConfiguration _keyCloakConfiguration = keyCloakConfiguration.Value;
+    private readonly KeycloakOptions _keyCloakOptions = keyCloakConfiguration.Value;
     private readonly IHttpClientFactory _clientFactory = clientFactory;
     private readonly ILogger<KeycloakServices> _logger = logger;
     public async Task<TokenResult> GetTokenAsync()
@@ -20,13 +20,13 @@ public class KeycloakServices(IOptions<KeycloakConfiguration> keyCloakConfigurat
         var request = new Dictionary<string, string>()
         {
             { "grant_type", "client_credentials" },
-            { "client_id", _keyCloakConfiguration.ClientId },
-            { "client_secret", _keyCloakConfiguration.ClientSecret },
+            { "client_id", _keyCloakOptions.ClientId },
+            { "client_secret", _keyCloakOptions.ClientSecret },
         };
         var requestFromUrlencodedContent = new FormUrlEncodedContent(request);
         try
         {
-            var response = await GetHttpClient().PostAsync(string.Format(KeycloakApiUri.Token,_keyCloakConfiguration.Realm), requestFromUrlencodedContent);
+            var response = await GetHttpClient().PostAsync(string.Format(KeycloakApiUri.Token,_keyCloakOptions.Realm), requestFromUrlencodedContent);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError("Error getting token in keycloak: {response}", response.ReasonPhrase);
@@ -49,7 +49,7 @@ public class KeycloakServices(IOptions<KeycloakConfiguration> keyCloakConfigurat
 
     public async Task<UserInfo?> GetUserInfoAsync(string id)
     {
-        var response = await GetHttpClient().GetAsync(string.Format(KeycloakApiUri.GetUserInfo,_keyCloakConfiguration.Realm, id));
+        var response = await GetHttpClient().GetAsync(string.Format(KeycloakApiUri.GetUserInfo,_keyCloakOptions.Realm, id));
         return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<UserInfo>() : null;
     }
     private HttpClient GetHttpClient()

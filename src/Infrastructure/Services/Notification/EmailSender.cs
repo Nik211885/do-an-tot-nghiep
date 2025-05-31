@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces.Notification;
-using Infrastructure.Configurations;
+using Infrastructure.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -7,18 +7,18 @@ using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Infrastructure.Services.Notification;
 
-public class EmailSender(IOptions<MailSettingConfiguration> mailSettingConfiguration,
+public class EmailSender(IOptions<MailSettingOptions> mailSettingConfiguration,
     ILogger<EmailSender> logger) 
     : IEmailSender
 {
     private readonly ILogger<EmailSender> _logger = logger;
-    private readonly MailSettingConfiguration _mailSettingConfiguration = mailSettingConfiguration.Value;
+    private readonly MailSettingOptions _mailSettingOptions = mailSettingConfiguration.Value;
     public async Task SendEmailAsync(string to, string body, string subject, string? nameTo = null, bool isLink = false)
     {
         try
         {
             var emailMessage = new MimeMessage();
-            var emailForm = new MailboxAddress(_mailSettingConfiguration.Name, _mailSettingConfiguration.EmailId);
+            var emailForm = new MailboxAddress(_mailSettingOptions.Name, _mailSettingOptions.EmailId);
             emailMessage.From.Add(emailForm);
             nameTo ??= to.Split("@")[0];
             var emailTo = new MailboxAddress(nameTo, to);
@@ -35,8 +35,8 @@ public class EmailSender(IOptions<MailSettingConfiguration> mailSettingConfigura
             }
             emailMessage.Body = bodyBuilder.ToMessageBody();
             var mailClient = new SmtpClient();
-            await mailClient.ConnectAsync(_mailSettingConfiguration.Host, _mailSettingConfiguration.Port, _mailSettingConfiguration.UseSSL);
-            await mailClient.AuthenticateAsync(_mailSettingConfiguration.EmailId, _mailSettingConfiguration.PasswordApplication);
+            await mailClient.ConnectAsync(_mailSettingOptions.Host, _mailSettingOptions.Port, _mailSettingOptions.UseSSL);
+            await mailClient.AuthenticateAsync(_mailSettingOptions.EmailId, _mailSettingOptions.PasswordApplication);
             await mailClient.SendAsync(emailMessage);
             await mailClient.DisconnectAsync(true);
             mailClient.Dispose();

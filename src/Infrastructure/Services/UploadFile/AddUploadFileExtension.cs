@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces.UploadFile;
 using CloudinaryDotNet;
-using Infrastructure.Configurations;
+using Infrastructure.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -20,7 +20,7 @@ public static class AddUploadFileExtension
     public static IServiceCollection AddUploadFileWithCloudinary(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var cloudinaryUploadFileConfiguration = serviceProvider.GetRequiredService<IOptions<CloudinaryUploadFileConfiguration>>().Value
+        var cloudinaryUploadFileConfiguration = serviceProvider.GetRequiredService<IOptions<CloudinaryUploadFileOptions>>().Value
             ?? throw new Exception("You can't configure Cloudinary upload configuration with key [UploadFile:Cloudinary]");
         var account = new Account()
         {

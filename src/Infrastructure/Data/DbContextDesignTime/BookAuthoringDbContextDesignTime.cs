@@ -1,4 +1,4 @@
-﻿using Infrastructure.Configurations;
+﻿using Infrastructure.Options;
 using Infrastructure.Data.DbContext;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.CQRS;
@@ -24,7 +24,7 @@ public class BookAuthoringDbContextDesignTime : IDesignTimeDbContextFactory<Book
         optionsBuilder.UseNpgsql(masterConnectionString);
         return new BookAuthoringDbContext(optionsBuilder.Options,
             new DbConnectionStringSelector(
-                Options.Create(new DatabaseConnectionString()
+                Microsoft.Extensions.Options.Options.Create(new DatabaseConnectionStringOptions()
                     {Master = masterConnectionString})),
             new DispatcherDomainEventInterceptors(new EventDispatcher(null,null)));
     }

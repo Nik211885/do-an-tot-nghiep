@@ -1,7 +1,6 @@
 using System.Reflection;
 using Application;
 using Application.Exceptions;
-using Application.Helper;
 using Infrastructure;
 using PublicAPI.Services;
 using PublicAPI.Services.Endpoint;

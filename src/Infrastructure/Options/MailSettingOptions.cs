@@ -1,6 +1,6 @@
-﻿namespace Infrastructure.Configurations;
+﻿namespace Infrastructure.Options;
 
-public class MailSettingConfiguration
+public class MailSettingOptions
 {
     public string Host { get; set; }
     public int Port { get; set; }
