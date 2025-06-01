@@ -6,37 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Data.Migrations.ModerationContext
 {
     /// <inheritdoc />
-    public partial class InitModeratorDbContext : Migration
+    public partial class MergeCopyChapterToAppore : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "Moderation");
-
-            migrationBuilder.CreateTable(
-                name: "CopyrightChapters",
-                schema: "Moderation",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BookId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BookTitle = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ChapterId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChapterTitle = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ChapterContent = table.Column<string>(type: "text", nullable: false),
-                    ChapterContentPlainText = table.Column<string>(type: "text", nullable: false),
-                    DigitalSignature_SignatureValue = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    DigitalSignature_SignatureAlgorithm = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    DigitalSignature_SigningDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    DateTimeCopyright = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CopyrightChapters", x => x.Id);
-                });
 
             migrationBuilder.CreateTable(
                 name: "BookApprovals",
@@ -51,17 +27,19 @@ namespace Infrastructure.Data.Migrations.ModerationContext
                     ContentHash = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: false),
-                    CopyrightChapterId = table.Column<Guid>(type: "uuid", nullable: true)
+                    CopyrightChapter_BookTitle = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    CopyrightChapter_ChapterTitle = table.Column<string>(type: "text", nullable: true),
+                    CopyrightChapter_ChapterContent = table.Column<string>(type: "text", nullable: true),
+                    CopyrightChapter_ChapterContentPlainText = table.Column<string>(type: "text", nullable: true),
+                    CopyrightChapter_DigitalSignature_SignatureValue = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CopyrightChapter_DigitalSignature_SignatureAlgorithm = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CopyrightChapter_DigitalSignature_SigningDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CopyrightChapter_DateTimeCopyright = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CopyrightChapter_IsActive = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookApprovals", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BookApprovals_CopyrightChapters_CopyrightChapterId",
-                        column: x => x.CopyrightChapterId,
-                        principalSchema: "Moderation",
-                        principalTable: "CopyrightChapters",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -94,12 +72,6 @@ namespace Infrastructure.Data.Migrations.ModerationContext
                 schema: "Moderation",
                 table: "ApprovalDecisions",
                 column: "BookApprovalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookApprovals_CopyrightChapterId",
-                schema: "Moderation",
-                table: "BookApprovals",
-                column: "CopyrightChapterId");
         }
 
         /// <inheritdoc />
@@ -111,10 +83,6 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
             migrationBuilder.DropTable(
                 name: "BookApprovals",
-                schema: "Moderation");
-
-            migrationBuilder.DropTable(
-                name: "CopyrightChapters",
                 schema: "Moderation");
         }
     }

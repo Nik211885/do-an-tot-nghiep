@@ -213,7 +213,7 @@ public static class BookAuthoringService
         RenameChapterVersion([AsParameters]  RenameChapterVersionCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
     {
-        var result = await service.FactoryHandler
+        _ = await service.FactoryHandler
             .Handler<RenameChapterVersionCommand, string>(request);
         return TypedResults.NoContent();
     }

@@ -3,10 +3,15 @@
 public class SubmittedAndReviewedChapterVersionIntegrationEvent
     : Models.EventBus.IntegrationEvent
 {
-    public Guid ChapterVersionId { get; }
-
-     public SubmittedAndReviewedChapterVersionIntegrationEvent(Guid chapterVersionId)
+    public Guid ChapterId { get; }
+    public string Content { get; }
+    public Guid BookId { get; } 
+    public Guid AuthorId { get; }
+     public SubmittedAndReviewedChapterVersionIntegrationEvent(Guid chapterId, Guid bookId, Guid authorId, string content)
      {
-         ChapterVersionId = chapterVersionId;
+         BookId = bookId;
+         AuthorId = authorId;
+         Content = content; 
+         ChapterId = chapterId;
      }
 }

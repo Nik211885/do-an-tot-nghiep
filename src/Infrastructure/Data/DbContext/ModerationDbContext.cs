@@ -14,11 +14,9 @@ public class ModerationDbContext(DbContextOptions<ModerationDbContext> options,
 {
     public DbSet<BookApproval> BookApprovals { get; set; }
     public DbSet<ApprovalDecision>  ApprovalDecisions { get; set; }
-    public DbSet<CopyrightChapter> CopyrightChapters { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ApprovalDecisionConfiguration())
-            .ApplyConfiguration(new BookApprovalConfiguration())
-            .ApplyConfiguration(new CopyrightChapterConfiguration());
+            .ApplyConfiguration(new BookApprovalConfiguration());
     }
 }

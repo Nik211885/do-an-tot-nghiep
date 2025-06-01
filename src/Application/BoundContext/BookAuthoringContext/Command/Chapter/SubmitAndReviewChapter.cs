@@ -2,6 +2,7 @@
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Exceptions;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.IdentityProvider;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using Microsoft.Extensions.Logging;
 
@@ -12,9 +13,11 @@ public record SubmitAndReviewChapterCommand(Guid Id)
 
 public class SubmitAndReviewChapterCommandHandler(
     ILogger<SubmitAndReviewChapterCommandHandler> logger,
+    IIdentityProvider identityProvider,
     IChapterRepository chapterRepository)
     : ICommandHandler<SubmitAndReviewChapterCommand, ChapterViewModel>
 {
+    private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly ILogger<SubmitAndReviewChapterCommandHandler> _logger = logger;
     private readonly IChapterRepository _chapterRepository = chapterRepository;
     public async Task<ChapterViewModel> Handle(SubmitAndReviewChapterCommand request, CancellationToken cancellationToken)
@@ -23,7 +26,7 @@ public class SubmitAndReviewChapterCommandHandler(
         // in to message bus
         var chapter = await _chapterRepository.FindByIdAsync(request.Id,cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.Id));
-        chapter.SubmitAndReview();
+        chapter.SubmitAndReview(_identityProvider.UserIdentity());
         _logger.LogInformation("Submit and review chapterId: {chapterId}", chapter.Id);
         _chapterRepository.Update(chapter);
         await _chapterRepository.UnitOfWork.SaveChangeAsync(cancellationToken);

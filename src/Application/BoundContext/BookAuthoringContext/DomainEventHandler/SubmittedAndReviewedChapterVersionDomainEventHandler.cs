@@ -19,6 +19,12 @@ public class SubmittedAndReviewedChapterVersionDomainEventHandler
     }
     public async Task Handler(SubmittedAndReviewedChapterVersionDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        await _eventBus.Publish(new SubmittedAndReviewedChapterVersionIntegrationEvent(domainEvent.ChapterVersionId), cancellationToken);
+        var integrationEvents = new SubmittedAndReviewedChapterVersionIntegrationEvent(
+            chapterId: domainEvent.ChapterVersionId,
+            bookId: domainEvent.BookId,
+            authorId: domainEvent.AuthorId,
+            content: domainEvent.Content
+        );
+        await _eventBus.Publish(integrationEvents, cancellationToken);
     }
 }

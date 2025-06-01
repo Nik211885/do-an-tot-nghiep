@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Application.BoundContext.BookAuthoringContext.IntegrationEvent.Event;
-using Application.BoundContext.BookAuthoringContext.IntegrationEvent.EventHandler;
 using Application.Interfaces.EventBus;
 using Application.Models.EventBus;
 using Infrastructure.Options;

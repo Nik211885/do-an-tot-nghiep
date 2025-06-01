@@ -23,7 +23,7 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
             return value;
         }
         // you cant throw authorization when not find id in access token
-        throw new Exception("Invalid user identity");
+        return Guid.Parse("00000000-0000-0000-0000-000000000000");
     }
 
     /// <summary>

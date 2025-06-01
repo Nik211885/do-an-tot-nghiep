@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\BookAuthoringContext\" />
-    <Folder Include="Data\Migrations\ModerationContext\" />
   </ItemGroup>
 
 </Project>

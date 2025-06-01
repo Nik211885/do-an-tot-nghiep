@@ -98,12 +98,12 @@ public class Chapter
         chapterVersion.RenameVersion(newNameVersion);
     }
     
-    public void SubmitAndReview()
+    public void SubmitAndReview(Guid userId)
     {
         LockedCanNotBeChanged();
         Status = ChapterStatus.Submitted;
         Locked();
-        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id));
+        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id, BookId, userId, Content));
     }
 
     public void Delete()

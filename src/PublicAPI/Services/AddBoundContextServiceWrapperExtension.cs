@@ -7,6 +7,7 @@ public static class AddBoundContextServiceWrapperExtension
     public static IServiceCollection AddServiceWrapper(this IServiceCollection services)
     {
         services.AddScoped<BookAuthoringServiceWrapper>();
+        services.AddScoped<ModerationServiceWrapper>();
         return services;
     }
 }
