@@ -9,6 +9,7 @@ public abstract class BaseEntity
     /// <summary>
     ///     Identity for entity it follows id is uuid7
     /// </summary>
+    /// 
     public Guid Id { get; private set; }
 
     /// <summary>

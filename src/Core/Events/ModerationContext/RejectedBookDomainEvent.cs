@@ -2,11 +2,13 @@
 
 namespace Core.Events.ModerationContext;
 
-public class RejectedBookDomainEvent(Guid approvalId, Guid bookId, Guid chapterId, ApprovalDecision reason)
+public class RejectedBookDomainEvent
     : IEvent
 {
-    public Guid ApprovalId { get; } = approvalId;
-    public Guid BookId { get;} = bookId;
-    public Guid ChapterId { get;} = chapterId;
-    public ApprovalDecision Reason { get;} =  reason;
+    public BookApproval Approval { get; }
+
+    public RejectedBookDomainEvent(BookApproval approval)
+    {
+        Approval = approval;
+    }
 }

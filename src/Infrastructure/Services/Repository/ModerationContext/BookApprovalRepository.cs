@@ -22,9 +22,8 @@ public class BookApprovalRepository(ModerationDbContext moderationDbContext)
         return bookApproval;
     }
 
-    public BookApproval Add(BookApproval bookApproval, CancellationToken cancellationToken = default)
+    public BookApproval Create(BookApproval bookApproval, CancellationToken cancellationToken = default)
     {
-        _moderationDbContext.BookApprovals.Add(bookApproval);
-        return bookApproval;
+        return _moderationDbContext.BookApprovals.Add(bookApproval).Entity;
     }
 }

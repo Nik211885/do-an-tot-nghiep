@@ -12,4 +12,9 @@ public static class HttpClientKeyFactory
     /// 
     /// </summary>
     public const string BankMomoKey = nameof(BankMomoKey);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public const string EmbeddingServer = nameof(EmbeddingServer);
 }

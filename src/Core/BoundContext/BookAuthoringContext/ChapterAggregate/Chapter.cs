@@ -100,7 +100,10 @@ public class Chapter
     
     public void SubmitAndReview(Guid userId)
     {
-        LockedCanNotBeChanged();
+        if (Status == ChapterStatus.Submitted)
+        {
+            ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YouHasSubmitChapter);
+        }
         Status = ChapterStatus.Submitted;
         Locked();
         RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id, BookId, userId, Content));
@@ -108,10 +111,11 @@ public class Chapter
 
     public void Delete()
     {
+        LockedCanNotBeChanged();
         // You can add or mark chapter is having deleted or soft delete
         RaiseDomainEvent(new DeletedChapterDomainEvent(this));
     }
-    private void LockedCanNotBeChanged()
+    public void LockedCanNotBeChanged()
     {
         if (IsLocked)
         {

@@ -39,21 +39,20 @@ public class DispatcherDomainEventInterceptors(IEventDispatcher eventDispatcher)
         if (context == null) return;
         
         var entities = context.ChangeTracker
-                .Entries<BaseEntity>()
-                .Where(x => x.Entity.DomainEvents is not null && x.Entity.DomainEvents.Any())
-                .Select(x => x.Entity)
-                .ToList();
+            .Entries<BaseEntity>()
+            .Where(x => x.Entity.DomainEvents is not null && x.Entity.DomainEvents.Any())
+            .Select(x => x.Entity)
+            .ToList();
         var events = entities
-                .SelectMany(e => e.DomainEvents!)
-                .ToList();
-        if (events.Any())
-        {
-            await _eventDispatcher.Dispatch(events.AsReadOnly(), cancellationToken);
-        }
-
+            .SelectMany(e => e.DomainEvents!)
+            .ToList();
         foreach (var entity in entities)
         {
             entity.ClearDomainEvents();
+        }
+        if (events.Any())
+        {
+            await _eventDispatcher.Dispatch(events.AsReadOnly(), cancellationToken);
         }
     }
 }

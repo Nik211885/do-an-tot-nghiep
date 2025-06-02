@@ -42,25 +42,14 @@ public class BookApproval : BaseEntity, IAggregateRoot
         _decision.Add(decision);
         Status = BookApprovalStatus.Rejected;
         CopyrightChapter?.UnActive();
-        RaiseDomainEvent(new RejectedBookDomainEvent(Id, BookId, ChapterId, decision));
+        RaiseDomainEvent(new RejectedBookDomainEvent(this));
     }
 
-    public void Approve(Guid moderatorId, string bookTitle,string chapterTitle, string chapterContent, string chapterContentPlainText,
-        string signatureValue,string signatureAlgorithm,bool isAutomated,string? note = null)
+    public void Approve(Guid? moderatorId,string? note ,bool isAutomated)
     {
         var decision = ApprovalDecision.Create(moderatorId, note, isAutomated, BookApprovalStatus.Approved);
         _decision.Add(decision);
         Status = BookApprovalStatus.Approved;
-        if (CopyrightChapter is null)
-        {
-            CopyrightChapter = CopyrightChapter.Create(bookTitle,
-                chapterTitle, chapterContent, chapterContentPlainText, signatureValue, signatureAlgorithm);
-        }
-        else
-        {
-            CopyrightChapter.Update(bookTitle, chapterTitle, chapterContent, chapterContentPlainText, signatureValue,
-                signatureAlgorithm);
-        }
-        RaiseDomainEvent(new ApprovedBookDomainEvent(Id, BookId, ChapterId, decision));
+        RaiseDomainEvent(new ApprovedBookDomainEvent(this));
     }
 }

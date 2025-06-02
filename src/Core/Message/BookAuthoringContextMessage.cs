@@ -48,4 +48,7 @@ public static class BookAuthoringContextMessage
 
     public const string CanNoFindYourChapterVersion
         = "Không tìm thấy phiên bản mà bạn đã chọn!";
+
+    public const string YouHasSubmitChapter
+        = "Bạn đã gửi rồi vùi lòng chờ ít thời gian để chúng tôi kiểm tr tác phẩm của bạn";
 }

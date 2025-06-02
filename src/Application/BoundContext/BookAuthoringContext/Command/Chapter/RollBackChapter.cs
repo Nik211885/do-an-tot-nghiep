@@ -25,7 +25,7 @@ public class RollBackChapterCommandHandler(
     {
         var chapter = await _chapterRepository.FindByIdAsync(request.ChapterId, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.ChapterId));
-        
+        chapter.LockedCanNotBeChanged();
         var chapterDiffDataKey = string.Format(CacheKey.ChapterRollBack, request.ChapterId, request.ChapterVersionId);
         var chapterDiffData = await _cache.GetAsync<ChapterRollBackData>(chapterDiffDataKey);
         if (chapterDiffData is null)
