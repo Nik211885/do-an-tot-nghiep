@@ -1,0 +1,406 @@
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 relative overflow-hidden">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)] pointer-events-none"></div>
+  <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-200/30 to-transparent rounded-full blur-3xl"></div>
+
+  <div class="relative max-w-7xl mx-auto px-8 py-20">
+    <!-- Header -->
+    <div class="mb-20 text-center">
+      <h1 class="text-6xl font-extralight text-slate-800 mb-6 tracking-tight">
+        Thông tin
+        <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-light">
+          Sách
+        </span>
+      </h1>
+      <div class="flex justify-center">
+        <div class="w-32 h-1 bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 rounded-full shadow-lg"></div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="!book" class="grid grid-cols-1 lg:grid-cols-5 gap-16">
+      <!-- Image Skeleton -->
+      <div class="lg:col-span-2">
+        <div class="aspect-[3/4] bg-gradient-to-br from-slate-100 via-indigo-50 to-purple-100 rounded-3xl animate-pulse shadow-2xl border border-white/50"></div>
+      </div>
+
+      <!-- Form Skeleton -->
+      <div class="lg:col-span-3 space-y-16">
+        <div class="space-y-12">
+          <!-- Skeletons with glassmorphism -->
+          <div class="animate-pulse space-y-4">
+            <div class="h-6 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl w-28 shadow-sm"></div>
+            <div class="h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl shadow-lg border border-white/50"></div>
+          </div>
+
+          <div class="animate-pulse space-y-4">
+            <div class="h-6 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl w-20 shadow-sm"></div>
+            <div class="h-40 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl shadow-lg border border-white/50"></div>
+          </div>
+
+          <div class="animate-pulse space-y-6">
+            <div class="h-6 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl w-16 shadow-sm"></div>
+            <div class="flex gap-4">
+              <div class="h-10 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full w-24 shadow-md"></div>
+              <div class="h-10 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full w-32 shadow-md"></div>
+              <div class="h-10 bg-gradient-to-r from-cyan-200 to-blue-200 rounded-full w-20 shadow-md"></div>
+            </div>
+            <div class="h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl shadow-lg border border-white/50"></div>
+          </div>
+
+          <div class="animate-pulse space-y-6">
+            <div class="h-6 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl w-24 shadow-sm"></div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div class="h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl shadow-md"></div>
+              <div class="h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl shadow-md"></div>
+              <div class="h-14 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-2xl shadow-md"></div>
+              <div class="h-14 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl shadow-md"></div>
+              <div class="h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl shadow-md"></div>
+              <div class="h-14 bg-gradient-to-br from-rose-100 to-pink-100 rounded-2xl shadow-md"></div>
+            </div>
+          </div>
+
+          <div class="animate-pulse space-y-6">
+            <div class="h-6 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl w-40 shadow-sm"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="h-36 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-3xl shadow-xl"></div>
+              <div class="h-36 bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl shadow-xl"></div>
+              <div class="h-36 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-3xl shadow-xl"></div>
+            </div>
+          </div>
+
+          <div class="flex justify-center pt-8">
+            <div class="h-16 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-2xl w-44 animate-pulse shadow-xl"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actual Form -->
+    <form (ngSubmit)="updateBook()" [formGroup]="form" *ngIf="book" class="grid grid-cols-1 lg:grid-cols-5 gap-16">
+      <!-- Image Section -->
+      <div class="lg:col-span-2">
+        <div class="group relative">
+          <div class="aspect-[3/4] bg-white/70 backdrop-blur-xl border-2 border-white/30 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] hover:-rotate-1 relative">
+            <!-- Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <!-- Text centered (flex) -->
+            <div class="absolute inset-0 flex justify-center py-5">
+              <span class="text-slate-500 text-base font-medium text-base font-semibold text-slate-700">Ảnh bìa</span>
+            </div>
+
+            <!-- Image Upload -->
+            <app-image-upload
+              [imageUrl]="book.coverImage ?? ''"
+              class="relative z-10 w-full h-full flex items-center justify-center">
+            </app-image-upload>
+          </div>
+
+          <!-- Floating decorations -->
+          <div class="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full shadow-lg opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute -bottom-4 -left-4 w-6 h-6 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full shadow-lg opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <div class="lg:col-span-3 space-y-16">
+
+        <!-- Basic Info -->
+        <div class="space-y-12">
+          <div class="group">
+            <label for="title" class="block text-base font-semibold text-slate-700 mb-5 flex items-center">
+              <span class="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-3"></span>
+              Tên sách <span class="text-rose-500 ml-1">*</span>
+            </label>
+            <div class="relative">
+              <input
+                formControlName="title"
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Nhập tên sách của bạn..."
+                class="w-full px-8 py-5 border-2 border-slate-200/60 rounded-2xl bg-white/80 backdrop-blur-sm
+                       focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-400
+                       hover:border-slate-300/80 hover:bg-white/90 transition-all duration-300 font-medium text-slate-700
+                       placeholder:text-slate-400 shadow-lg hover:shadow-xl"
+              />
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </div>
+          </div>
+
+          <div class="group">
+            <label for="description" class="block text-base font-semibold text-slate-700 mb-5 flex items-center">
+              <span class="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3"></span>
+              Mô tả <span class="text-rose-500 ml-1">*</span>
+            </label>
+            <div class="relative">
+              <textarea
+                formControlName="description"
+                id="description"
+                name="description"
+                rows="6"
+                placeholder="Viết mô tả hấp dẫn về cuốn sách của bạn..."
+                class="w-full px-8 py-5 border-2 border-slate-200/60 rounded-2xl bg-white/80 backdrop-blur-sm
+                       focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-400
+                       hover:border-slate-300/80 hover:bg-white/90 transition-all duration-300 font-medium text-slate-700
+                       placeholder:text-slate-400 resize-none shadow-lg hover:shadow-xl">
+              </textarea>
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags Section -->
+        <div class="space-y-6">
+          <label class="block text-base font-semibold text-slate-700 flex items-center">
+            <span class="w-2 h-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mr-3"></span>
+            Thẻ từ khóa
+          </label>
+
+          <!-- Tags Display -->
+          <div class="min-h-[80px] flex flex-wrap gap-3 p-6 border-2 border-slate-200/60 rounded-2xl bg-white/50 backdrop-blur-sm shadow-inner">
+            <span
+              *ngFor="let tag of book.tags"
+              class="group inline-flex items-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 hover:-rotate-1"
+            >
+              <span class="mr-2">🏷️</span>
+              {{ tag }}
+              <button
+                type="button"
+                (click)="removeTag(tag)"
+                class="ml-3 text-white/70 hover:text-white hover:bg-white/20 rounded-full w-6 h-6 flex items-center justify-center transition-all duration-200 hover:rotate-90"
+              >
+                ×
+              </button>
+            </span>
+            <div *ngIf="book.tags.length === 0" class="flex items-center text-slate-500 text-base font-medium">
+              <span class="mr-2">✨</span>
+              Chưa có thẻ nào được thêm
+            </div>
+          </div>
+
+          <!-- Tag Input -->
+          <div class="flex shadow-xl rounded-2xl overflow-hidden border border-white/30">
+            <input
+              type="text"
+              formControlName="tagName"
+              id="tagName"
+              class="flex-1 px-6 py-4 border-2 border-slate-200/60 border-r-0 bg-white/80 backdrop-blur-sm
+                     focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-400
+                     font-medium text-slate-700 placeholder:text-slate-400"
+              placeholder="Thêm thẻ mới..."
+              (keydown.enter)="$event.preventDefault(); addTag()"
+            >
+            <button
+              type="button"
+              (click)="addTag()"
+              class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold
+                     hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/30
+                     transition-all duration-200 transform hover:scale-105 active:scale-95 relative overflow-hidden"
+            >
+              <span class="relative z-10">Thêm</span>
+              <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Genres Section -->
+        <div class="space-y-6">
+          <label class="block text-base font-semibold text-slate-700 flex items-center">
+            <span class="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3"></span>
+            Thể loại <span class="text-rose-500 ml-1">*</span>
+          </label>
+          <div *ngIf="genres" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <button
+              *ngFor="let genre of genres"
+              type="button"
+              (click)="toggleGenre(genre)"
+              class="group px-6 py-4 text-sm font-semibold border-2 rounded-2xl transition-all duration-300
+                     focus:outline-none focus:ring-4 transform hover:scale-105 active:scale-95 relative overflow-hidden"
+              [ngClass]="selectedGenres.includes(genre.id) ?
+                'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-transparent shadow-xl shadow-emerald-500/30 focus:ring-emerald-500/30' :
+                'bg-white/80 backdrop-blur-sm text-slate-700 border-slate-200/60 hover:border-emerald-300 hover:bg-emerald-50/50 focus:ring-slate-500/20 shadow-lg hover:shadow-xl'"
+            >
+              <span class="relative z-10">{{ genre.name }}</span>
+              <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 transform scale-0 group-hover:scale-100 transition-transform duration-300 rounded-2xl"
+                   [ngClass]="!selectedGenres.includes(genre.id) ? 'opacity-100' : 'opacity-0'"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Reading Policy Section -->
+        <div class="space-y-8">
+          <label class="block text-base font-semibold text-slate-700 flex items-center">
+            <span class="w-2 h-2 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full mr-3"></span>
+            Chính sách đọc sách
+          </label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Free Policy -->
+            <button
+              type="button"
+              (click)="changePolicy(BookPolicy.Free)"
+              class="group relative p-8 text-left border-2 rounded-3xl transition-all duration-500 focus:outline-none
+                     transform hover:scale-105 hover:-translate-y-2 shadow-xl hover:shadow-2xl overflow-hidden"
+              [ngClass]="policy === BookPolicy.Free ?
+                'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 text-white border-transparent shadow-2xl shadow-emerald-500/40' :
+                'bg-white/80 backdrop-blur-xl text-slate-700 border-white/40 hover:border-emerald-300/60 hover:bg-emerald-50/30'"
+            >
+              <!-- Background pattern -->
+              <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-4 right-4 w-16 h-16 border-2 border-current rounded-full"></div>
+                <div class="absolute bottom-4 left-4 w-8 h-8 border-2 border-current rounded-full"></div>
+              </div>
+
+              <div class="relative z-10">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center mr-4 transition-all duration-300"
+                       [ngClass]="policy === BookPolicy.Free ? 'bg-white/20 backdrop-blur-sm' : 'bg-emerald-100'">
+                    <span class="text-2xl">🆓</span>
+                  </div>
+                  <h3 class="font-bold text-xl">Miễn phí</h3>
+                </div>
+                <p class="text-sm opacity-90 leading-relaxed mb-6">
+                  Người đọc có thể truy cập hoàn toàn miễn phí, không cần thanh toán bất kỳ khoản phí nào
+                </p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex-1 h-2 rounded-full"
+                       [ngClass]="policy === BookPolicy.Free ? 'bg-white/30' : 'bg-emerald-200'">
+                    <div class="h-full bg-current rounded-full w-full opacity-60"></div>
+                  </div>
+                  <span class="text-xs font-semibold opacity-80">Miễn phí</span>
+                </div>
+              </div>
+            </button>
+
+            <!-- Paid Policy -->
+            <button
+              type="button"
+              (click)="changePolicy(BookPolicy.Paid)"
+              class="group relative p-8 text-left border-2 rounded-3xl transition-all duration-500 focus:outline-none
+                     transform hover:scale-105 hover:-translate-y-2 shadow-xl hover:shadow-2xl overflow-hidden"
+              [ngClass]="policy === BookPolicy.Paid ?
+                'bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white border-transparent shadow-2xl shadow-amber-500/40' :
+                'bg-white/80 backdrop-blur-xl text-slate-700 border-white/40 hover:border-amber-300/60 hover:bg-amber-50/30'"
+            >
+              <!-- Background pattern -->
+              <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-4 right-4 w-16 h-16 border-2 border-current rounded-full"></div>
+                <div class="absolute bottom-4 left-4 w-8 h-8 border-2 border-current rounded-full"></div>
+              </div>
+
+              <div class="relative z-10">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center mr-4 transition-all duration-300"
+                       [ngClass]="policy === BookPolicy.Paid ? 'bg-white/20 backdrop-blur-sm' : 'bg-amber-100'">
+                    <span class="text-2xl">💰</span>
+                  </div>
+                  <h3 class="font-bold text-xl">Trả phí</h3>
+                </div>
+                <p class="text-sm opacity-90 leading-relaxed mb-6">
+                  Người đọc phải mua quyền truy cập một lần để có thể đọc toàn bộ nội dung sách
+                </p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex-1 h-2 rounded-full"
+                       [ngClass]="policy === BookPolicy.Paid ? 'bg-white/30' : 'bg-amber-200'">
+                    <div class="h-full bg-current rounded-full w-full opacity-60"></div>
+                  </div>
+                  <span class="text-xs font-semibold opacity-80">Trả phí</span>
+                </div>
+              </div>
+            </button>
+
+            <!-- Subscription Policy -->
+            <button
+              type="button"
+              (click)="changePolicy(BookPolicy.Subscription)"
+              class="group relative p-8 text-left border-2 rounded-3xl transition-all duration-500 focus:outline-none
+                     transform hover:scale-105 hover:-translate-y-2 shadow-xl hover:shadow-2xl overflow-hidden"
+              [ngClass]="policy === BookPolicy.Subscription ?
+                'bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 text-white border-transparent shadow-2xl shadow-purple-500/40' :
+                'bg-white/80 backdrop-blur-xl text-slate-700 border-white/40 hover:border-purple-300/60 hover:bg-purple-50/30'"
+            >
+              <!-- Background pattern -->
+              <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-4 right-4 w-16 h-16 border-2 border-current rounded-full"></div>
+                <div class="absolute bottom-4 left-4 w-8 h-8 border-2 border-current rounded-full"></div>
+              </div>
+
+              <div class="relative z-10">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center mr-4 transition-all duration-300"
+                       [ngClass]="policy === BookPolicy.Subscription ? 'bg-white/20 backdrop-blur-sm' : 'bg-purple-100'">
+                    <span class="text-2xl">📋</span>
+                  </div>
+                  <h3 class="font-bold text-xl">Đăng ký</h3>
+                </div>
+                <p class="text-sm opacity-90 leading-relaxed mb-6">
+                  Người đọc cần tạo tài khoản và theo dõi tác giả để có thể truy cập nội dung
+                </p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex-1 h-2 rounded-full"
+                       [ngClass]="policy === BookPolicy.Subscription ? 'bg-white/30' : 'bg-purple-200'">
+                    <div class="h-full bg-current rounded-full w-full opacity-60"></div>
+                  </div>
+                  <span class="text-xs font-semibold opacity-80">Đăng kí</span>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Amount Input for Paid Books -->
+          <div *ngIf="isPaid" class="max-w-md mx-auto transform transition-all duration-500 animate-pulse">
+            <label for="price" class="block text-base font-semibold text-slate-700 mb-5 flex items-center">
+              <span class="w-2 h-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mr-3"></span>
+              Giá bán (VNĐ)
+            </label>
+            <div class="relative group">
+              <input
+                id="price"
+                type="number"
+                formControlName="price"
+                min="1000"
+                name="price"
+                step="1000"
+                class="w-full px-8 py-5 pl-16 border-2 border-amber-200/60 rounded-2xl bg-gradient-to-r from-amber-50/80 to-orange-50/80 backdrop-blur-sm
+                       focus:outline-none focus:ring-4 focus:ring-amber-500/20 focus:border-amber-400
+                       hover:border-amber-300/80 transition-all duration-300 font-bold text-slate-700 text-lg
+                       shadow-lg hover:shadow-xl"
+              />
+              <div class="absolute left-5 top-1/2 transform -translate-y-1/2 flex items-center">
+                <span class="text-amber-600 font-bold text-lg">₫</span>
+              </div>
+              <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span class="text-sm font-medium">VNĐ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center pt-16">
+          <button type="submit" (click)="updateBook()"
+            type="button"
+            class="cursor-pointer group relative px-16 py-5 bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 text-white font-bold text-lg rounded-3xl
+                   hover:from-indigo-700 hover:via-purple-700 hover:to-cyan-700 focus:outline-none focus:ring-6 focus:ring-indigo-500/30
+                   transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed
+                   transform hover:scale-110 active:scale-95 shadow-2xl hover:shadow-3xl overflow-hidden"
+          >
+            <!-- Animated background -->
+            <div class="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-white/20 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+
+            <span class="relative z-10 flex items-center">
+              <span class="mr-3">✨</span>
+              Lưu thông tin sách
+              <svg class="w-6 h-6 ml-4 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

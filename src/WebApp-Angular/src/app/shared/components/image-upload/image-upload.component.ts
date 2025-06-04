@@ -13,6 +13,7 @@ import { UploadFileService } from '../../../core/services/upload-file.service';
   imports: [CommonModule, ImageCropperComponent]
 })
 export class ImageUploadComponent implements OnInit {
+  @Input() imageUrl: string ="";
   @Input() titleForUploadFile: string = "";
   @Output() imageUpload = new EventEmitter<any>();
   @Output() starUpload = new EventEmitter<void>();
@@ -20,7 +21,7 @@ export class ImageUploadComponent implements OnInit {
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  croppedFile: File | null = null; // ✅ Thêm biến này để chứa file sau khi crop
+  croppedFile: File | null = null;
 
   showCropper = false;
   originalFile: File | null = null;
@@ -47,6 +48,11 @@ export class ImageUploadComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.croppedImage = this.imageUrl;
+    if(this.croppedImage){
+      this.showCropper = false;
+      this.isLoading = false;
+    }
     this.imageUploadService.formData$.subscribe(formData => {
       this.formData = formData;
     });

@@ -44,7 +44,7 @@
     <div *ngFor="let book of books" class="card animate-fade-in hover:scale-[1.02] transition-transform duration-200">
       <a [routerLink]="['/write-book/books', book.slug]" class="block h-full">
         <div class="aspect-w-3 aspect-h-4 w-full overflow-hidden rounded-t-xl bg-gray-200">
-          <img *ngIf="book.coverImage" [src]="book.coverImage" alt="{{ book.title }}" class="h-full w-full object-cover">
+          <img *ngIf="book.coverImage" [src]="book.coverImage" alt="{{ book.title }}" class="aspect-15/16 object-cover">
           <div *ngIf="!book.coverImage"
                class="flex items-center justify-center h-full bg-gradient-to-br from-book-primary-100 to-book-secondary-100">
             <span class="text-gray-900 text-2xl font-bold">{{ book.title.charAt(0) }}</span>
@@ -55,11 +55,11 @@
           <div class="flex items-center">
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2"
                   [ngClass]="book.isPaid ? 'bg-book-accent-100 text-book-accent-800' : 'bg-emerald-100 text-emerald-800'">
-              {{ book.isPaid ? 'Paid' : 'Free' }}
+              {{ book.isPaid ? 'Trả phí' : 'Miễn phí' }}
             </span>
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                   [ngClass]="book.isCompleted ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'">
-              {{ book.isCompleted ? 'Completed' : 'In Progress' }}
+              {{ book.isCompleted ? 'Đã hoàn thành' : 'Đang viết' }}
             </span>
           </div>
 
@@ -68,7 +68,7 @@
 
           <div class="mt-4 flex flex-wrap gap-1">
             <span *ngFor="let genre of book.genres.slice(0, 3)" class="inline-block px-2 py-0.5 text-xs bg-gray-100 text-gray-800 rounded">
-              {{ genre }}
+              {{ genre.name }}
             </span>
             <span *ngIf="book.genres.length > 3"
                   class="inline-block px-2 py-0.5 text-xs bg-gray-100 text-gray-500 rounded">

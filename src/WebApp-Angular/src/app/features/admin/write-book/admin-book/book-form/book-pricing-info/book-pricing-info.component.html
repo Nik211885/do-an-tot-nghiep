@@ -1,6 +1,6 @@
 <form [formGroup]="pricingForm" (ngSubmit)="onNext()" class="animate-fade-in">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Chính sách đọc sách</h2>
-    
+
     <div class="form-group">
     <label class="form-label">Đây có phải là sách trả phí không? <span class="text-red-500">*</span></label>
     <div class="mt-2 space-y-2">
@@ -26,7 +26,7 @@
         </div>
     </div>
     </div>
-    
+
     <div class="form-group" *ngIf="pricingForm.get('isPaid')?.value">
     <label for="price" class="form-label">Giá sách <span class="text-red-500">*</span></label>
     <div class="relative mt-1 rounded-md shadow-sm">
@@ -47,7 +47,7 @@
         Giá sách lớn hơn (1.000VND)
     </div>
     </div>
-    
+
     <div class="form-group mt-6">
     <label class="form-label">Yêu cầu đọc * <span class="text-red-500">*</span></label>
     <div class="mt-2 space-y-2">
@@ -73,10 +73,10 @@
         </div>
     </div>
     </div>
-    
-    <div class="mt-8 flex justify-between">
-    <button 
-        type="button" 
+
+    <div class="mt-8 flex justify-between" *ngIf="!ignore">
+    <button
+        type="button"
         (click)="onPrevious()"
         class="btn btn-secondary"
     >
@@ -86,8 +86,8 @@
         </svg>
         Quay lại
     </button>
-    <button 
-        type="submit" 
+    <button
+        type="submit"
         class="btn btn-primary"
         [disabled]="pricingForm.invalid"
         [ngClass]="{'opacity-50 cursor-not-allowed': pricingForm.invalid}"

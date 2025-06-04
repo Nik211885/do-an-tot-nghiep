@@ -11,6 +11,7 @@ import { Bookv1 } from '../../../models/book.model';
   styleUrl: './book-status-info.component.css'
 })
 export class BookStatusInfoComponent {
+  @Input() ignore = false;
   @Input() book: Bookv1 | null = null;
   @Output() nextStep = new EventEmitter<Partial<Bookv1>>();
   @Output() previousStep = new EventEmitter<void>();

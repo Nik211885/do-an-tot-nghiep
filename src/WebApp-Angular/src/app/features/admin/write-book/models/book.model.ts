@@ -9,7 +9,7 @@ export interface Bookv1 {
   slug: string;
   isCompleted: boolean;
   tags: string[];
-  genres: string[];
+  genres: Genre[];
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -1,10 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Bookv1, Chapter } from '../../models/book.model';
-import { BookService } from '../../services/book.service';
-import { ToastService } from '../../../../../shared/components/toast/toast.service';
-import { DialogService } from '../../../../../shared/components/dialog/dialog.component.service';
+import {CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {Bookv1, Chapter} from '../../models/book.model';
+import {BookService} from '../../services/book.service';
+import {ToastService} from '../../../../../shared/components/toast/toast.service';
+import {DialogService} from '../../../../../shared/components/dialog/dialog.component.service';
+import {BookReleaseType} from '../../models/create-book.model';
 
 @Component({
   selector: 'app-chapter-list',
@@ -39,7 +40,7 @@ export class ChapterListComponent implements OnInit {
   }
 
   loadBook(bookSlug: string): void {
-    this.bookService.getBook(bookSlug).subscribe({
+    this.bookService.getBookBySlug(bookSlug).subscribe({
       next: (book) => {
         if (!book) {
           this.toastService.error('Không tìm thấy sách của bạn');
@@ -105,11 +106,24 @@ export class ChapterListComponent implements OnInit {
     }
   }
   editBook(book: Bookv1): void {
-    // In a real app, this would navigate to a book edit page
-    console.log("aa")
-    this.toastService.info('Book editing is not implemented in this demo');
+    this.router.navigate(['write-book/books-information', book.id])
   }
   markBook(): void{
-
+    if(this.book){
+      this.book.isCompleted = !this.book.isCompleted;
+      if(this.book.id) {
+        this.bookService.markBookComplete(this.book.id).subscribe({
+          next: (result) => {
+            this.toastService.success("Sách được đánh dấu thành công")
+          },
+          error: err => {
+            console.log(err);
+           if(this.book){
+             this.book.isCompleted = !this.book.isCompleted;
+           }
+          }
+        })
+      }
+    }
   }
 }

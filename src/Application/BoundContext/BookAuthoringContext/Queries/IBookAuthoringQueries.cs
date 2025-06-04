@@ -14,6 +14,7 @@ public interface IBookAuthoringQueries : IApplicationQueryServicesExtension
     // Books
     Task<IReadOnlyCollection<BookViewModel>> FindBookForUserAsync(Guid userId, CancellationToken cancellationToken);
     Task<BookViewModel?> FindBookBySlugAsync(string slug, CancellationToken cancellationToken);
+    Task<BookViewModel?> FindBookByIdAsync(Guid bookId, CancellationToken cancellationToken);
     
     // Chapter
     Task<IReadOnlyCollection<ChapterViewModel>> FindChapterByBookSlugAsync(string slug, CancellationToken cancellationToken);

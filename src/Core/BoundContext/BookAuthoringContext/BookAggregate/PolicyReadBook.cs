@@ -35,7 +35,7 @@ public class PolicyReadBook : ValueObject
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.BookPaidPolicyButDontAddPrice);
         }
 
-        if (policy != BookPolicy.Paid && price is not null)
+        if (policy != BookPolicy.Paid && price > 0)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.BookNotPaidPolicyButAddPrice);
         }

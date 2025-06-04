@@ -77,6 +77,27 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
 
     }
 
+    public async Task<BookViewModel?> FindBookByIdAsync(Guid bookId, CancellationToken cancellationToken)
+    {
+        var book = await _bookAuthoringDbContext.Books
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(x => x.Id == bookId)
+            .Include(x=>x.Tags)
+            .Include(x=>x.Genres)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(cancellationToken);
+        if (book is null)
+        {
+            return null;
+        }
+
+        var genres = await _bookAuthoringDbContext.Genres
+            .Where(g => book.Genres.Select(x => x.GenreId).Contains(g.Id))
+            .ToListAsync(cancellationToken);
+        return book.MapToViewModel(genres.MapToViewModel());
+    }
+
     public async Task<IReadOnlyCollection<ChapterViewModel>> FindChapterByBookSlugAsync(string slug, CancellationToken cancellationToken)
     {
         var book = await _bookAuthoringDbContext.Books

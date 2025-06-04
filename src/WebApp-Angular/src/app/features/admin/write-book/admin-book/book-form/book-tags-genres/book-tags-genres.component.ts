@@ -12,6 +12,7 @@ import {GenresService} from '../../../services/genere.service';
   styleUrl: './book-tags-genres.component.css'
 })
 export class BookTagsGenresComponent implements OnInit {
+  @Input()  ignore = false;
   @Input() book: Bookv1 | null = null;
   @Output() submitBook = new EventEmitter<Partial<Bookv1>>();
   @Output() previousStep = new EventEmitter<void>();
@@ -38,7 +39,7 @@ export class BookTagsGenresComponent implements OnInit {
     });
     if (this.book) {
       this.tags = [...(this.book.tags || [])];
-      this.selectedGenres = [...(this.book.genres || [])];
+      this.selectedGenres = [...(this.book.genres.map(s=>s.id) || [])];
     }
   }
 
@@ -70,7 +71,9 @@ export class BookTagsGenresComponent implements OnInit {
     if (this.tags.length > 0 && this.selectedGenres.length > 0) {
       this.submitBook.emit({
         tags: this.tags,
-        genres: this.selectedGenres
+        genres: this.selectedGenres.map(x=>({
+          id: x
+        } as Genre))
       });
     }
   }

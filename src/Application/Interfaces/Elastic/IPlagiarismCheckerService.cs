@@ -2,7 +2,7 @@
 
     public interface IPlagiarismCheckerService
     {
-        Task AddBulkDocumentChunkAsync(IEnumerable<DocumentChunk> document);
+        Task AddBulkDocumentChunkAsync(List<DocumentChunk> document);
         Task<List<PlagiarismMatch>> CheckSimilarityAsync(float[] queryEmbedding, string docId, int topK =  5);
     }
 

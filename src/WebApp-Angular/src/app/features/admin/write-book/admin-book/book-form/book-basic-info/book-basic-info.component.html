@@ -40,7 +40,7 @@
 
   <!-- Nút tiếp theo -->
   <div class="mt-8 flex justify-end">
-    <button
+    <button *ngIf="!ignore"
       type="submit"
       class="btn btn-primary"
       [disabled]="basicInfoForm.invalid || isUploading"

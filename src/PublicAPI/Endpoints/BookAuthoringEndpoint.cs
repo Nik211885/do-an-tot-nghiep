@@ -50,6 +50,14 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Book")
             .WithName("DeleteBook")
             .WithDescription("Delete book");
+        apis.MapGet("book/id", BookAuthoringService.GetBookById)
+            .WithTags("Book")
+            .WithName("GetBookById")
+            .WithDescription("Get Book By Id");
+        apis.MapPut("book/mark-complete", BookAuthoringService.MarkBookComplete)
+            .WithTags("Book")
+            .WithName("MarkBookComplete")
+            .WithDescription("Mark book complete");
         
         
         // endpoint for genre
@@ -332,6 +340,20 @@ public static class BookAuthoringService
     {
         await service.FactoryHandler.Handler<DeleteBookCommand, string>(command);
         return TypedResults.NoContent();    
+    }
+
+    [Authorize]
+    public static async Task<Ok<BookViewModel>> GetBookById([AsParameters] GetBookDetailByIdQuery query,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler.Handler<GetBookDetailByIdQuery, BookViewModel?>(query);
+        return TypedResults.Ok(result);
+    }
+    public static async Task<Ok<BookViewModel>> MarkBookComplete([AsParameters] MarkCompletedBookCommand command,
+        [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.FactoryHandler.Handler<MarkCompletedBookCommand, BookViewModel>(command);
+        return TypedResults.Ok(result);
     }
 }
 

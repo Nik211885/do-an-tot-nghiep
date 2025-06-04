@@ -80,6 +80,11 @@ public class Book
         // Like chapter
         RaiseDomainEvent(new DeletedBookDomainEvent(this, CreatedUerId));
     }
+    public void MarkCompletedBook()
+    {
+        this.IsComplete = !this.IsComplete;
+        LastUpdateDateTime = DateTimeOffset.UtcNow;
+    }
     public void UpdatePolicyReadBook(BookPolicy policy, decimal? price)
     {
         var policyReadBook = PolicyReadBook.CreatePolicy(policy, price);
@@ -213,7 +218,7 @@ public class Book
         var addedGenreIds = newGenreIds.Except(oldGenreIds).ToList();
         var addedGenres = addedGenreIds.Select(BookGenres.Create).ToArray();   
         
-        _genres.RemoveAll(g => removedGenres.Contains(g));
+        _genres.RemoveAll(g => removedGenres.Select(x=>x).Contains(g));
         RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,  removedGenres));
         _genres.AddRange(addedGenres);
         RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id,addedGenres));

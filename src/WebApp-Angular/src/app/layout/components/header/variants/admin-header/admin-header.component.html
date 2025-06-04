@@ -11,7 +11,7 @@
         </div>
         <input
           type="text"
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
           class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500"
         />
       </div>
@@ -19,7 +19,7 @@
     <div class="flex items-center space-x-3">
       <!-- Notification bell -->
       <div class="relative">
-        <button 
+        <button
           (click)="toggleNotifications()"
           class="p-2 rounded-md text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white relative"
         >
@@ -30,8 +30,8 @@
         </button>
 
         <!-- Notifications dropdown -->
-        <div 
-          *ngIf="showNotifications" 
+        <div
+          *ngIf="showNotifications"
           class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700"
         >
           <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -41,7 +41,7 @@
             </button>
           </div>
           <div class="max-h-72 overflow-y-auto">
-            <div *ngFor="let notification of notifications" 
+            <div *ngFor="let notification of notifications"
                 (click)="markAsRead(notification)"
                 class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0"
                 [ngClass]="{'bg-blue-50 dark:bg-blue-900/10': !notification.read}">
@@ -68,17 +68,17 @@
 
       <!-- User profile dropdown -->
       <div class="relative">
-        <button 
-          (click)="toggleUserDropdown()" 
+        <button
+          (click)="toggleUserDropdown()"
           class="flex items-center space-x-2 cursor-pointer"
         >
           <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white">
             <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover rounded-full">
           </div>
-          <svg 
-            class="hidden md:block h-4 w-4 text-gray-400" 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 20 20" 
+          <svg
+            class="hidden md:block h-4 w-4 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
             fill="currentColor"
           >
             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -86,8 +86,8 @@
         </button>
 
         <!-- User dropdown -->
-        <div 
-          *ngIf="showUserDropdown" 
+        <div
+          *ngIf="showUserDropdown"
           class="w-max absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700"
         >
           <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
@@ -119,8 +119,8 @@
             </div>
           </a>
           <div class="border-t border-gray-200 dark:border-gray-700">
-            <button 
-              (click)="logout()" 
+            <button
+              (click)="logout()"
               class="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <div class="flex items-center">

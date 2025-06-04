@@ -16,26 +16,81 @@ public class PlagiarismCheckerService : IPlagiarismCheckerService
         _client = client;
     }
 
-    public async Task AddBulkDocumentChunkAsync(IEnumerable<DocumentChunk> document)
+    public async Task AddBulkDocumentChunkAsync(List<DocumentChunk> document)
     {
-        var bulkRequest = new BulkRequest(_indexKey) { Operations = new List<IBulkOperation>() };
-        foreach (var doc in document)
+        if (document.Count == 0)
+            return;
+        var newChunkIds = document
+            .Select(d => $"{d.DocId}_{d.ChunkIndex}")
+            .ToList();
+        List<string?> existingChunkIds;
         {
-            bulkRequest.Operations.Add(new BulkIndexOperation<DocumentChunk>(doc)
-            {
-                Id = $"{doc.DocId}_{doc.ChunkIndex}"
-            });
+            var idsArray = newChunkIds.ToArray();
+
+            var searchResponse = await _client.SearchAsync<DocumentChunk>(s => s
+                .Index(_indexKey)                     
+                .Size(idsArray.Length)               
+                .Query(q => q
+                    .Ids(i => i.Values(idsArray))
+                )
+            );
+
+            if (!searchResponse.IsValidResponse)
+                throw new Exception($"Failed to search existing chunks: {searchResponse.DebugInformation}");
+
+            existingChunkIds = searchResponse.Hits
+                .Select(h => h.Id)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .ToList();
         }
-        var response = await _client.BulkAsync(bulkRequest);
-        if (!response.IsValidResponse)
+        if (existingChunkIds.Count > 0)
         {
-            throw new Exception($"Bulk indexing failed: {response?.DebugInformation ?? "No debug information available"}");
+            var deleteOps = existingChunkIds
+                .Select(id => new BulkDeleteOperation<DocumentChunk>(id)
+                {
+                    Index = _indexKey 
+                })
+                .Cast<IBulkOperation>()
+                .ToList();
+
+            var deleteBulkRequest = new BulkRequest
+            {
+                Operations = deleteOps
+            };
+
+            var deleteResponse = await _client.BulkAsync(deleteBulkRequest);
+            if (!deleteResponse.IsValidResponse)
+            {
+                throw new Exception($"Bulk delete failed: {deleteResponse.DebugInformation}");
+            }
+        }
+        var indexOps = document
+            .Select(doc => new BulkIndexOperation<DocumentChunk>(doc)
+            {
+                Id = $"{doc.DocId}_{doc.ChunkIndex}",
+                Index = _indexKey
+            })
+            .Cast<IBulkOperation>()
+            .ToList();
+
+        var bulkIndexRequest = new BulkRequest
+        {
+            Operations = indexOps
+        };
+
+        var indexResponse = await _client.BulkAsync(bulkIndexRequest);
+        if (!indexResponse.IsValidResponse)
+        {
+            throw new Exception($"Bulk indexing failed: {indexResponse.DebugInformation}");
         }
     }
 
+
     public async Task<List<PlagiarismMatch>> CheckSimilarityAsync(float[] queryEmbedding, string docId, int topK = 5)
     {
-        // Check if index exists, create if it doesn't
+        
+        const float minSimilarityThreshold = 0.9f; 
+        
         var indexExists = await _client.Indices.ExistsAsync(_indexKey);
         if (!indexExists.Exists)
         {
@@ -50,28 +105,22 @@ public class PlagiarismCheckerService : IPlagiarismCheckerService
                     {
                         "Embedding", new DenseVectorProperty
                         {
-                            Dims = 768,
+                            Dims = 1536,
                             Index = true 
                         }
                     }
                 }
             };
-            var createResponse = await _client.Indices.CreateAsync(_indexKey, c => c
-                .Settings(s => s
-                    .NumberOfShards(1)
-                    .NumberOfReplicas(1)
-                )
-                .Mappings(m => m
-                    .Properties(mapping.Properties)
-                )
-            );
-            if (!createResponse.IsValidResponse)
-            {
-                throw new Exception($"Failed to create index: {createResponse.DebugInformation}");
-            }
+        var createResponse = await _client.Indices.CreateAsync(_indexKey, c => c
+            .Settings(settings)
+            .Mappings(mapping)
+        );
+        if (!createResponse.IsValidResponse)
+        {
+            throw new Exception($"Failed to create index: {createResponse.DebugInformation}");
         }
-
-        // Perform kNN search
+        }
+        
         var searchResponse = await _client.SearchAsync<DocumentChunk>(s => s
             .Index(_indexKey)
             .Query(q => q
@@ -97,15 +146,18 @@ public class PlagiarismCheckerService : IPlagiarismCheckerService
         {
             throw new Exception($"Search failed: {searchResponse.DebugInformation}");
         }
-
-        // Aggregate results by DocId
+        
         var docMatches = new Dictionary<string, (List<float> Scores, List<string> Texts)>();
         foreach (var hit in searchResponse.Hits)
         {
             var chunk = hit.Source;
             if (chunk == null) continue;
 
-            var similarity = (float)hit.Score; // kNN score is the cosine similarity
+            var similarity = (float)hit.Score;
+            
+            // Filter out low similarity matches
+            if (similarity < minSimilarityThreshold) continue;
+
             if (!docMatches.ContainsKey(chunk.DocId))
             {
                 docMatches[chunk.DocId] = (new List<float>(), new List<string>());
@@ -113,29 +165,22 @@ public class PlagiarismCheckerService : IPlagiarismCheckerService
             docMatches[chunk.DocId].Scores.Add(similarity);
             docMatches[chunk.DocId].Texts.Add(chunk.Content);
         }
-
-        // Compute aggregated similarity scores per document
+        
         var plagiarismMatches = new List<PlagiarismMatch>();
         foreach (var kvp in docMatches)
         {
             var docIdMatch = kvp.Key;
             var scores = kvp.Value.Scores;
             var texts = kvp.Value.Texts;
-
-            // Aggregate similarity: weighted average based on chunk count
+            
             var avgSimilarity = scores.Average();
-
-            // Combine text snippets (e.g., first chunk or concatenated preview)
-            var combinedText = string.Join(" ", texts.Take(1)); // Take first chunk for preview
-
+            var combinedText = string.Join(" ", texts.Take(1));
             plagiarismMatches.Add(new PlagiarismMatch(
                 docIdMatch,
                 combinedText,
                 (float)Math.Round(avgSimilarity, 4)
             ));
         }
-
-        // Sort by similarity and take topK
         return plagiarismMatches
             .OrderByDescending(m => m.Similarity)
             .Take(topK)

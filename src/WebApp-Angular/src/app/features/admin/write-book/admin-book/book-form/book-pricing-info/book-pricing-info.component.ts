@@ -11,6 +11,7 @@ import { Bookv1 } from '../../../models/book.model';
   styleUrl: './book-pricing-info.component.css'
 })
 export class BookPricingInfoComponent {
+  @Input() ignore = false;
   @Input() book: Bookv1 | null = null;
   @Output() nextStep = new EventEmitter<Partial<Bookv1>>();
   @Output() previousStep = new EventEmitter<void>();

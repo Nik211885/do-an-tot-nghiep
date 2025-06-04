@@ -10,7 +10,7 @@ public class VectorEmbeddingTextService(IHttpClientFactory factory)
     private readonly IHttpClientFactory _clientFactory = factory;
     public async Task<List<DocSource>?> GetVectorEmbeddingFromTextAsync(string sentence)
     {
-        var url = "phobert";
+        var url = "jina";
         HttpClient client = _clientFactory.CreateClient(HttpClientKeyFactory.EmbeddingServer);
         var requestData = new { sentence };
         var content = requestData.GetStringContent();

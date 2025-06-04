@@ -135,7 +135,7 @@ OnDestroy, AfterViewInit {
       return;
     }
 
-    this.bookService.getBook(bookSlug).subscribe({
+    this.bookService.getBookBySlug(bookSlug).subscribe({
       next: (book) => {
         if (!book) {
           this.toastService.error('Không tìm thấy sách của bạn');
@@ -208,7 +208,24 @@ OnDestroy, AfterViewInit {
   }
 
   submitAndReview() : void{
-
+    const chapter = this.chapter();
+    if(chapter){
+      this.bookService.updateChapter(chapter).subscribe({
+        next: (chapter) => {
+          if(chapter.id){
+            this.bookService.submitAndReview(chapter.id).subscribe({
+              next: (chapter) => {
+                this.chapter.set(chapter);
+                this.toastService.success("Gửi chương để xuất bản sách thành công");
+              }
+            })
+          }
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }
   }
 
   onSaveDraft(): void {

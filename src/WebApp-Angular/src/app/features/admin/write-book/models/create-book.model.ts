@@ -11,6 +11,10 @@ export interface CreateBookCommand{
   genreIds: string[],
 }
 
+export interface UpdateBookCommand extends CreateBookCommand{
+  visibility: boolean;
+}
+
 export enum BookPolicy{
   Free = 1,
   Paid =2,

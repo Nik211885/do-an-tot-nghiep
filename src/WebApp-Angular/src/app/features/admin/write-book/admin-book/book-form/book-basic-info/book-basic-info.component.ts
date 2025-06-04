@@ -12,6 +12,7 @@ import {ImageUploadComponent} from '../../../../../../shared/components/image-up
   styleUrl: './book-basic-info.component.css'
 })
 export class BookBasicInfoComponent {
+  @Input() ignore: boolean = false;
   @Input() book: Bookv1 | null = null;
   @Output() nextStep = new EventEmitter<Partial<Bookv1>>();
 

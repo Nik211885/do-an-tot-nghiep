@@ -1,6 +1,6 @@
 ﻿from flask import Flask, request, jsonify, redirect
 from flasgger import Swagger
-from phobert_embedding_vector import PhoBERTChunker
+from jina_vector_embedding import SimpleTextChunkerJina
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -9,7 +9,7 @@ swagger = Swagger(app)
 def say_hello():
     return redirect('/apidocs', code=302)
 
-@app.route('/phobert', methods=['POST'])
+@app.route('/jina', methods=['POST'])
 def transform_vector():
     """
     Get vector embedding using PhoBERT
@@ -34,8 +34,8 @@ def transform_vector():
 
     sentence = data['sentence']
 
-    phobert = PhoBERTChunker()
-    results = phobert.process_text(sentence)
+    jina = SimpleTextChunkerJina()
+    results = jina.process_data(sentence)
     return jsonify(results)
 
 
