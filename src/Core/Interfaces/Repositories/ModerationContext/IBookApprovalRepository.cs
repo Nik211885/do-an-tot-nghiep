@@ -8,4 +8,5 @@ public interface IBookApprovalRepository
 {
     Task<BookApproval?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default);
     BookApproval Create(BookApproval bookApproval, CancellationToken cancellationToken = default);
+    BookApproval Update(BookApproval  bookApproval, CancellationToken cancellationToken = default);
 }

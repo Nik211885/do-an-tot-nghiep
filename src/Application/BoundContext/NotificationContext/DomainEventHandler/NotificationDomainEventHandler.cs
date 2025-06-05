@@ -1,0 +1,3 @@
+﻿namespace Application.BoundContext.NotificationContext.DomainEventHandler;
+
+public class NotificationDomainEventHandler;

@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Infrastructure.Services.Notification;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Data.DbContext;
@@ -12,6 +13,7 @@ internal static class AddDbContextExtension
         services.AddDbContext<BookAuthoringDbContext>();
         services.AddDbContext<OrderDbContext>();
         services.AddDbContext<ReportSubmissionDbContext>();
+        services.AddDbContext<NotificationDbContext>();
         return services;
     } 
 }

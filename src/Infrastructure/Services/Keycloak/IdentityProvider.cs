@@ -33,4 +33,9 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
     public string UserName()
         => _contextAccessor.HttpContext?.User?.Claims.
             FirstOrDefault(c => c.Type == "name")?.Value ?? "Unknown";
+
+    public bool IsInRole(string role)
+    {
+        return _contextAccessor.HttpContext.User.IsInRole(role);
+    }
 }

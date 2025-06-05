@@ -26,4 +26,10 @@ public class BookApprovalRepository(ModerationDbContext moderationDbContext)
     {
         return _moderationDbContext.BookApprovals.Add(bookApproval).Entity;
     }
+
+    public BookApproval Update(BookApproval bookApproval, CancellationToken cancellationToken = default)
+    {
+        _moderationDbContext.Entry(bookApproval).State = EntityState.Modified;
+        return bookApproval;
+    }
 }
