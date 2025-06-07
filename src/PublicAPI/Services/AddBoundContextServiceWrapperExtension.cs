@@ -8,6 +8,7 @@ public static class AddBoundContextServiceWrapperExtension
     {
         services.AddScoped<BookAuthoringServiceWrapper>();
         services.AddScoped<ModerationServiceWrapper>();
+        services.AddScoped<NotificationServicesWrapper>();
         return services;
     }
 }

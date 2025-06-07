@@ -16,25 +16,23 @@ public static class PaginationHelperWithEfExtension
     /// </summary>
     /// <param name="queryable"></param>
     /// <param name="selector"></param>
-    /// <param name="pageNumber"></param>
-    /// <param name="pageSize"></param>
+    /// <param name="page"></param>
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
     public static async Task<PaginationItem<TResponse>> CreatePaginationAsync<TEntity, TResponse>(
         this IQueryable<TEntity> queryable,
-            Expression<Func<TEntity, TResponse>> selector,
-        int pageNumber,
-        int pageSize,
+        PaginationRequest page,
+        Expression<Func<TEntity, TResponse>> selector,
         CancellationToken cancellationToken = default)
     {
         var countItems = await queryable.CountAsync(cancellationToken);
         var items = await queryable
             .Select(selector)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((page.PageNumber - 1) * page.PageSize)
+            .Take(page.PageSize)
             .ToListAsync(cancellationToken);
-        return new PaginationItem<TResponse>(items, pageNumber, pageSize, countItems);
+        return new PaginationItem<TResponse>(items,page.PageNumber, page.PageSize, countItems);
     }
 }

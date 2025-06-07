@@ -13,7 +13,7 @@ public class EmailSender(IOptions<MailSettingOptions> mailSettingConfiguration,
 {
     private readonly ILogger<EmailSender> _logger = logger;
     private readonly MailSettingOptions _mailSettingOptions = mailSettingConfiguration.Value;
-    public async Task SendEmailAsync(string to, string body, string subject, string? nameTo = null, bool isLink = false)
+    public async Task SendEmailAsync(string to, string body, string subject, string? messaggeLink , string? nameTo = null)
     {
         try
         {
@@ -24,15 +24,12 @@ public class EmailSender(IOptions<MailSettingOptions> mailSettingConfiguration,
             var emailTo = new MailboxAddress(nameTo, to);
             emailMessage.To.Add(emailTo);
             emailMessage.Subject = subject;
-            var bodyBuilder = new BodyBuilder();
-            if (!isLink)
+            var bodyBuilder = new BodyBuilder { TextBody = body };
+            if (!string.IsNullOrWhiteSpace(messaggeLink))
             {
-                bodyBuilder.TextBody = body;
+                bodyBuilder.HtmlBody = messaggeLink;
             }
-            else
-            {
-                bodyBuilder.HtmlBody = body;
-            }
+
             emailMessage.Body = bodyBuilder.ToMessageBody();
             var mailClient = new SmtpClient();
             await mailClient.ConnectAsync(_mailSettingOptions.Host, _mailSettingOptions.Port, _mailSettingOptions.UseSSL);
@@ -45,8 +42,8 @@ public class EmailSender(IOptions<MailSettingOptions> mailSettingConfiguration,
         {
             _logger.LogError(@"Has problem with send email Exception 
                             with content send {to} and body is {body}
-                            subject {subject}, name is {nameTo}, isLink {isLink} {ex}",
-                            ex, to, body,subject,nameTo, isLink);
+                            subject {subject}, name is {nameTo} {ex}",
+                            ex, to, body,subject,nameTo);
         }
     }
 }

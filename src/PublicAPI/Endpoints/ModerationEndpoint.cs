@@ -20,6 +20,14 @@ public class ModerationEndpoint : IEndpoints
             .WithTags("ModerationChapter")
             .WithName("CreatModerationChapter")
             .WithDescription("Create moderation chapter");
+        apis.MapPost("approval/chapter", ModerationEndpointServices.ApproveModeration)
+            .WithTags("ModerationChapter")
+            .WithName("ApproveModerationChapter")
+            .WithDescription("Approve moderation chapter");
+        apis.MapPost("reject/chapter", ModerationEndpointServices.RejectModeration)
+            .WithTags("ModerationChapter")
+            .WithName("RejectModerationChapter")
+            .WithDescription("Reject moderation chapter");
     }
 }
 
@@ -32,6 +40,24 @@ public static class ModerationEndpointServices
         )
     {
         var result = await service.FactoryHandler.Handler<CreateBookApprovalCommand, BookApprovalViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> ApproveModeration(
+        [FromBody] ApprovalBookCommand command,
+        [FromServices] ModerationServiceWrapper service
+    )
+    {
+        var result = await service.FactoryHandler.Handler<ApprovalBookCommand, BookApprovalViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> RejectModeration(
+        [FromBody] RejectBookCommand command,
+        [FromServices] ModerationServiceWrapper service
+    )
+    {
+        var result = await service.FactoryHandler.Handler<RejectBookCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
 }

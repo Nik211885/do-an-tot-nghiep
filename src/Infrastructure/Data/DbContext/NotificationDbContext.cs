@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.EntityConfigurations.NotificationContext;
+﻿using Core.BoundContext.NotificationContext;
+using Infrastructure.Data.EntityConfigurations.NotificationContext;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ public class NotificationDbContext(DbContextOptions<NotificationDbContext> optio
     DispatcherDomainEventInterceptors interceptors) 
     : BaseDbContext(options, dbConnectionStringSelector, interceptors)
 {
+    public DbSet<Notification> Notifications { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
