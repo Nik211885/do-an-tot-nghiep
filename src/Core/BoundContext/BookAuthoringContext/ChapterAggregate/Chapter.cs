@@ -131,4 +131,16 @@ public class Chapter
     {
         IsLocked = true;
     }
+
+    public void ModerationRejected()
+    {
+        Status = ChapterStatus.Rejected;
+        Unlocked();
+    }
+
+    public void ModerationApproved()
+    {
+        Status = ChapterStatus.Approved;
+        Unlocked();
+    }
 }
