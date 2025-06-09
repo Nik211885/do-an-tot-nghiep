@@ -17,7 +17,6 @@ public record CreateCommentCommand(Guid BookId, string Content,
 public class CreateCommentCommandHandler(
     ILogger<CreateBookReviewCommandHandler> logger,
     ICommentRepository commentRepository,
-    IFactoryHandler factoryHandler,
     IIdentityProvider identityProvider,
     IValidationServices<Core.BoundContext.BookReviewContext.BookReviewAggregate.BookReview> validationBookReviewServices,
     IValidationServices<Core.BoundContext.BookReviewContext.CommentAggregate.Comment> validationCommentServices)
@@ -25,7 +24,6 @@ public class CreateCommentCommandHandler(
 {
     private readonly ILogger<CreateBookReviewCommandHandler> _logger = logger;
     private readonly ICommentRepository _commentRepository = commentRepository;
-    private readonly IFactoryHandler _factoryHandler = factoryHandler;
     private readonly IIdentityProvider _identityProvider = identityProvider;
 
     private readonly IValidationServices<Core.BoundContext.BookReviewContext.BookReviewAggregate.BookReview>
@@ -39,8 +37,7 @@ public class CreateCommentCommandHandler(
         if (bookReviewViewModel is null)
         {
             _logger.LogInformation("Can't not find book review for book {@BookId} Create new Book review", request.BookId);
-            var createBookReviewCommand = new CreateBookReviewCommand(request.BookId);
-            bookReviewViewModel = await _factoryHandler.Handler<CreateBookReviewCommand, BookReviewViewModel>(createBookReviewCommand, cancellationToken);
+            ThrowHelper.ThrowNotFoundWhenItemIsNull(bookReviewViewModel,"không tìm thấy sách" );
         }
 
         var commentExitsByBookCombieUserRating = await _validationCommentServices.AnyAsync(c =>
