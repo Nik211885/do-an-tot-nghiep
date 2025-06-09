@@ -2,6 +2,7 @@
 using Core.Interfaces;
 using Core.Interfaces.Repositories.BookReviewContext;
 using Infrastructure.Data.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services.Repository.BookReviewContext;
 
@@ -9,4 +10,19 @@ public class BookReviewRepository(BookReviewDbContext bookReviewDbContext)
     : Repository<BookReview>(bookReviewDbContext), IBookReviewRepository
 {
     private readonly BookReviewDbContext _bookReviewDbContext = bookReviewDbContext;
+    public BookReview CreateBookReview(BookReview bookReview)
+    {
+        return _bookReviewDbContext.Add(bookReview).Entity;
+    }
+
+    public BookReview UpdateBookReview(BookReview bookReview)
+    {
+        return _bookReviewDbContext.Update(bookReview).Entity;
+    }
+
+    public async Task<BookReview?> GetBookReviewByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var bookReview = await _bookReviewDbContext.BookReviews.FirstOrDefaultAsync(x=>x.Id == id, cancellationToken);
+        return bookReview;
+    }
 }

@@ -17,7 +17,7 @@ public class RejectedBookDomainEventHandler(
     {
         _logger.LogInformation("Start reject book domain event handler make convert to integration event for approval {@Id}", domainEvent.Approval.Id);
         var integrationEvent =
-            new RejectBookIntegrationEvent(domainEvent.Approval.ChapterId, domainEvent.Approval.AuthorId, domainEvent.Approval.Decision.Last().Note ?? string.Empty);
+            new RejectBookIntegrationEvent(domainEvent.Approval.ChapterId, domainEvent.Approval.AuthorId, domainEvent.Approval.Decision.Last().Note ?? string.Empty, domainEvent.Approval.BookId);
         _logger.LogInformation("Star reject boook publish to event bus");
         await _eventBus.Publish(integrationEvent, cancellationToken);
     }

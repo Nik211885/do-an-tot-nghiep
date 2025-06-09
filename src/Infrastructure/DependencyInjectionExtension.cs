@@ -1,10 +1,14 @@
 ﻿using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Interfaces.Notification;
+using Application.Interfaces.Signature;
 using Application.Interfaces.UnitOfWork;
+using Application.Interfaces.Validator;
+using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 using Infrastructure.Options;
 using Infrastructure.Data.DbContext;
 using Infrastructure.Data.Interceptors;
+using Infrastructure.Data.Services;
 using Infrastructure.Services.Cache;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
@@ -14,10 +18,13 @@ using Infrastructure.Services.Keycloak;
 using Infrastructure.Services.Notification;
 using Infrastructure.Services.ProcessData;
 using Infrastructure.Services.Repository;
+using Infrastructure.Services.Signature;
 using Infrastructure.Services.UnitOfWork;
 using Infrastructure.Services.UploadFile;
+using Infrastructure.Services.Validator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MimeKit.Cryptography;
 
 namespace Infrastructure;
 
@@ -33,12 +40,15 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
+        services.AddScoped<IDigitalSignatureService,DigitalSignatureService>();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
         services.AddScoped<DispatcherDomainEventInterceptors>();
         services.AddTransient<IEmailSender, EmailSender>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
         services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository();
+        services.AddSingleton<IEntityDbContextMapService, EntityDbContextMapService>();
+        services.AddScoped(typeof(IValidationServices<>), typeof(ValidationServices<>));
         services.AddMassTransitRabbitMqEventBus();
         services.AddApplicationServicesExtension();
         services.AddProcessData();

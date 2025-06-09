@@ -18,7 +18,7 @@ public class ApprovedBookDomainEventHandler(
     {
         _logger.LogInformation("Start approval book domain event handler make convert to integration event for approval {@Id}", domainEvent.Approval.Id);
         var integrationEvent =
-            new ApprovalBookIntegrationEvent(domainEvent.Approval.ChapterId, domainEvent.Approval.AuthorId);
+            new ApprovalBookIntegrationEvent(domainEvent.Approval.ChapterId, domainEvent.Approval.AuthorId, domainEvent.Approval.BookId);
         _logger.LogInformation("Star approval book publish to event bus");
         await _eventBus.Publish(integrationEvent, cancellationToken);
     }

@@ -9,77 +9,50 @@ namespace Core.BoundContext.BookReviewContext.BookReviewAggregate;
 public class BookReview : BaseEntity, IAggregateRoot
 {
     public Guid BookId { get; private set; }
-    public int View { get; private set; }
-    private List<Rating>? _ratings;
-    private List<Comment>? _comments;
-    public IReadOnlyCollection<Rating> Ratings => _ratings ?? [];
-    public IReadOnlyCollection<Comment> Comments => _comments ?? [];
+    public int ViewCount { get; private set; }
+    public int CommentCount { get; private set; }
+    public int RatingCount { get; private set; }
+    public long TotalRating { get; private set; }
+    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset LastUpdated { get; private set; }
     protected BookReview(){}
-    private BookReview(Guid bookId, Rating? rating, Comment? comment)
+    private BookReview(Guid bookId)
     {
         BookId = bookId;
-        if (rating is not null)
-        {
-            _ratings ??= [];
-            _ratings.Add(rating);
-        }
-
-        if (comment is not null)
-        {
-            _comments ??= [];
-            _comments.Add(comment);
-        }
-
-        View = 0;
+        ViewCount = 0;
+        CommentCount = 0;
+        RatingCount = 0;
+        TotalRating = 0; 
+        CreatedAt = DateTimeOffset.UtcNow;
+        LastUpdated = DateTimeOffset.UtcNow;
     }
 
-    public static BookReview CreateBookReview(Guid bookId, Rating? rating, Comment? comment)
+    public static BookReview Create(Guid bookId)
     {
-        return new BookReview(bookId, rating, comment);
+        var bookReview = new BookReview(bookId);
+        bookReview.RaiseDomainEvent(new BookReviewCreatedDomainEvent(bookReview.Id, bookId));
+        return bookReview;
     }
 
-    public void AddRating(Guid reviewerId, int star)
+    public void IncrementView()
     {
-        var ratingExits = _ratings?.FirstOrDefault(r=>r.ReviewerId == reviewerId);
-        ThrowHelper.ThrowBadRequestWhenArgumentNotNull(ratingExits,BookReviewContextMessage.JustHaveOneRatingInTheBook);
-        var rating = Rating.Create(reviewerId, RatingStar.Create(star));
-        _ratings ??= [];
-        _ratings.Add(rating);
+        ViewCount += 1;
+    }
+    public void IncrementRating(int star)
+    {
+        TotalRating += star;
+        RatingCount+=1;
     }
 
-    public void AddComment(Guid reviewerId, string commentContent)
+    public void UnIncrementRating(int newStarValue, int oldStarValue)
     {
-        var comment = Comment.Create(Id, reviewerId, commentContent, null);
-        _comments ??= [];
-        _comments.Add(comment);
-        RaiseDomainEvent(new CommentedBookDomainEvent(comment.Id, BookId, commentContent));
+        TotalRating -= newStarValue;
+        TotalRating += oldStarValue;
+        RatingCount-=1;
     }
 
-    public void RemoveComment(Guid commentId)
+    public void UpdateCommentCount()
     {
-        var comment = _comments?.FirstOrDefault(c=>c.Id == commentId);
-        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(comment,BookReviewContextMessage.CanNotFindCommentId);
-        _comments?.Remove(comment);
+        CommentCount+=1;
     }
-
-    public void UpdateRating(Guid reviewerId, int star)
-    {
-        var rating = _ratings?.FirstOrDefault(r => r.ReviewerId == Id);
-        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(rating,BookReviewContextMessage.CanNotFindYourRating);
-        var newRating = Rating.Create(reviewerId,RatingStar.Create(star));
-        _ratings?.Remove(rating);
-        _ratings?.Add(newRating);
-    }
-
-    public void AddView()
-    {
-        View += 1;
-    }
-    public double CalculateAverageRating()
-    {
-        if (_ratings == null || !_ratings.Any())
-            return 0;
-        return _ratings.Average(r => r.Star.Star);
-    }
-    public int TotalRatings => _ratings?.Count ?? 0;
 }

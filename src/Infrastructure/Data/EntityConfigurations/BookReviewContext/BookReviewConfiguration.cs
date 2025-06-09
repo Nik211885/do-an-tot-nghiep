@@ -1,4 +1,5 @@
 ﻿using Core.BoundContext.BookReviewContext.BookReviewAggregate;
+using Core.BoundContext.BookReviewContext.CommentAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

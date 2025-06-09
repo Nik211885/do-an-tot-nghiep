@@ -43,6 +43,13 @@ internal static class ThrowHelper
         throw new NotFoundException(identifier.Keys.First(), identifier.Values.First());
     }
 
+    public static void ThrowBadRequestWhenITemIsNotNull(object? obj,string message)
+    {
+        if (obj is not null)
+        {
+            throw new BadRequestException(message);
+        }
+    }
     public static void ThrowIfBadRequest(string message)
     {
         throw new BadRequestException(message);

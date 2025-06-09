@@ -1,4 +1,5 @@
 ﻿using Application.BoundContext.BookAuthoringContext.Command;
+using Application.BoundContext.BookReviewContext.Command;
 using Application.BoundContext.ModerationContext.Command;
 using Application.BoundContext.NotificationContext.Command;
 using Application.Interfaces.UnitOfWork;
@@ -23,6 +24,8 @@ public class UnitOfWorkFactory(IServiceProvider serviceProvider)
                 => _serviceProvider.GetRequiredService<ModerationDbContext>(),
             { } t when ImplementsGenericInterface(t,  typeof(INotificationCommand<>))
                 => _serviceProvider.GetRequiredService<NotificationDbContext>(),
+            {} t when  ImplementsGenericInterface(t, typeof(IBookReviewCommand<>))
+                => _serviceProvider.GetRequiredService<BookReviewDbContext>(),
             _ => throw new Exception("Not find unit of work make sure you has cretae and implement to factory")
         };
     }

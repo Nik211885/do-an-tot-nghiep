@@ -3,7 +3,7 @@ using Core.Exception;
 using Core.Message;
 using Core.ValueObjects;
 
-namespace Core.BoundContext.BookReviewContext.BookReviewAggregate;
+namespace Core.BoundContext.BookReviewContext.RatingAggregate;
 
 public class RatingStar : ValueObject
 {
