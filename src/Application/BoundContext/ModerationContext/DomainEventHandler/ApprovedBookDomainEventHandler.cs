@@ -13,7 +13,6 @@ public class ApprovedBookDomainEventHandler(
 {
     private readonly ILogger<ApprovedBookDomainEventHandler> _logger = logger;
     private readonly IEventBus<ApprovalBookIntegrationEvent> _eventBus = eventBus;
-    
     public async Task Handler(ApprovedBookDomainEvent domainEvent, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Start approval book domain event handler make convert to integration event for approval {@Id}", domainEvent.Approval.Id);

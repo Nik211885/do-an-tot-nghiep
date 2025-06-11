@@ -1,16 +1,19 @@
-﻿using Application.Interfaces.CQRS;
+﻿/*
+using Application.Interfaces.CQRS;
 using Core.Events.ModerationContext;
 using Microsoft.Extensions.Logging;
 
 namespace Application.BoundContext.ModerationContext.DomainEventHandler;
 
+// Write chapter for elastic with embedding vector
 public class WriteToElasticWhenApprovedBookDomainEventHandler(
     ILogger<WriteToElasticWhenApprovedBookDomainEventHandler> logger)
     : IEventHandler<ApprovedBookDomainEvent>
 {
     private readonly ILogger<WriteToElasticWhenApprovedBookDomainEventHandler> _logger = logger;
-    public Task Handler(ApprovedBookDomainEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handler(ApprovedBookDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        Thread.Sleep(100);
     }
 }
+*/

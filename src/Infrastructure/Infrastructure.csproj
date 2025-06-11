@@ -13,9 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
+    <PackageReference Include="DocuSign.eSign.dll" Version="8.2.0" />
     <PackageReference Include="EFCore.BulkExtensions" Version="9.0.1" />
-    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.18.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="9.2.0" />
+    <PackageReference Include="itext7.pdfhtml" Version="6.2.0" />
     <PackageReference Include="MailKit" Version="4.12.0" />
     <PackageReference Include="MassTransit" Version="8.4.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
@@ -25,6 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0-preview.2.25163.2" />
+    <PackageReference Include="minhsangdotcom.TheTemplate.ElasticsearchFluentConfig" Version="1.0.1-alpha" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.37" />

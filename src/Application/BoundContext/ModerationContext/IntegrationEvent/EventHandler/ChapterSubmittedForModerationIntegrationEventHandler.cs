@@ -23,8 +23,10 @@ public class ChapterSubmittedForModerationIntegrationEventHandler(
         var command = new CreateBookApprovalCommand(
             BookId: @event.BookId,
             ChapterId: @event.ChapterId,
-            AuthorId: @event.AuthorId,
-            ChapterContent: @event.Content
+            ChapterContent: @event.Content,
+            AuthorId : @event.AuthorId,
+            BookTitle: @event.BookTitle,
+            ChapterTitle: @event.ChapterTitle
         );
         await _factoryHandler.Handler<CreateBookApprovalCommand, BookApprovalViewModel>(command, cancellationToken);
         _logger.LogInformation("Chapter has read {@command}", command);

@@ -41,7 +41,7 @@ public class BookReviewEndpoint : IEndpoints
             .WithName("GetCommentWithPaginationForUser")
             .WithDescription("Get comment with pagination for user");
         apis.MapGet("comment/all/book-and-user", BookReviewEndpointService.GetCommentWithUserAndBookId)
-            .WithTags("GetCommentWithUserAndBookId")
+            .WithTags("Comment")
             .WithName("GetCommentWithUserAndBookId")
             .WithDescription("Get comment with pagination for user");
         apis.MapPost("rating/create", BookReviewEndpointService.CreateRating)

@@ -17,9 +17,12 @@ public class BookApproval : BaseEntity, IAggregateRoot
     public IReadOnlyCollection<ApprovalDecision> Decision => _decision.AsReadOnly();
     public int Version { get; private set; }
     
-    public CopyrightChapter? CopyrightChapter { get; private set; }
+    public CopyrightChapter CopyrightChapter { get; private set; }
     protected BookApproval(){}
-    private BookApproval(Guid bookId, Guid chapterId, string contentHash, Guid authorId)
+    private BookApproval(Guid bookId, Guid chapterId,
+        string contentHash, Guid authorId,
+        string bookTitle, string chapterTitle,
+        string chapterContent)
     {
         BookId = bookId;
         ChapterId = chapterId;
@@ -28,12 +31,16 @@ public class BookApproval : BaseEntity, IAggregateRoot
         Version = 0;
         AuthorId = authorId;
         Status = BookApprovalStatus.Pending;
+        var copyAndRight = CopyrightChapter.Create(bookTitle
+            , chapterTitle, chapterContent);
+        CopyrightChapter = copyAndRight;
         RaiseDomainEvent(new ChapterReadyForModerationDomainEvent(this));
     }
 
-    public static BookApproval Create(Guid bookId, Guid chapterId, string contentHash, Guid authorId)
+    public static BookApproval Create(Guid bookId, Guid chapterId, string contentHash, Guid authorId,   string bookTitle, string chapterTitle,
+        string chapterContent)
     {
-        return new BookApproval(bookId, chapterId, contentHash, authorId);
+        return new BookApproval(bookId, chapterId, contentHash, authorId, bookTitle,chapterTitle, chapterContent);
     }
 
     public void Reject(Guid? moderatorId, string? note,bool isAutomated)
@@ -41,7 +48,7 @@ public class BookApproval : BaseEntity, IAggregateRoot
         var decision = ApprovalDecision.Create(moderatorId, note, isAutomated, BookApprovalStatus.Rejected);
         _decision.Add(decision);
         Status = BookApprovalStatus.Rejected;
-        CopyrightChapter?.UnActive();
+        CopyrightChapter.UnActive();
         RaiseDomainEvent(new RejectedBookDomainEvent(this));
     }
 
@@ -50,6 +57,7 @@ public class BookApproval : BaseEntity, IAggregateRoot
         var decision = ApprovalDecision.Create(moderatorId, note, isAutomated, BookApprovalStatus.Approved);
         _decision.Add(decision);
         Status = BookApprovalStatus.Approved;
+        CopyrightChapter.Active();
         RaiseDomainEvent(new ApprovedBookDomainEvent(this));
     }
 }

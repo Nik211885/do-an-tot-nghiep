@@ -1,9 +1,9 @@
-﻿using Application.BoundContext.BookAuthoringContext.Queries;
-using Application.BoundContext.ModerationContext.Command;
+﻿using Application.BoundContext.ModerationContext.Command;
 using Application.BoundContext.ModerationContext.Queries;
 using Application.BoundContext.ModerationContext.ViewModel;
 using Application.Interfaces.CQRS;
-using Infrastructure.Services.CQRS;
+using Application.Models;
+using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +28,10 @@ public class ModerationEndpoint : IEndpoints
             .WithTags("ModerationChapter")
             .WithName("RejectModerationChapter")
             .WithDescription("Reject moderation chapter");
+        apis.MapGet("approval", ModerationEndpointServices.GetBookApprovalWithPaginationByStatusAsync)
+            .WithTags("ModerationChapter")
+            .WithName("GetBookApprovalWithPaginationByStatus")
+            .WithDescription("Get book approval with pagination by status");
     }
 }
 
@@ -58,6 +62,16 @@ public static class ModerationEndpointServices
     )
     {
         var result = await service.FactoryHandler.Handler<RejectBookCommand, BookApprovalViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<BookApprovalViewModel>>, ProblemHttpResult>>  GetBookApprovalWithPaginationByStatusAsync
+    (
+        [AsParameters] PaginationRequest page, [FromQuery] BookApprovalStatus status,
+        [FromServices] ModerationServiceWrapper service
+    )
+    {
+        var result =  await service.ModerationQueries.GetBookApprovalWithPaginationByStatusAsync(status, page);
         return TypedResults.Ok(result);
     }
 }

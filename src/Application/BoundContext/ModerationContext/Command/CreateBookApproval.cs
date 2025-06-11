@@ -7,7 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.BoundContext.ModerationContext.Command;
 
-public record CreateBookApprovalCommand(Guid BookId, Guid ChapterId, string ChapterContent, Guid AuthorId)
+public record CreateBookApprovalCommand(Guid BookId, 
+    Guid ChapterId, 
+    string ChapterContent, 
+    Guid AuthorId,
+    string BookTitle,
+    string ChapterTitle)
     : IModerationCommand<BookApprovalViewModel>;
 
 public class CreateBookApprovalCommandHandler(
@@ -25,7 +30,10 @@ public class CreateBookApprovalCommandHandler(
             bookId: request.BookId,
             contentHash: _cleanTextService.RemoveHtmlTag(request.ChapterContent),
             chapterId: request.ChapterId,
-            authorId: request.AuthorId
+            authorId: request.AuthorId,
+            bookTitle: request.BookTitle,
+            chapterTitle: request.ChapterTitle,
+            chapterContent:request.ChapterContent
         );
         _logger.LogInformation("Created book approval with id {Id}", approval.Id);
         _approvalRepository.Create(approval);

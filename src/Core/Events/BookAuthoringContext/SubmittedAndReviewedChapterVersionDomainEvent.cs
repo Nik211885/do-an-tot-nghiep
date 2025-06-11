@@ -3,15 +3,16 @@
 public class SubmittedAndReviewedChapterVersionDomainEvent : IEvent
 {
     public string Content { get; set; }
-    public Guid ChapterVersionId { get; }
+    public Guid ChapterId{ get; }
+    public string ChapterTitle { get; }
     public Guid BookId { get; }
-    public Guid AuthorId { get; }
 
-    public SubmittedAndReviewedChapterVersionDomainEvent(Guid chapterVersionId, Guid bookId, Guid authorId, string content)
+    public SubmittedAndReviewedChapterVersionDomainEvent(Guid chapterId,
+        Guid bookId, string content, string chapterTitle)
     {
         Content = content;
-        ChapterVersionId = chapterVersionId;
+        ChapterId = chapterId;
+        ChapterTitle = chapterTitle;
         BookId = bookId;
-        AuthorId = authorId;
     }
 }

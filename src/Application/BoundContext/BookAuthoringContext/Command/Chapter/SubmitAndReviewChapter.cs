@@ -26,7 +26,7 @@ public class SubmitAndReviewChapterCommandHandler(
         // in to message bus
         var chapter = await _chapterRepository.FindByIdAsync(request.Id,cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(chapter, ChapterValidationMessage.NotFoundChapterById(request.Id));
-        chapter.SubmitAndReview(_identityProvider.UserIdentity());
+        chapter.SubmitAndReview();
         _logger.LogInformation("Submit and review chapterId: {chapterId}", chapter.Id);
         _chapterRepository.Update(chapter);
         await _chapterRepository.UnitOfWork.SaveChangeAsync(cancellationToken);

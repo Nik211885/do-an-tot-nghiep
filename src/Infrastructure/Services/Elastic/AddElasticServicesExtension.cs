@@ -19,7 +19,10 @@ public static class AddElasticServicesExtension
             ArgumentNullException.ThrowIfNull(client);
             return client;
         });
-        services.AddScoped<IPlagiarismCheckerService, PlagiarismCheckerService>();
+        //  Seeder all index for application
+        
+        services.AddSingleton(typeof(IElasticServices<>), typeof(ElasticServices<>));
+        services.AddSingleton<IElasticFactory, ElasticFactory>();
         return services;
     }
 }

@@ -98,7 +98,7 @@ public class Chapter
         chapterVersion.RenameVersion(newNameVersion);
     }
     
-    public void SubmitAndReview(Guid userId)
+    public void SubmitAndReview()
     {
         if (Status == ChapterStatus.Submitted)
         {
@@ -106,7 +106,8 @@ public class Chapter
         }
         Status = ChapterStatus.Submitted;
         Locked();
-        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id, BookId, userId, Content));
+        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id, BookId,Content
+        , Title));
     }
 
     public void Delete()
