@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.CQRS;
+using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.Events.BookAuthoringContext;
 using Core.Interfaces.Repositories.BookAuthoringContext;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,8 @@ public class AddedGenreForBookDomainEventHandler(
     ILogger<AddedGenreForBookDomainEventHandler> logger,
     IBookRepository  bookRepository,
     IGenresRepository  genresRepository)
-    : IEventHandler<AddedGenreForBookDomainEvent>
+    : IEventHandler<AddedGenreForBookDomainEvent>,
+        IEventHandler<CreatedBookDomainEvent>
 {
     private readonly ILogger<AddedGenreForBookDomainEventHandler> _logger = logger;
     private readonly IBookRepository _bookRepository = bookRepository;
@@ -23,15 +25,24 @@ public class AddedGenreForBookDomainEventHandler(
             return;
         }
 
+        await CoutForGenreWhenAddGenreForBookAsync(domainEvent.Book, cancellationToken);
+    }
+
+    public async Task Handler(CreatedBookDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        await CoutForGenreWhenAddGenreForBookAsync(domainEvent.Book, cancellationToken);
+    }
+
+    private async Task CoutForGenreWhenAddGenreForBookAsync(Book book, CancellationToken cancellationToken)
+    {
         var genres =
             await _genresRepository
                 .FindActiveByIdsAsync(cancellationToken, 
-                    domainEvent.BookGenres.Select(x=>x.GenreId).ToArray());
+                    book.Genres.Select(x=>x.GenreId).ToArray());
         Parallel.ForEach(genres, genre =>
         {
             genre.AddCoutForBook();
         });
         await _genresRepository.UpdateBulkAsync(genres, cancellationToken);
-
     }
 }

@@ -15,7 +15,6 @@ public interface IElasticServices<T>  where T : class
         QueryParamRequest request,
         Action<QueryDescriptor<T>>? filter = null
     );
-
     Task<PaginationItem<T>> PaginatedListAsync(
         QueryParamRequest request,
         Action<QueryDescriptor<T>>? filter = null

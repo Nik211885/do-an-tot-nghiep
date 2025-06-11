@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Elastic;
 using Application.Models;
+using CaseConverter;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Fluent;
 using Elastic.Clients.Elasticsearch.QueryDsl;
@@ -12,7 +13,7 @@ public class ElasticServices<T>(ElasticsearchClient client)
 {
     private readonly ElasticsearchClient _client = client;
     // You can add prefix for index name
-    private readonly string _indexName = typeof(T).Name.ToLower();
+    private readonly string _indexName = typeof(T).Name.ToKebabCase();
 
    public async Task<T> AddAsync(T entity)
     {
@@ -21,7 +22,7 @@ public class ElasticServices<T>(ElasticsearchClient client)
 
         return entity;
     }
-
+    
     public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
     {
         await _client.BulkAsync(x =>

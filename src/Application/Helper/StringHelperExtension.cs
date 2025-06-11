@@ -25,6 +25,17 @@ public static class StringHelperExtension
         return string.Concat(slug,"-", RandomStringBase64ByBytes(byteRandomSlug));
     }
 
+    public static string ToKebabCase(this string str)
+    {
+        if (string.IsNullOrWhiteSpace(str)) return str;
+
+        return string.Concat(str.Select((ch, i) =>
+            i > 0 && char.IsUpper(ch)
+                ? "-" + char.ToLower(ch)
+                : char.ToLower(ch).ToString()
+        ));
+    }
+
     public static string RandomStringBase64ByBytes(int bytes)
     {
         byte[] byteArray = new byte[bytes];

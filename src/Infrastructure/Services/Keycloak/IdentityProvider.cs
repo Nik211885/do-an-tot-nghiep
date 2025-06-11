@@ -38,4 +38,21 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
     {
         return _contextAccessor.HttpContext.User.IsInRole(role);
     }
+
+    public IEnumerable<Claim> Claims()
+    {
+        return _contextAccessor.HttpContext.User.Claims;
+    }
+
+    public string FullName()
+    {
+        var firstName = _contextAccessor.HttpContext?.User?.FindFirst("given_name")?.Value;
+        var lastName = _contextAccessor.HttpContext?.User?.FindFirst("family_name")?.Value;
+
+        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            return $"{firstName} {lastName}";
+        
+        var fullName = _contextAccessor.HttpContext?.User?.FindFirst("name")?.Value;
+        return fullName ?? "Unknown";
+    }
 }

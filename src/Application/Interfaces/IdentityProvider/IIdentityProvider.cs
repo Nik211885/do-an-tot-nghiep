@@ -1,4 +1,6 @@
-﻿namespace Application.Interfaces.IdentityProvider;
+﻿using System.Security.Claims;
+
+namespace Application.Interfaces.IdentityProvider;
 /// <summary>
 ///     Get claim in to access token
 /// </summary>
@@ -30,4 +32,6 @@ public interface IIdentityProvider
     ///     Return true if use has permission
     /// </returns>*/
     /*Task<bool> IsInPermissionAsync(string permission);*/
+    IEnumerable<Claim> Claims();
+    string FullName();
 }

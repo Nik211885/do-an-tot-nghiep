@@ -20,7 +20,6 @@ public static class AddElasticServicesExtension
             return client;
         });
         //  Seeder all index for application
-        
         services.AddSingleton(typeof(IElasticServices<>), typeof(ElasticServices<>));
         services.AddSingleton<IElasticFactory, ElasticFactory>();
         return services;

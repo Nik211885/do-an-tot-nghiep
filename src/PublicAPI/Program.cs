@@ -1,7 +1,9 @@
 using System.Reflection;
 using Application;
 using Application.Exceptions;
+using Elastic.Clients.Elasticsearch;
 using Infrastructure;
+using Infrastructure.Services.Elastic;
 using PublicAPI.Services;
 using PublicAPI.Services.Endpoint;
 using Serilog;
@@ -29,6 +31,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+var elasticClient = scope.ServiceProvider.GetService<ElasticsearchClient>()
+    ?? throw new Exception("Not found Elasticsearch client to mapping index");
+var seeder = new SeederIndex(elasticClient);
+await seeder.IndexMappingAsync();
 
 // Configure the HTTP request pipeline.
 app.MapEndpoints();

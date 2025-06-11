@@ -21,6 +21,16 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
         return genres.MapToViewModel();
     }
 
+    public async Task<IReadOnlyCollection<Genres>> FindGenresByIdsAsync(CancellationToken cancellationToken = default, params Guid[] ids)
+    {
+        var genres = await _bookAuthoringDbContext
+            .Genres
+            .AsNoTracking()
+            .Where(g=>ids.Contains(g.Id))
+            .ToListAsync(cancellationToken);
+        return genres;
+    }
+
     public async Task<GenreViewModel?> FindGenreBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var genre  = await _bookAuthoringDbContext.Genres

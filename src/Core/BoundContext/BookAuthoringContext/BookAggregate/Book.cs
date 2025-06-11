@@ -67,7 +67,6 @@ public class Book
         CreatedDateTime = DateTimeOffset.UtcNow;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
         RaiseDomainEvent(new CreatedBookDomainEvent(this, createdUserId));
-        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id, genres.ToArray()));
     }
 
     /// <summary>
@@ -90,7 +89,7 @@ public class Book
         var policyReadBook = PolicyReadBook.CreatePolicy(policy, price);
         PolicyReadBook = policyReadBook;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new BookUpdatePolicyReaderBookDomainEvent(Id, policyReadBook,CreatedUerId));
+        RaiseDomainEvent(new BookUpdatePolicyReaderBookDomainEvent(this,Id, policyReadBook,CreatedUerId));
     }
     /// <summary>
     ///    Add new tag and follower rule factory create tag and don't have
@@ -180,7 +179,7 @@ public class Book
     {
         BookReleaseType = bookReleaseType;
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new BookChangedReleaseTypeDomainEvent(Id,  bookReleaseType,CreatedUerId));
+        RaiseDomainEvent(new BookChangedReleaseTypeDomainEvent(this,Id,  bookReleaseType,CreatedUerId));
     }
 
     /// <summary>
@@ -219,9 +218,9 @@ public class Book
         var addedGenres = addedGenreIds.Select(BookGenres.Create).ToArray();   
         
         _genres.RemoveAll(g => removedGenres.Select(x=>x).Contains(g));
-        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,  removedGenres));
+        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(this, Id,  removedGenres));
         _genres.AddRange(addedGenres);
-        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id,addedGenres));
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(this, Id,addedGenres));
         
         if (tagNames is not null)
         {
@@ -258,7 +257,7 @@ public class Book
         var genreAdd = BookGenres.Create(genreId);
         _genres.Add(genreAdd);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new AddedGenreForBookDomainEvent(Id, genreAdd));
+        RaiseDomainEvent(new AddedGenreForBookDomainEvent(this,Id, genreAdd));
     }
     /// <summary>
     ///     Remove genre for book make sure it have more than one
@@ -276,7 +275,7 @@ public class Book
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(genreExits,BookAuthoringContextMessage.CanNotExitsGenresInYourBook);
         _genres.Remove(genreExits);
         LastUpdateDateTime = DateTimeOffset.UtcNow;
-        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(Id,genreExits));
+        RaiseDomainEvent(new RemovedGenreForBookDomainEvent(this,Id,genreExits));
     }
     /// <summary>
     ///    Factory create new instance book with constructed primary
