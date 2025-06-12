@@ -12,12 +12,10 @@ public record CreateUserProfileCommand(Guid UserId, string? Bio) :
 
 public class CreateUserProfileCommandHandler(
     IUserProfileRepository repository,
-    ILogger<CreateUserProfileCommandHandler> logger,
-    IIdentityProviderServices identityProvider)
+    ILogger<CreateUserProfileCommandHandler> logger)
     : ICommandHandler<CreateUserProfileCommand, UserProfileViewModel>
 {
     private readonly IUserProfileRepository _repository = repository;
-    private readonly IIdentityProviderServices _identityProvider = identityProvider;
     private readonly ILogger<CreateUserProfileCommandHandler> _logger = logger;
     public async Task<UserProfileViewModel> Handle(CreateUserProfileCommand request, CancellationToken cancellationToken)
     {

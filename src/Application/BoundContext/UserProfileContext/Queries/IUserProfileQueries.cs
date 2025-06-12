@@ -1,6 +1,10 @@
-﻿namespace Application.BoundContext.UserProfileContext.Queries;
+﻿using Application.BoundContext.UserProfileContext.ViewModel;
+using Application.Interfaces.Query;
 
-public interface IUserProfileQueries
+namespace Application.BoundContext.UserProfileContext.Queries;
+
+public interface IUserProfileQueries : IApplicationQueryServicesExtension
 {
-    
+    // user
+    Task<UserProfileViewModel?> GetUserProfileByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

@@ -7,4 +7,5 @@ public interface IUserProfileRepository
 {
     UserProfile Create(UserProfile userProfile);
     UserProfile Update(UserProfile userProfile);
+    Task<UserProfile?> GetByIdAsync(Guid id, CancellationToken cancellationToken= default);
 }

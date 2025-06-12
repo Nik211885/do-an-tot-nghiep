@@ -22,7 +22,7 @@ public class Follower : BaseEntity,IAggregateRoot
     {
         return new Follower(followingId,followerId);
     }
-
+    
     public void UnFollow()
     {
         RaiseDomainEvent(new UnFollowedDomainEvent(this));

@@ -61,7 +61,7 @@ public class BookReviewEndpoint : IEndpoints
             .WithName("GetRatingWithPaginationForUser")
             .WithDescription("Get rating with pagination for user");
         apis.MapGet("rating/book-and-user", BookReviewEndpointService.GetRatingWithUserAndBookId)
-            .WithName("Rating")
+            .WithTags("Rating")
             .WithName("GetRatingWithBookAndUser")
             .WithDescription("Get rating with book and user");
 
