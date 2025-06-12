@@ -14,7 +14,7 @@ public class UserProfile : BaseEntity, IAggregateRoot
     public int CoutFollowers { get; private set; }
     public int CountFavoriteBook { get; private set; }
     protected UserProfile(){}
-    private UserProfile(Guid userId, string bio)
+    private UserProfile(Guid userId, string? bio)
     {
         Id  = userId;
         Bio = bio;
@@ -23,7 +23,7 @@ public class UserProfile : BaseEntity, IAggregateRoot
     {
         Bio = bio;
     }
-    public static UserProfile Create(Guid userId, string bio)
+    public static UserProfile Create(Guid userId, string? bio)
     {
         return new UserProfile(userId, bio);
     }

@@ -26,8 +26,16 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
+      KK_TO_RMQ_URL: rabbitmq
+      KK_TO_RMQ_PORT: 5672
+      KK_TO_RMQ_VHOST: /
+      KK_TO_RMQ_EXCHANGE: amq.topic
+      KK_TO_RMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
+      KK_TO_RMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
+      KK_TO_RMQ_USE_TLS: false
     volumes:
       - ./keycloakify-custom/build_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/my-theme.jar
+      - ./keycloak-plugin/keycloak-to-rabbit-3.0.5.jar:/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
     ports:
       - 8080:8080
     depends_on:
@@ -65,7 +73,7 @@ services:
     networks:
       - keycloak_network
   rabbitmq:
-    image: rabbitmq:4.1.0
+    image: rabbitmq:3-management
     ports:
       - 5672:5672     
       - 15672:15672
