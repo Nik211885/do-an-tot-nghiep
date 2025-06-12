@@ -14,6 +14,7 @@ internal static class AddDbContextExtension
         services.AddDbContext<OrderDbContext>();
         services.AddDbContext<ReportSubmissionDbContext>();
         services.AddDbContext<NotificationDbContext>();
+        services.AddDbContext<UserProfileDbContext>();
         return services;
     } 
 }

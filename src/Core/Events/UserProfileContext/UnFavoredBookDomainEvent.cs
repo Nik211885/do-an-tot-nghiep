@@ -1,10 +1,11 @@
 ﻿
+
 using Core.BoundContext.UserProfileContext.FavoriteBookAggregate;
 
 namespace Core.Events.UserProfileContext;
 
-public class FavoredBookDomainEvent(FavoriteBook userFavoredId)
+public class UnFavoredBookDomainEvent(FavoriteBook favoriteBook)
     : IEvent
 {
-    public FavoriteBook FavoriteBook { get; } = userFavoredId;
+    public FavoriteBook UnFavoredBook { get; } = favoriteBook;
 }

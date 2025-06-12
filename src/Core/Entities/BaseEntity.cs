@@ -10,7 +10,7 @@ public abstract class BaseEntity
     ///     Identity for entity it follows id is uuid7
     /// </summary>
     /// 
-    public Guid Id { get; private set; }
+    public virtual Guid Id { get; protected set; }
 
     /// <summary>
     ///     

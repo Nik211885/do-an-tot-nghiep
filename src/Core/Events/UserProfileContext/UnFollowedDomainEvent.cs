@@ -4,7 +4,7 @@ using Core.BoundContext.UserProfileContext.FollowerAggregate;
 
 namespace Core.Events.UserProfileContext;
 
-public class UserFollowedDomainEvent(Follower follower) : IEvent
+public class UnFollowedDomainEvent(Follower follower) : IEvent
 {
-    public Follower Followed { get; } = follower;
+    public Follower UnFollowed { get; } = follower;
 }

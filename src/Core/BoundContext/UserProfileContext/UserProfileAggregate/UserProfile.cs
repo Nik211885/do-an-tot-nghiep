@@ -8,19 +8,15 @@ namespace Core.BoundContext.UserProfileContext.UserProfileAggregate;
 
 public class UserProfile : BaseEntity, IAggregateRoot
 {
-    public Guid UserId { get; private set; }
+    public sealed override Guid Id { get; protected set; }
     public string? Bio { get; private set; }
     public int CountFollowing { get; private set; }
     public int CoutFollowers { get; private set; }
-    private List<Follower> _followers;
     public int CountFavoriteBook { get; private set; }
-    public IReadOnlyList<Follower> Followers => _followers.AsReadOnly();
-    private List<FavoriteBook> _favoriteItems;
-    public IReadOnlyCollection<FavoriteBook> FavoriteItems => _favoriteItems.AsReadOnly();
     protected UserProfile(){}
     private UserProfile(Guid userId, string bio)
     {
-        UserId = userId;
+        Id  = userId;
         Bio = bio;
     }
     public void UpdateBio(string bio)
@@ -31,34 +27,35 @@ public class UserProfile : BaseEntity, IAggregateRoot
     {
         return new UserProfile(userId, bio);
     }
-    
-    public void AddFollower(Guid followerId)
+
+    public void AddCoutFollowing()
     {
-        if (followerId == UserId)
-        {
-            ThrowHelper.ThrowIfBadRequest(UserProfileContextMessage.YouCanNotFollowYourself);
-        }
-        var followersExits = _followers.Where(f => f.FollowerId == followerId);
-        if (followersExits.Any())
-        {
-            ThrowHelper.ThrowIfBadRequest(UserProfileContextMessage.YouHasFollowedUser);
-        }
-        var follower = Follower.Create(UserId,followerId);
-        _followers.Add(follower);
-        RaiseDomainEvent(new UserFollowedDomainEvent(UserId, followerId));
+        CountFollowing += 1;
     }
 
-    public void RemoveFollower(Guid followerId)
+    public void UnCoutFollowing()
     {
-        var followerExits = _followers.FirstOrDefault(f => f.FollowerId == followerId);
-        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(followerExits,UserProfileContextMessage.YouDontHasFollowedUser);
-        _followers.Remove(followerExits);
+        CountFollowing -= 1;
     }
-    public void FavoriteItem(Guid favoriteBookId)
+
+    public void AddFollower()
     {
-        var favoredItemExits = _favoriteItems.FirstOrDefault(x => x.FavoriteBookId == favoriteBookId);
-        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(favoredItemExits,UserProfileContextMessage.YouHasFavoriteItem);
-        _favoriteItems.Add(FavoriteBook.Create(UserId,favoriteBookId));
-        RaiseDomainEvent(new FavoredBookDomainEvent(UserId,favoriteBookId));
+        CoutFollowers += 1;
     }
+
+    public void UnCoutFollower()
+    {
+        CoutFollowers -= 1;
+    }
+
+    public void AddCoutFavorite()
+    {
+        CountFavoriteBook += 1;
+    }
+
+    public void UnCoutFavorite()
+    {
+        CountFavoriteBook -= 1;
+    }
+        
 }
