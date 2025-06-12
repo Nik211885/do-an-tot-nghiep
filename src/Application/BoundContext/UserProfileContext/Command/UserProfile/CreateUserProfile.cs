@@ -21,13 +21,6 @@ public class CreateUserProfileCommandHandler(
     private readonly ILogger<CreateUserProfileCommandHandler> _logger = logger;
     public async Task<UserProfileViewModel> Handle(CreateUserProfileCommand request, CancellationToken cancellationToken)
     {
-        // dependency to other services ;))
-        var userInfo = await _identityProvider.GetUserInfoAsync(request.UserId.ToString());
-        if (userInfo is null)
-        {
-            _logger.LogError($"User {request.UserId} does not exist");
-            throw new Exception($"User {request.UserId} does not exist");
-        }
         var userProfile = Core.BoundContext.UserProfileContext.UserProfileAggregate.UserProfile.Create(
                 userId: request.UserId,
                 bio: request.Bio

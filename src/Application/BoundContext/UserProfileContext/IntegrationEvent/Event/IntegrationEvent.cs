@@ -1,3 +1,3 @@
-﻿namespace Application.BoundContext.UserProfileContext.IntegrationEvent;
+﻿namespace Application.BoundContext.UserProfileContext.IntegrationEvent.Event;
 
 public class IntegrationEvent;

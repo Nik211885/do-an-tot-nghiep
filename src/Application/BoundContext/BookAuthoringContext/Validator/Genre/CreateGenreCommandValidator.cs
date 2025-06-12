@@ -18,7 +18,7 @@ public class CreateGenreCommandValidator : AbstractValidator<CreateGenreCommand>
             .NotEmpty().WithMessage(GenreValidationMessage.NameRequired)
             .MaximumLength(100).WithMessage(GenreValidationMessage.NameMaxLength)
             .MustAsync(async(name, cancellationToken)=>
-                await queryValidator.AnyAsync(genre=>genre.Name == name, cancellationToken) is not null)
+                await queryValidator.AnyAsync(genre=>genre.Name == name, cancellationToken) is null)
             .WithMessage(GenreValidationMessage.NameAlreadyExists);
         RuleFor(g => g.Description)
             .NotEmpty().WithMessage(GenreValidationMessage.DescriptionRequired)

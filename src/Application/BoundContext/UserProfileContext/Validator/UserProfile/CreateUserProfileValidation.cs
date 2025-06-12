@@ -16,9 +16,7 @@ public class CreateUserProfileValidation
             .MaximumLength(500)
             .WithMessage(UserProfileValidationMessage.MaxBioLength);
         RuleFor(x => x.UserId)
-            .MustAsync(async (userId, cancellationToken) => await userProfilesValidationServices
-                .CoutAsync(a => a.Id == userId, cancellationToken) >= 1)
+            .MustAsync(async (userId, cancellationToken) => await userProfilesValidationServices.AnyAsync(u=>u.Id == userId, cancellationToken) is null)
             .WithMessage(UserProfileValidationMessage.HasSyncUserFromKeyCloak);
-
     }
 }

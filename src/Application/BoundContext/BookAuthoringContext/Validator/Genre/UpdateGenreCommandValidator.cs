@@ -16,7 +16,7 @@ public class UpdateGenreCommandValidator : AbstractValidator<UpdateGenreCommand>
             .MustAsync(async (command,name,cancellationToken)=>
                 await queryValidator.AnyAsync(genre=> 
                         genre.Name == name && genre.Id != command.Id,
-                    cancellationToken)  is not null)
+                    cancellationToken)  is null)
             .WithMessage(GenreValidationMessage.NameAlreadyExists);
         RuleFor(g => g.Request.Description)
             .NotEmpty().WithMessage(GenreValidationMessage.DescriptionRequired)
