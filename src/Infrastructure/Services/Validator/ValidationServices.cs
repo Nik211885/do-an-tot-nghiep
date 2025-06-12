@@ -33,4 +33,17 @@ public class ValidationServices<TEntity>
         return result;
 
     }
+
+    public async Task<int> CoutAsync(Expression<Func<TEntity, bool>> selector, CancellationToken cancellationToken, bool ignoreQueryFilters = true)
+    {
+        var query = _dbContext.Set<TEntity>()
+            .AsNoTracking();
+        if (ignoreQueryFilters)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+        var result = await query
+            .CountAsync(selector, cancellationToken);
+        return result;
+    }
 }

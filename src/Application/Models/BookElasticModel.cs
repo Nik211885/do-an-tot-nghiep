@@ -30,6 +30,7 @@ public class BookElasticModel
     public bool IsCompleted { get; set; }
     public bool Visibility { get; set; }
     public string Slug { get; set; }
+    public bool IsActive {get; set;}
     public IReadOnlyCollection<string>? Tags { get; set; }
     public decimal? Price { get; set; }
     public BookPolicy BookPolicy { get; set; }
@@ -73,6 +74,7 @@ public static class BookElasticModelExtension{
             Genres = genresList.ToElasticModels(),
             Price = book.PolicyReadBook.Price,
             Slug = book.Slug,
+            IsActive = false,
             Title = book.Title,
             IsCompleted = book.IsComplete,
             Id = book.Id.ToString(),

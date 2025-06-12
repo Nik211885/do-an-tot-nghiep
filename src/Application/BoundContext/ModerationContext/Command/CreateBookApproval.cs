@@ -26,6 +26,16 @@ public class CreateBookApprovalCommandHandler(
     private readonly IBookApprovalRepository _approvalRepository = approvalRepository;
     public async Task<BookApprovalViewModel> Handle(CreateBookApprovalCommand request, CancellationToken cancellationToken)
     {
+        var approvalExits = await _approvalRepository.FindByBookIdAndChapterIdAsync(request.BookId, request.ChapterId, cancellationToken);
+        // If has exits for chaptter just open aproval
+        if (approvalExits is not null)
+        {
+            approvalExits.OpenApproval();
+            _approvalRepository.Update(approvalExits);
+            await _approvalRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
+            return approvalExits.ToViewModel();
+        }
+        
         var approval = BookApproval.Create(
             bookId: request.BookId,
             contentHash: _cleanTextService.RemoveHtmlTag(request.ChapterContent),

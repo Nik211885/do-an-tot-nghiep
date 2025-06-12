@@ -1,8 +1,11 @@
 ﻿using System.Reflection.Metadata;
 using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Models;
+using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 using Infrastructure.Data.DbContext;
+using Infrastructure.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
@@ -65,7 +68,7 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
         
         return booksResult;
     }
-
+    
     public async Task<BookViewModel?> FindBookBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var book = await _bookAuthoringDbContext.Books

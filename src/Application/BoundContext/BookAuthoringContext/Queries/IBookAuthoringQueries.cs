@@ -1,5 +1,6 @@
 ﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.Query;
+using Application.Models;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.Queries;
@@ -14,6 +15,7 @@ public interface IBookAuthoringQueries : IApplicationQueryServicesExtension
     // because write new book lost has many time iit calculate equals year or
     // Books
     Task<IReadOnlyCollection<BookViewModel>> FindBookForUserAsync(Guid userId, CancellationToken cancellationToken);
+    
     Task<BookViewModel?> FindBookBySlugAsync(string slug, CancellationToken cancellationToken);
     Task<BookViewModel?> FindBookByIdAsync(Guid bookId, CancellationToken cancellationToken);
     

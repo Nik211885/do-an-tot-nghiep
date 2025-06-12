@@ -60,4 +60,15 @@ public class BookApproval : BaseEntity, IAggregateRoot
         CopyrightChapter.Active();
         RaiseDomainEvent(new ApprovedBookDomainEvent(this));
     }
+
+    public void OpenApproval()
+    {
+        this.Status = BookApprovalStatus.Pending;
+        RaiseDomainEvent(new ChapterReadyForModerationDomainEvent(this));
+    }
+
+    public void DeletedApproved()
+    {
+        RaiseDomainEvent(new DeletedApproveDomainEvent(this));
+    }
 }

@@ -29,10 +29,11 @@ public class WriteToElasticWhenApprovedBookDomainEventHandler(
             _logger.LogError("Can't not create embedding document for {@approved}",domainEvent.Approval);
             throw new Exception("Can't not create embedding document");
         }
-
-        await elasticChapterEmbedding
-            .DeleteByQueryAsync(q => q
-                .Term(t => t.Field(f => f.ChapterId)
+        // problem here if delete success but insert has problem data will
+        // has lose
+        await elasticChapterEmbedding.DeleteByQueryAsync(d
+            =>d.Term(p=>
+                p.Field(f=>f.ChapterId)
                     .Value(domainEvent.Approval.ChapterId.ToString())));
         var chaptersEmbedding =
             docSource.Select((x, index) => new ChapterEmbeddingModel()
