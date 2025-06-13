@@ -54,6 +54,7 @@ public static class DependencyInjectionExtension
         services.AddProcessData();
         services.AddElastic();
         services.AddOptionsExtension(configuration);
+        services.AddHttpContextAccessor();
         services.AddKeyCloakIdentityProvider();
         services.AddCache();
         services.AddUploadFileWithCloudinary();

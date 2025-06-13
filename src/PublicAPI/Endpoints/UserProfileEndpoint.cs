@@ -2,11 +2,13 @@
 using Application.BoundContext.NotificationContext.ViewModel;
 using Application.BoundContext.UserProfileContext.Command.Favorite;
 using Application.BoundContext.UserProfileContext.Command.Follower;
+using Application.BoundContext.UserProfileContext.Command.SearchHistory;
 using Application.BoundContext.UserProfileContext.Command.UserProfile;
 using Application.BoundContext.UserProfileContext.Queries;
 using Application.BoundContext.UserProfileContext.ViewModel;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
+using Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +53,22 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("Favorite")
             .WithName("UnFavoriteBook")
             .WithDescription("UnFavorite book");
+        apis.MapPost("search-history/create", UserProfileEndpointService.CreateSearchHistory)
+            .WithTags("SearchHistory")
+            .WithName("CreateSearchHistory")
+            .WithDescription("Create new search history");
+        apis.MapDelete("search-history/delete", UserProfileEndpointService.DeleteSearchHistory)
+            .WithTags("SearchHistory")
+            .WithName("DeleteSearchHistory")
+            .WithDescription("Delete search history");
+        apis.MapDelete("search-history/clean", UserProfileEndpointService.CleanMySearchHistory)
+            .WithTags("SearchHistory")
+            .WithName("CleanMySearchHistory")
+            .WithDescription("Delete search history");
+        apis.MapGet("search-history/pagination", UserProfileEndpointService.GetSearchHistoryWithPagination)
+            .WithTags("SearchHistory")
+            .WithName("GetSearchHistoryWithPagination")
+            .WithDescription("Get search history with pagination");
     }
 }
 
@@ -139,6 +157,50 @@ public static class UserProfileEndpointService
     {
         var result = await service.FactoryHandler
             .Handler<UnFavoriteBookCommand, FavoriteBookViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<SearchHistoryViewModel>, BadRequest, ProblemHttpResult>> 
+        CreateSearchHistory(
+            [FromBody] CreateSearchHistoryCommand  command,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.FactoryHandler
+            .Handler<CreateSearchHistoryCommand, SearchHistoryViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<NoContent, BadRequest, ProblemHttpResult>> 
+        DeleteSearchHistory(
+            [FromBody] DeleteSearchHistoryCommand  command,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.FactoryHandler
+            .Handler<DeleteSearchHistoryCommand, bool>(command);
+        return TypedResults.NoContent();
+    }
+    [Authorize]
+    public static async Task<Results<NoContent, BadRequest, ProblemHttpResult>> 
+        CleanMySearchHistory(
+            [AsParameters] CleanAllSearchHistoryCommand  command,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.FactoryHandler
+            .Handler<CleanAllSearchHistoryCommand, bool>(command);
+        return TypedResults.NoContent();
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<SearchHistoryViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetSearchHistoryWithPagination(
+            [AsParameters] PaginationRequest page,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.UserProfileQueries
+            .GetSearchHistoryWithPaginationByUserIdAsync(service.IdentityProvider.UserIdentity(), page);
         return TypedResults.Ok(result);
     }
 }

@@ -1,10 +1,14 @@
 ﻿    using Application.Helper;
     using Application.Interfaces.Cache;
     using Application.Interfaces.Elastic;
+    using Application.Interfaces.EventBus;
+    using Application.Interfaces.IdentityProvider;
     using Application.Models;
     using Core.BoundContext.BookAuthoringContext.BookAggregate;
     using Elastic.Clients.Elasticsearch;
     using Elastic.Clients.Elasticsearch.QueryDsl;
+    using Infrastructure.Helper;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.AspNetCore.Mvc;
     using PublicAPI.Services.Endpoint;
@@ -36,6 +40,10 @@
                 .WithTags("PublicBooks")
                 .WithName("SearchPublicBooksByWordSentence")
                 .WithDescription("Search public books by word sentence.");
+            apis.MapGet("my-book", BookPublicEndpointServices.GetMyBookWithPagination)
+                .WithTags("PublicBooks")
+                .WithName("GetMyBookWithPagination")
+                .WithDescription("Get my public books by.");
         }
     }
 
@@ -123,13 +131,38 @@ public static class BookPublicEndpointServices
             );
         return TypedResults.Ok(result);
     }
-
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<BookElasticModel>>, NotFound, ProblemHttpResult>>
+        GetMyBookWithPagination(
+            [AsParameters] PaginationRequest page,
+            [FromServices] BookPublicEndpointServiceWrapper service
+        )
+    {
+        var result = await service.BookElasticServices
+            .PaginatedListAsync(_getSimpleQueryParam(page), q => q
+                .Bool(b => b.Must(
+                    BookActive,
+                    m => m.Term(t => t
+                        .Field("authorId.keyword"!)
+                        .Value(service.IdentityProvider.UserIdentity().ToString())))
+                )
+            );
+        return TypedResults.Ok(result);
+    }
+    
     public static async Task<Results<Ok<PaginationItem<BookElasticModel>>, NotFound, ProblemHttpResult>>
         SearchWithPaginationWithWordSentence(
             [FromQuery] string search,
             [AsParameters] PaginationRequest page,
             [FromServices] BookPublicEndpointServiceWrapper service)
     {
+        if (service.IdentityProvider.IsAuthenticated())
+        {
+            var bookSearchIntegrationEvent = new BookSearchedIntegrationEvent(service.IdentityProvider.UserIdentity(),
+                search, service.Accessor.HttpContext?.GetIpAddress() ?? string.Empty
+                );
+            await service.EventBus.Publish(bookSearchIntegrationEvent);
+        }
         string cleanSearch = search.NormalizeSearchString();
          var result = await service.BookElasticServices
         .PaginatedListAsync(_getSimpleQueryParam(page, sortCreated: false), q => q
@@ -239,8 +272,14 @@ public static class BookPublicEndpointServices
 
 public class BookPublicEndpointServiceWrapper(IElasticFactory elasticFactory,
     ILogger<BookPublicEndpointServiceWrapper> logger,
+    IIdentityProvider identityProvider,
+    IHttpContextAccessor accessor,
+    IEventBus<BookSearchedIntegrationEvent> eventBus,
     ICache cache)
 {
+    public IHttpContextAccessor Accessor { get; } = accessor ;
+    public IEventBus<BookSearchedIntegrationEvent> EventBus { get; } = eventBus;
+    public IIdentityProvider IdentityProvider { get; } = identityProvider;
     public IElasticServices<BookElasticModel> BookElasticServices { get; } =
         elasticFactory.GetInstance<BookElasticModel>();
     public ICache Cache { get; } = cache;

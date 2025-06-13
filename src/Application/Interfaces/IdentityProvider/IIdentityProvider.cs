@@ -34,4 +34,5 @@ public interface IIdentityProvider
     /*Task<bool> IsInPermissionAsync(string permission);*/
     IEnumerable<Claim> Claims();
     string FullName();
+    bool IsAuthenticated();
 }

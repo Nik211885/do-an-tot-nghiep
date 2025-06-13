@@ -55,4 +55,10 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
         var fullName = _contextAccessor.HttpContext?.User?.FindFirst("name")?.Value;
         return fullName ?? "Unknown";
     }
+
+    public bool IsAuthenticated()
+    {
+        var identity = _contextAccessor.HttpContext.User.Identity;
+        return identity is not null && identity.IsAuthenticated;
+    }
 }
