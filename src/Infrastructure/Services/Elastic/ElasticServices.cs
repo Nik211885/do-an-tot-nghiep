@@ -4,7 +4,9 @@ using CaseConverter;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Fluent;
 using Elastic.Clients.Elasticsearch.QueryDsl;
+using MailKit.Search;
 using SharedKernel.Models;
+using SortOrder = Elastic.Clients.Elasticsearch.SortOrder;
 
 namespace Infrastructure.Services.Elastic;
 
@@ -155,10 +157,6 @@ public class ElasticServices<T>(ElasticsearchClient client)
             );
         }
 
-        string sort = string.IsNullOrWhiteSpace(request.Sort)
-            ? $"CreateDateTime{OrderTerm.DELIMITER}{OrderTerm.DESC}"
-            : request.Sort.Trim();
-
         void Search(SearchRequestDescriptor<T> search)
         {
             SearchRequestDescriptor<T> _ = new();
@@ -168,8 +166,13 @@ public class ElasticServices<T>(ElasticsearchClient client)
             }
 
             search
-                .Index(_indexName)
-                .OrderBy(sort)
+                .Index(_indexName);
+            if (!string.IsNullOrWhiteSpace(request.Sort))
+            {
+                search.OrderBy(request.Sort.Trim());
+            }
+            
+            search
                 .From((request.Page - 1) * request.PageSize)
                 .Size(request.PageSize);
         }

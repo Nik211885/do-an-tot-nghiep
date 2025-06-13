@@ -43,5 +43,12 @@ public static class StringHelperExtension
         random.GetBytes(byteArray);
         return Convert.ToBase64String(byteArray).ToLowerInvariant();
     }
+    public static string NormalizeSearchString(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+        return input.Trim().ToLowerInvariant();
+    }
+
     
 }
