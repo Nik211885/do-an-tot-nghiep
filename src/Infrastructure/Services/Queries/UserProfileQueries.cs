@@ -36,4 +36,30 @@ public class UserProfileQueries(UserProfileDbContext userProfileDbContext) : IUs
             ), cancellationToken);
         return searchHistory;
     }
+
+    public async Task<IReadOnlyCollection<FavoriteBookViewModel>> GetFavoriteWithBookInAndForUserIdAsync(Guid userId,CancellationToken cancellationToken = default, params Guid[] bookIds)
+    {
+        var favorite = await _userProfileDbContext
+            .FavoriteBooks
+            .Where(x => bookIds.Contains(x.Id)
+            && x.UserId == userId)
+            .ToListAsync(cancellationToken);
+        return favorite.ToViewModel().ToList();
+    }
+
+    public async Task<PaginationItem<FavoriteBookViewModel>> GetFavoriteBookWithPaginationByUserIdAsync(Guid userId, 
+        PaginationRequest page,
+        CancellationToken cancellationToken = default)
+    {
+        var favorite =
+            await _userProfileDbContext.FavoriteBooks
+                .Where(x => x.UserId == userId)
+                .CreatePaginationAsync(page, f => new FavoriteBookViewModel(
+                    f.Id,
+                    f.UserId,
+                    f.FavoriteBookId,
+                    f.CreatedOn
+                ), cancellationToken);
+        return favorite;
+    }
 }

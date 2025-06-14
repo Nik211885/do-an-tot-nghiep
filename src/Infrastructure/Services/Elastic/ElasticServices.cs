@@ -150,6 +150,7 @@ public class ElasticServices<T>(ElasticsearchClient client)
         {
             queries.Add(filter);
         }
+        
         if (!string.IsNullOrWhiteSpace(request.Keyword))
         {
             queries.Add(search =>
@@ -171,7 +172,9 @@ public class ElasticServices<T>(ElasticsearchClient client)
             {
                 search.OrderBy(request.Sort.Trim());
             }
-            
+            else{
+                search.Sort(s => s.Score(x=>x.Order(SortOrder.Desc)));
+            }
             search
                 .From((request.Page - 1) * request.PageSize)
                 .Size(request.PageSize);

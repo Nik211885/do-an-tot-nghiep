@@ -1,6 +1,4 @@
-﻿using Application.BoundContext.NotificationContext.Command;
-using Application.BoundContext.NotificationContext.ViewModel;
-using Application.BoundContext.UserProfileContext.Command.Favorite;
+﻿using Application.BoundContext.UserProfileContext.Command.Favorite;
 using Application.BoundContext.UserProfileContext.Command.Follower;
 using Application.BoundContext.UserProfileContext.Command.SearchHistory;
 using Application.BoundContext.UserProfileContext.Command.UserProfile;
@@ -53,6 +51,14 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("Favorite")
             .WithName("UnFavoriteBook")
             .WithDescription("UnFavorite book");
+        apis.MapGet("book/my-favorite/pagination", UserProfileEndpointService.GetFavoriteWithPaginationByUserId)
+            .WithTags("Favorite")
+            .WithName("FavoriteWithPaginationByUserId")
+            .WithDescription("Favorite book with pagination for user id");
+        apis.MapPost("book/favorite-in", UserProfileEndpointService.GetFavoriteWithBookInForUser)
+            .WithTags("Favorite")
+            .WithName("GetFavoriteInCollectionBookHasSpecific")
+            .WithDescription("Get favorite in collection book has specific");
         apis.MapPost("search-history/create", UserProfileEndpointService.CreateSearchHistory)
             .WithTags("SearchHistory")
             .WithName("CreateSearchHistory")
@@ -177,7 +183,7 @@ public static class UserProfileEndpointService
             [FromServices] UserProfileServiceWrapper service
         )
     {
-        var result = await service.FactoryHandler
+        await service.FactoryHandler
             .Handler<DeleteSearchHistoryCommand, bool>(command);
         return TypedResults.NoContent();
     }
@@ -188,7 +194,7 @@ public static class UserProfileEndpointService
             [FromServices] UserProfileServiceWrapper service
         )
     {
-        var result = await service.FactoryHandler
+        await service.FactoryHandler
             .Handler<CleanAllSearchHistoryCommand, bool>(command);
         return TypedResults.NoContent();
     }
@@ -201,6 +207,34 @@ public static class UserProfileEndpointService
     {
         var result = await service.UserProfileQueries
             .GetSearchHistoryWithPaginationByUserIdAsync(service.IdentityProvider.UserIdentity(), page);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<FavoriteBookViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetFavoriteWithBookInForUser(
+            [FromBody] Guid[] ids,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.UserProfileQueries
+            .GetFavoriteWithBookInAndForUserIdAsync(
+                service.IdentityProvider.UserIdentity(),
+                bookIds: ids
+            );
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<FavoriteBookViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetFavoriteWithPaginationByUserId(
+            [AsParameters] PaginationRequest page,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.UserProfileQueries
+            .GetFavoriteBookWithPaginationByUserIdAsync(
+                service.IdentityProvider.UserIdentity(),
+                page
+            );
         return TypedResults.Ok(result);
     }
 }

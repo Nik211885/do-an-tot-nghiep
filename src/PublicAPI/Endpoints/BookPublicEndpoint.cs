@@ -8,6 +8,7 @@
     using Elastic.Clients.Elasticsearch;
     using Elastic.Clients.Elasticsearch.QueryDsl;
     using Infrastructure.Helper;
+    using MassTransit;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,10 @@
                 .WithTags("PublicBooks")
                 .WithName("GetMyBookWithPagination")
                 .WithDescription("Get my public books by.");
+            apis.MapPost("by-ids", BookPublicEndpointServices.GetBookInIds)
+                .WithTags("PublicBooks")
+                .WithName("GetBookByIds")
+                .WithDescription("Get book by ids collection.");
         }
     }
 
@@ -267,6 +272,19 @@ public static class BookPublicEndpointServices
             )
         );
         return TypedResults.Ok(result);
+    }
+    public static async Task<Results<Ok<IReadOnlyCollection<BookElasticModel>>, ProblemHttpResult>>
+        GetBookInIds(
+            [FromBody] Guid[] bookId,
+        [FromServices] BookPublicEndpointServiceWrapper service)
+    {
+        var result = await service.BookElasticServices
+            .ListAsync(new QueryParamRequest(), q => q
+                .Bool(b => b
+                    .Must(BookActive,
+                        m => m.Ids(i => i.Values(new Ids(bookId.Select(x => x.ToString()))))))
+            );
+        return TypedResults.Ok(result.Documents);
     }
 }
 
