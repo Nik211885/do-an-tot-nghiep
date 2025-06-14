@@ -49,6 +49,10 @@
                 .WithTags("PublicBooks")
                 .WithName("GetBookByIds")
                 .WithDescription("Get book by ids collection.");
+            apis.MapGet("bool-prefix",BookPublicEndpointServices.SearchAsYouType)
+                .WithTags("PublicBooks")
+                .WithName("SearchAsYouTypeTitleForBook")
+                .WithDescription("Search public books by title for you type.");
         }
     }
 
@@ -284,6 +288,33 @@ public static class BookPublicEndpointServices
                     .Must(BookActive,
                         m => m.Ids(i => i.Values(new Ids(bookId.Select(x => x.ToString()))))))
             );
+        return TypedResults.Ok(result.Documents);
+    }
+
+    public static async Task<Results<Ok<IReadOnlyCollection<BookElasticModel>>, ProblemHttpResult>>
+        SearchAsYouType(
+            [FromQuery] string search,
+            [FromServices] BookPublicEndpointServiceWrapper service
+        )
+    {
+        var result = await service.BookElasticServices
+            .ListAsync(new QueryParamRequest()
+            {
+                Page = 1,
+                PageSize = 5
+            },q=>q
+                .Bool(b=>b.Must(
+                    BookActive,
+                    m=>m.MultiMatch(mn=>mn
+                        .Query(search)
+                        .Type(TextQueryType.BoolPrefix)
+                        .Fields(Fields.FromFields([
+                            new Field("title"),
+                            new Field("title._2gram"),
+                            new Field("title._3gram")
+                        ]))
+                    )
+                    )));
         return TypedResults.Ok(result.Documents);
     }
 }
