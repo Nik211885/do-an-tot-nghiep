@@ -1,6 +1,7 @@
 ﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.Query;
 using Application.Models;
+using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
 
 namespace Application.BoundContext.BookAuthoringContext.Queries;
@@ -18,6 +19,11 @@ public interface IBookAuthoringQueries : IApplicationQueryServicesExtension
     
     Task<BookViewModel?> FindBookBySlugAsync(string slug, CancellationToken cancellationToken);
     Task<BookViewModel?> FindBookByIdAsync(Guid bookId, CancellationToken cancellationToken);
+
+    Task<PaginationItem<BookViewModel>> FindBookWithPaginationForUserIdAsync(Guid userId,
+        BookAuthoringQueriesRequest.FilterBookAuthoring? filter,
+        PaginationRequest page,
+        CancellationToken cancellationToken = default);
     
     // Chapter
     Task<IReadOnlyCollection<ChapterViewModel>> FindChapterByBookSlugAsync(string slug, CancellationToken cancellationToken);
@@ -25,3 +31,13 @@ public interface IBookAuthoringQueries : IApplicationQueryServicesExtension
     Task<ChapterViewModel?> FindChapterVersionByChapterIdAsync(Guid id, CancellationToken cancellationToken);
 }
     
+public class BookAuthoringQueriesRequest
+{
+    public record FilterBookAuthoring(
+        BookReleaseType? BookReleaseType,
+        BookPolicy? BookPolicy,
+        string? Tag,
+        string? Genre,
+        string? Title
+    );
+}

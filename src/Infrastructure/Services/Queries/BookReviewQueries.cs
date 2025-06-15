@@ -16,6 +16,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var result = await _bookReviewDbContext.BookReviews
             .AsNoTracking()
             .Where(bookReview => bookReview.BookId == bookId)
+            .OrderByDescending(x=>x.LastUpdated)
             .FirstOrDefaultAsync(cancellationToken);
         return result?.MapToViewModel();
     }
@@ -31,6 +32,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var commentWithPagination = await _bookReviewDbContext.Comments
             .AsNoTracking()
             .Where(x=>x.BookReviewId == bookReviews.Id)
+            .OrderByDescending(x=>x.DatetimeCommented)
             .CreatePaginationAsync(page, comment => new CommentViewModel(
                 comment.Id,
                 comment.BookReviewId,
@@ -54,6 +56,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var ratingWithPagination = await _bookReviewDbContext.Ratings
             .AsNoTracking()
             .Where(x=>x.BookReviewId == bookReviews.Id)
+            .OrderByDescending(x=>x.LastUpdated)
             .CreatePaginationAsync(page, rating => new RatingViewModel(
                 rating.Id,
                 rating.BookReviewId,
@@ -70,6 +73,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var comments = await _bookReviewDbContext.Comments
             .AsNoTracking()
             .Where(x=>x.ReviewerId == userId)
+            .OrderByDescending(x=>x.DatetimeCommented)
             .CreatePaginationAsync(page, comment=>new CommentViewModel(
                 comment.Id,
                 comment.BookReviewId,
@@ -86,6 +90,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var ratings = await _bookReviewDbContext.Ratings
             .AsNoTracking()
             .Where(c => c.ReviewerId == userId)
+            .OrderByDescending(x=>x.LastUpdated)
             .CreatePaginationAsync(page, rating => new RatingViewModel(
                 rating.Id,
                 rating.BookReviewId,
@@ -107,6 +112,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var rating = await _bookReviewDbContext.Ratings
             .AsNoTracking()
             .Where(x => x.BookReviewId == bookReviews.Id && x.ReviewerId == userId)
+            .OrderByDescending(x=>x.LastUpdated)
             .FirstOrDefaultAsync(cancellationToken);
         return rating?.MapToViewModel();
     }
@@ -122,7 +128,27 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         var comment = await _bookReviewDbContext.Comments
             .AsNoTracking()
             .Where(x => x.BookReviewId == bookReviews.Id && x.ReviewerId == userId)
+            .OrderByDescending(x=>x.DatetimeCommented)
             .ToListAsync(cancellationToken);
         return comment.MapToViewModel();
+    }
+
+    public async Task<PaginationItem<CommentViewModel>> GetCommentReplyWithPaginationAsync(Guid commentReplyId, PaginationRequest page,
+        CancellationToken cancellationToken = default)
+    {
+        var comment = await _bookReviewDbContext.Comments
+            .AsNoTracking()
+            .Where(x => x.ParentCommentId == commentReplyId)
+            .OrderByDescending(x => x.DatetimeCommented)
+            .CreatePaginationAsync(page, comment => new CommentViewModel(
+                comment.Id,
+                comment.BookReviewId,
+                comment.ReviewerId,
+                comment.Content,
+                comment.DatetimeCommented,
+                comment.ParentCommentId,
+                comment.ReplyCount
+                ), cancellationToken);
+        return comment;
     }
 }

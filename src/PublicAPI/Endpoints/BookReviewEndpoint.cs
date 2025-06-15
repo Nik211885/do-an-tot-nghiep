@@ -44,6 +44,10 @@ public class BookReviewEndpoint : IEndpoints
             .WithTags("Comment")
             .WithName("GetCommentWithUserAndBookId")
             .WithDescription("Get comment with pagination for user");
+        apis.MapGet("comment/reply/pagination", BookReviewEndpointService.GetCommentReplyWithPagination)
+            .WithTags("Comment")
+            .WithName("GetCommentReplyWithPagination")
+            .WithDescription("Get comment reply with pagination");
         apis.MapPost("rating/create", BookReviewEndpointService.CreateRating)
             .WithTags("Rating")
             .WithName("CreateRating")
@@ -168,6 +172,16 @@ public static class BookReviewEndpointService
             [FromServices] BookReviewServiceWrapper service)
     {
         var result = await service.BookReviewQueries.GetAllCommentByUserIdAndBookIdAsync(service.IdentityProvider.UserIdentity(), bookId);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<CommentViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetCommentReplyWithPagination(
+            [FromQuery] Guid commentReplyId,
+            [AsParameters] PaginationRequest page,
+            [FromServices] BookReviewServiceWrapper service)
+    {
+        var result = await service.BookReviewQueries.GetCommentReplyWithPaginationAsync(commentReplyId, page);
         return TypedResults.Ok(result);
     }
 }

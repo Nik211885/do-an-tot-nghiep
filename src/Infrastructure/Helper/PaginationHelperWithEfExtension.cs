@@ -35,4 +35,16 @@ public static class PaginationHelperWithEfExtension
             .ToListAsync(cancellationToken);
         return new PaginationItem<TResponse>(items,page.PageNumber, page.PageSize, countItems);
     }
+    public static async Task<PaginationItem<TEntity>> CreatePaginationAsync<TEntity>(
+        this IQueryable<TEntity> queryable,
+        PaginationRequest page,
+        CancellationToken cancellationToken = default)
+    {
+        var countItems = await queryable.CountAsync(cancellationToken);
+        var items = await queryable
+            .Skip((page.PageNumber - 1) * page.PageSize)
+            .Take(page.PageSize)
+            .ToListAsync(cancellationToken);
+        return new PaginationItem<TEntity>(items,page.PageNumber, page.PageSize, countItems);
+    }
 }

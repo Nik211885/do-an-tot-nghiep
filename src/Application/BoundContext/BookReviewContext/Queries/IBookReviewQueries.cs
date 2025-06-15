@@ -22,4 +22,5 @@ public interface IBookReviewQueries : IApplicationQueryServicesExtension
 
     Task<IReadOnlyCollection<CommentViewModel>> GetAllCommentByUserIdAndBookIdAsync(Guid userId, Guid bookId,
         CancellationToken cancellationToken = default);
+    Task<PaginationItem<CommentViewModel>> GetCommentReplyWithPaginationAsync(Guid commentReplyId, PaginationRequest page, CancellationToken cancellationToken = default);
 }

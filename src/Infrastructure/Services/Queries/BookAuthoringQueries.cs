@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata;
 using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Helper;
 using Application.Models;
 using Core.BoundContext.BookAuthoringContext.BookAggregate;
 using Core.BoundContext.BookAuthoringContext.GenresAggregate;
@@ -158,4 +159,66 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
             ).FirstOrDefaultAsync(cancellationToken);
         return chapterVersion;
     }
+
+    public async Task<PaginationItem<BookViewModel>> FindBookWithPaginationForUserIdAsync(Guid userId,
+        BookAuthoringQueriesRequest.FilterBookAuthoring? filter,
+        PaginationRequest page,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _bookAuthoringDbContext
+            .Books.AsNoTracking();
+        if (filter is not null)
+        {
+            if (filter.BookReleaseType != null)
+            {
+                query = query.Where(x => x.BookReleaseType == filter.BookReleaseType);
+            }
+
+            if (filter.BookPolicy != null)
+            {
+                query = query.Where(x => x.PolicyReadBook.Policy == filter.BookPolicy);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Tag))
+            {
+                query = query.Where(x => x.Tags != null
+                                         && x.Tags.Any(y => y.TagName.Contains(filter.Tag)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Genre))
+            {
+                // Find all genre in system 
+                var genres = await FindGenresActiveAsync(cancellationToken);
+                query = query.Where(x => x.Genres
+                    .Any(y =>
+                        genres.Any(z => z.Id == y.GenreId
+                        && z.Name == filter.Genre)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Title))
+            {
+                query = query.Where(x => x.Title.Contains(filter.Title));
+            }
+
+        }
+
+        query = query
+            .OrderByDescending(x => x.CreatedDateTime)
+            .Include(x => x.Tags)
+            .Include(x => x.Genres)
+            .AsSplitQuery();
+        var bookPagination = await query.CreatePaginationAsync(
+            page,
+            cancellationToken
+        );
+         var genresByIds = bookPagination.Items
+             .SelectMany(x=>x.Genres
+                 .Select(y=>y.GenreId))
+                    .Distinct();
+         var genresByBook = await FindGenresByIdsAsync(cancellationToken, genresByIds.ToArray());
+         var bookViewModel = bookPagination.Items.MapToViewModel(genresByBook);
+         var bookViewModelPagination = bookViewModel.CreatePagination(page, bookPagination.TotalCount);
+         return bookViewModelPagination;
+    }
 }
+

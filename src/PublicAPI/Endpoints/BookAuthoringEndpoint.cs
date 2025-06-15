@@ -8,6 +8,7 @@ using Application.BoundContext.BookAuthoringContext.Query.Genre;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
+using Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -58,6 +59,10 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Book")
             .WithName("MarkBookComplete")
             .WithDescription("Mark book complete");
+        apis.MapGet("book/pagination/filter", BookAuthoringService.FindBookWithFilter)
+            .WithTags("Book")
+            .WithName("FindBookWithPaginationForFilter")
+            .WithDescription("Find books with pagination for filter");
         
         
         // endpoint for genre
@@ -349,18 +354,32 @@ public static class BookAuthoringService
         var result = await service.FactoryHandler.Handler<GetBookDetailByIdQuery, BookViewModel?>(query);
         return TypedResults.Ok(result);
     }
+    [Authorize]
     public static async Task<Ok<BookViewModel>> MarkBookComplete([AsParameters] MarkCompletedBookCommand command,
         [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler.Handler<MarkCompletedBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);
     }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<BookViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        FindBookWithFilter(
+            [AsParameters] PaginationRequest page,
+            [AsParameters] BookAuthoringQueriesRequest.FilterBookAuthoring filter,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.BookAuthoringQueries.FindBookWithPaginationForUserIdAsync(
+            service.IdentityProvider.UserIdentity(), filter, page);
+        return TypedResults.Ok(result);
+    }
 }
 
 public class BookAuthoringServiceWrapper(IFactoryHandler factoryHandler,
     ILogger<BookAuthoringServiceWrapper> logger,
+    IIdentityProvider identityProvider,
     IBookAuthoringQueries bookAuthoringQueries)
 {
+    public IIdentityProvider IdentityProvider { get; } = identityProvider;
     public IBookAuthoringQueries BookAuthoringQueries { get; } = bookAuthoringQueries;
     public IFactoryHandler FactoryHandler { get;} = factoryHandler;
     public ILogger<BookAuthoringServiceWrapper> Logger { get;} = logger;
