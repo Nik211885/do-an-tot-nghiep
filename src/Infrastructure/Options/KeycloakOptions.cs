@@ -1,5 +1,6 @@
 ﻿namespace Infrastructure.Options;
 
+[KeyOptions("KeyCloakAuthentication:BookStoreServer")]
 public class KeycloakOptions
 {
     public string AddressUrl { get; set; }

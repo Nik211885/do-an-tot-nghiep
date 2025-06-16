@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Options;
@@ -16,20 +17,30 @@ internal static class AddOptionConfigurationsExtension
     internal static IServiceCollection AddOptionsExtension(this IServiceCollection services,
         IConfiguration configuration)
     {
-        const string cloudinary = "UploadFile:Cloudinary";
-        const string redis = "Cache:RedisConnection";
-        const string postgres = "DatabaseConnectionString:Postgresql";
-        const string keycloak = "KeyCloakAuthentication:BookStoreServer";
-        const string mail = "MailSettings";
-        const string rabbitmq = "RabbitMq";
-        const string docSign = "DocSign";
-        services.Configure<CloudinaryUploadFileOptions>(configuration.GetSection(cloudinary));
+        // magic way
+        var method = typeof(OptionsConfigurationServiceCollectionExtensions)
+            .GetMethods()
+            .First(m=>m.Name == nameof(OptionsConfigurationServiceCollectionExtensions.Configure)
+                      && m.GetGenericArguments().Length == 1
+                      && m.GetParameters().Length == 2
+                      && m.GetParameters()[1].ParameterType == typeof(IConfiguration));
+        var configurationOptions = Assembly
+            .GetExecutingAssembly()
+            .GetTypeOptions();
+        foreach (var (key, type) in configurationOptions)
+        {
+            var genericMethod = method.MakeGenericMethod(type);
+            var section = configuration.GetSection(key);
+            genericMethod.Invoke(null,  [ services,  section ]);
+        }
+        
+        /*services.Configure<CloudinaryUploadFileOptions>(configuration.GetSection(cloudinary));
         services.Configure<CacheOptions>(configuration.GetSection(redis));
         services.Configure<DatabaseConnectionStringOptions>(configuration.GetSection(postgres));
         services.Configure<KeycloakOptions>(configuration.GetSection(keycloak));
         services.Configure<MailSettingOptions>(configuration.GetSection(mail));
         services.Configure<RabbitMqOptions>(configuration.GetSection(rabbitmq));
-        services.Configure<DocSignOption>(configuration.GetSection(docSign));
+        services.Configure<DocSignOption>(configuration.GetSection(docSign));*/
         return services;
     }
 }

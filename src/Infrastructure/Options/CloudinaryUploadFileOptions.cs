@@ -1,5 +1,6 @@
 ﻿namespace Infrastructure.Options;
 
+[KeyOptions("UploadFile:Cloudinary")]
 public class CloudinaryUploadFileOptions
 {
     public string UrlUpload { get; set; }

@@ -1,5 +1,6 @@
 ﻿namespace Infrastructure.Options;
 
+[KeyOptions("DocSign")]
 public class DocSignOption
 {
     public string IntegrationKey { get; set; }

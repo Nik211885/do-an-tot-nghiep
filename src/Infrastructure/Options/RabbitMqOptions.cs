@@ -1,5 +1,5 @@
 ﻿namespace Infrastructure.Options;
-
+[KeyOptions("RabbitMq")]
 public class RabbitMqOptions
 {
     public string Host { get; set; }

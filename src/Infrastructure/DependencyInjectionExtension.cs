@@ -16,6 +16,7 @@ using Infrastructure.Services.Elastic;
 using Infrastructure.Services.EventBus;
 using Infrastructure.Services.Keycloak;
 using Infrastructure.Services.Notification;
+using Infrastructure.Services.Payment;
 using Infrastructure.Services.ProcessData;
 using Infrastructure.Services.Repository;
 using Infrastructure.Services.Signature;
@@ -38,6 +39,7 @@ public static class DependencyInjectionExtension
     /// <returns></returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptionsExtension(configuration);
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
         services.AddScoped<IDigitalSignatureService,DigitalSignatureService>();
@@ -53,7 +55,7 @@ public static class DependencyInjectionExtension
         services.AddApplicationServicesExtension();
         services.AddProcessData();
         services.AddElastic();
-        services.AddOptionsExtension(configuration);
+        services.AddPaymentService();
         services.AddHttpContextAccessor();
         services.AddKeyCloakIdentityProvider();
         services.AddCache();

@@ -2,6 +2,7 @@
 /// <summary>
 /// 
 /// </summary>
+[KeyOptions("Cache:RedisConnection")]
 public class CacheOptions
 {
     public string? Master { get; set; }

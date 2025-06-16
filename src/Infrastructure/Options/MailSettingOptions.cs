@@ -1,5 +1,5 @@
 ﻿namespace Infrastructure.Options;
-
+[KeyOptions("MailSettings")]
 public class MailSettingOptions
 {
     public string Host { get; set; }

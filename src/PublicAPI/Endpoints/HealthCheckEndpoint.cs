@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces.IdentityProvider;
+using Application.Interfaces.Payment;
+using Application.Models.Payment;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using PublicAPI.Services.Endpoint;
@@ -33,5 +35,12 @@ public class HealthCheckEndpoint : IEndpoints
             var token = await identityService.GetTokenAsync();
             return TypedResults.Ok(token);
         }).WithDescription("Get new token with client credentials grant");
+        api.MapPost("momo", async (
+            [FromServices] IPayment payment,
+            [FromBody] PaymentRequest request) =>
+        {
+            var paymentResponse = await payment.CreatePaymentRequestAsync(request);
+            return TypedResults.Ok(paymentResponse);
+        });
     }
 }

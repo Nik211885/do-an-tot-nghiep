@@ -2,6 +2,7 @@
 /// <summary>
 /// 
 /// </summary>
+[KeyOptions("DatabaseConnectionString:Postgresql")]
 public class DatabaseConnectionStringOptions
 {
     public string? Master { get; set; }
