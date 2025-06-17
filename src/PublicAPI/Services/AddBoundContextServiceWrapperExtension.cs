@@ -12,6 +12,7 @@ public static class AddBoundContextServiceWrapperExtension
         services.AddScoped<BookPublicEndpointServiceWrapper>();
         services.AddScoped<NotificationServicesWrapper>();
         services.AddScoped<UserProfileServiceWrapper>();
+        services.AddScoped<OrderServiceWrapper>();
         return services;
     }
 }

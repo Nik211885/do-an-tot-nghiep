@@ -1,42 +1,36 @@
-﻿namespace Application.Models.Payment;
+﻿using System.Text.Json.Serialization;
+
+namespace Application.Models.Payment;
 
 public class VerifyPaymentRequest
 {
-    public string PartnerCode { get; }
-    public string OrderId { get; }
-    public string RequestId { get; }
-    public string Amount { get; }
-    public string OrderInfo { get; } 
-    public string OrderType{ get; }
-    public string TransId{ get; } 
-    public string ResponseTime{ get; } 
-    public int ResultCode{ get; }
-    public string Message{ get; }
-    public string PayType{ get; } 
-    public string Signature { get; } 
-    public string RequestType { get; }
-    public string ExtraData { get; }
-
-    public VerifyPaymentRequest(string partnerCode, string orderId, string requestId, string amount, string orderInfo, string orderType, string transId, string responseTime, int resultCode, string message, string payType, string signature, string requestType, string extraData)
-    {
-        PartnerCode = partnerCode;
-        OrderId = orderId;
-        RequestId = requestId;
-        Amount = amount;
-        OrderInfo = orderInfo;
-        OrderType = orderType;
-        TransId = transId;
-        ResponseTime = responseTime;
-        ResultCode = resultCode;
-        Message = message;
-        PayType = payType;
-        Signature = signature;
-        RequestType = requestType;
-        ExtraData = extraData;
-    }
-
-    public VerifyPaymentRequest()
-    {
-        
-    }
+    [JsonPropertyName("partnerCode")]
+    public string PartnerCode { get; set; }
+    [JsonPropertyName("orderId")]
+    public string OrderId { get; set;}
+    [JsonPropertyName("requestId")]
+    public string RequestId { get; set;}
+    [JsonPropertyName("amount")]
+    public string Amount { get; set;}
+    [JsonPropertyName("orderInfo")]
+    public string OrderInfo { get;set; } 
+    [JsonPropertyName("orderType")]
+    public string OrderType{ get; set;}
+    [JsonPropertyName("transId")]
+    public string TransId{ get; set;} 
+    [JsonPropertyName("responseTime")]
+    public string ResponseTime{ get; set;} 
+    [JsonPropertyName("resultCode")]
+    public int ResultCode{ get;set; }
+    [JsonPropertyName("message")]
+    public string Message{ get;set; }
+    [JsonPropertyName("payType")]
+    public string PayType{ get;set; } 
+    [JsonPropertyName("signature")]
+    public string Signature { get; set;} 
+    [JsonPropertyName("requestType")]
+    public string RequestType { get;set; }
+    [JsonPropertyName("extraData")]
+    public string ExtraData { get;set; }
+    
 }

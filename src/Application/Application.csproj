@@ -24,4 +24,9 @@
     <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BoundContext\OrderContext\IntegrationEvent\EventHandler\" />
+    <Folder Include="BoundContext\OrderContext\IntegrationEvent\Event\" />
+  </ItemGroup>
+
 </Project>

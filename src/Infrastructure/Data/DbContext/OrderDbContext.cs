@@ -1,6 +1,5 @@
-﻿using Core.BoundContext.OrderContext.BuyerAggregate;
-using Core.BoundContext.OrderContext.OrderAggregate;
-using Core.Interfaces.Repositories.OrderContext;
+﻿using Core.BoundContext.OrderContext.OrderAggregate;
+using Infrastructure.Data.EntityConfigurations.OrderContext;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,10 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options,
 {
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<PaymentMethod> Payments { get; set; }
-    public DbSet<Buyer> Buyers { get; set; }
-    public DbSet<CardType> CardTypes { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new OrderConfiguration())
+            .ApplyConfiguration(new OrderItemConfiguration());
+    }
 }
