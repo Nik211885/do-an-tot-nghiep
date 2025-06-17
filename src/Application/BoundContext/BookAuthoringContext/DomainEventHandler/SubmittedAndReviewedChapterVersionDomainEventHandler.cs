@@ -21,18 +21,20 @@ public class SubmittedAndReviewedChapterVersionDomainEventHandler(
     private readonly IEventBus<SubmittedAndReviewedChapterVersionIntegrationEvent> _eventBus = eventBus;
     public async Task Handler(SubmittedAndReviewedChapterVersionDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.FindByIdAsync(domainEvent.BookId, cancellationToken);
+        var book = await _bookRepository.FindByIdAsync(domainEvent.Chapter.BookId, cancellationToken);
         if (book is null)
         {
             return;
         }
         var integrationEvents = new SubmittedAndReviewedChapterVersionIntegrationEvent(
-            chapterId: domainEvent.ChapterId,
-            bookId: domainEvent.BookId,
+            chapterId: domainEvent.Chapter.Id,
+            bookId: domainEvent.Chapter.BookId,
             authorId: book.CreatedUerId,
-            content: domainEvent.Content,
-            chapterTitle: domainEvent.ChapterTitle,
-            bookTitle: book.Title
+            content: domainEvent.Chapter.Content,
+            chapterTitle: domainEvent.Chapter.Title,
+            bookTitle: book.Title,
+            chapterNumber: domainEvent.Chapter.ChapterNumber,
+            chapterSlug: domainEvent.Chapter.Slug
         );
         await _eventBus.Publish(integrationEvents, cancellationToken);
     }

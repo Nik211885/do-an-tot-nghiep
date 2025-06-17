@@ -12,7 +12,9 @@ public record CreateBookApprovalCommand(Guid BookId,
     string ChapterContent, 
     Guid AuthorId,
     string BookTitle,
-    string ChapterTitle)
+    string ChapterTitle,
+    int  ChapterNumber,
+    string ChapterSlug)
     : IModerationCommand<BookApprovalViewModel>;
 
 public class CreateBookApprovalCommandHandler(
@@ -38,11 +40,12 @@ public class CreateBookApprovalCommandHandler(
         
         var approval = BookApproval.Create(
             bookId: request.BookId,
-            contentHash: _cleanTextService.RemoveHtmlTag(request.ChapterContent),
             chapterId: request.ChapterId,
             authorId: request.AuthorId,
             bookTitle: request.BookTitle,
             chapterTitle: request.ChapterTitle,
+            chapterNumber: request.ChapterNumber,
+            chapterSlug: request.ChapterSlug,
             chapterContent:request.ChapterContent
         );
         _logger.LogInformation("Created book approval with id {Id}", approval.Id);

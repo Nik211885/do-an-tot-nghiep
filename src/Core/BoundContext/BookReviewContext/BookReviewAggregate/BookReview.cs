@@ -48,7 +48,6 @@ public class BookReview : BaseEntity, IAggregateRoot
     {
         TotalRating -= newStarValue;
         TotalRating += oldStarValue;
-        RatingCount-=1;
     }
 
     public void UpdateCommentCount()

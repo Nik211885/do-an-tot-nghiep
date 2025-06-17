@@ -6,20 +6,23 @@ public class CopyrightChapterViewModel
 {
     public string BookTitle { get; }
     public string ChapterTitle { get; }
+    public string ChapterSlug { get; }
+    public int ChapterNumber { get; }
     public string ChapterContent { get; }
-    public bool IsActive { get; }
     public DateTimeOffset DateTimeCopyright { get; }
     public DigitalSignatureViewModel? DigitalSignature { get; }
 
     public CopyrightChapterViewModel(string bookTitle, string chapterTitle, 
-        string chapterContent, bool isActive, 
+        string chapterContent,
         DateTimeOffset dateTimeCopyright, 
+        string chapterSlug, int chapterNumber,
         DigitalSignatureViewModel? digitalSignature)
     {
         BookTitle = bookTitle;
         ChapterTitle = chapterTitle;
+        ChapterSlug = chapterSlug;
+        ChapterNumber = chapterNumber;
         ChapterContent = chapterContent;
-        IsActive = isActive;
         DateTimeCopyright = dateTimeCopyright;
         DigitalSignature = digitalSignature;
     }
@@ -59,8 +62,9 @@ public static class CopyrightChapterMappingExtension
             bookTitle: copyrightChapter.BookTitle,
             chapterTitle: copyrightChapter.ChapterTitle,
             chapterContent: copyrightChapter.ChapterContent,
-            isActive: copyrightChapter.IsActive,
             dateTimeCopyright: copyrightChapter.DateTimeCopyright,
+            chapterSlug:  copyrightChapter.ChapterSlug,
+            chapterNumber: copyrightChapter.ChapterNumber,
             digitalSignature: signatureViewModel
         );
     }

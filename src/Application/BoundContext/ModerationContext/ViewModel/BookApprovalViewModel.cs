@@ -10,16 +10,20 @@ public class BookApprovalViewModel
     public Guid ChapterId { get; }
     public Guid AuthorId { get; }
     public DateTimeOffset SubmittedAt { get;  }
-    public string Content { get;  }
+    public string ChapterContent { get;  }
+    public string ChapterTitle { get; }
+    public int ChapterNumber { get; }
+    public string ChapterSlug { get; }
+    public string BookTitle { get; }
     public BookApprovalStatus Status { get; }
-    public int Version { get; }
-    public IReadOnlyCollection<ApprovalDecisionViewModel> DecisionViewModels { get; }
+    public IReadOnlyCollection<ApprovalDecisionViewModel>? DecisionViewModels { get; }
     public CopyrightChapterViewModel? CopyrightChapterViewModel { get; }
 
     public BookApprovalViewModel(Guid id, Guid bookId, Guid chapterId, 
         Guid authorId, DateTimeOffset submittedAt, 
-        string content, BookApprovalStatus status, int version,
-        IReadOnlyCollection<ApprovalDecisionViewModel> decisionViewModels,
+        string chapterTitle, int chapterNumber, string chapterSlug, string bookTitle,
+        string content, BookApprovalStatus status,
+        IReadOnlyCollection<ApprovalDecisionViewModel>? decisionViewModels,
         CopyrightChapterViewModel? copyrightChapterViewModel)
     {
         Id = id;
@@ -27,9 +31,12 @@ public class BookApprovalViewModel
         ChapterId = chapterId;
         AuthorId = authorId;
         SubmittedAt = submittedAt;
-        Content = content;
+        ChapterContent = content;
         Status = status;
-        Version = version;
+        ChapterTitle = chapterTitle;
+        ChapterNumber = chapterNumber;
+        ChapterSlug = chapterSlug;
+        BookTitle = bookTitle;
         DecisionViewModels = decisionViewModels;
         CopyrightChapterViewModel = copyrightChapterViewModel;
     }
@@ -45,9 +52,12 @@ public static class BookApprovalViewModelMappingExtension
             chapterId: bookApproval.ChapterId,
             authorId: bookApproval.AuthorId,
             submittedAt: bookApproval.SubmittedAt,
-            content: bookApproval.ContentHash,
+            chapterTitle: bookApproval.ChapterTitle,
+            chapterNumber: bookApproval.ChapterNumber,
+            chapterSlug: bookApproval.ChapterSlug,
+            bookTitle: bookApproval.BookTitle,
+            content: bookApproval.ChapterContent,
             status: bookApproval.Status,
-            version: bookApproval.Version,
             decisionViewModels: bookApproval.Decision.ToViewModel(),
             copyrightChapterViewModel: bookApproval.CopyrightChapter?.ToViewModel()
         );

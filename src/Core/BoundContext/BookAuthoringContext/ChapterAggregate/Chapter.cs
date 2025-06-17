@@ -106,8 +106,7 @@ public class Chapter
         }
         Status = ChapterStatus.Submitted;
         Locked();
-        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(Id, BookId,Content
-        , Title));
+        RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(this));
     }
 
     public void Delete()

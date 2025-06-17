@@ -12,9 +12,11 @@ namespace Application.BoundContext.ModerationContext.DomainEventHandler;
 public class WriteToElasticWhenApprovedBookDomainEventHandler(
     ILogger<WriteToElasticWhenApprovedBookDomainEventHandler> logger,
     IVectorEmbeddingTextService embeddingTextService,
-    IElasticFactory elasticFactory)
+    IElasticFactory elasticFactory,
+    ICleanTextService cleanTextService)
     : IEventHandler<ApprovedBookDomainEvent>
 {
+    private readonly ICleanTextService _cleanTextService = cleanTextService;
     private readonly ILogger<WriteToElasticWhenApprovedBookDomainEventHandler> _logger = logger;
     private readonly IVectorEmbeddingTextService _embeddingTextService = embeddingTextService;
     private readonly IElasticFactory _elasticFactory = elasticFactory;
@@ -23,7 +25,7 @@ public class WriteToElasticWhenApprovedBookDomainEventHandler(
         var elasticChapterEmbedding = _elasticFactory
             .GetInstance<ChapterEmbeddingModel>();
         var docSource = await _embeddingTextService
-            .GetVectorEmbeddingFromTextAsync(domainEvent.Approval.ContentHash);
+            .GetVectorEmbeddingFromTextAsync(_cleanTextService.RemoveHtmlTag((domainEvent.Approval.ChapterContent)));
         if (docSource is null)
         {
             _logger.LogError("Can't not create embedding document for {@approved}",domainEvent.Approval);
@@ -41,7 +43,7 @@ public class WriteToElasticWhenApprovedBookDomainEventHandler(
                 Id = domainEvent.Approval.ChapterId.ToString()+$"_{index}",
                 BookId = domainEvent.Approval.BookId.ToString(),
                 ChapterId = domainEvent.Approval.ChapterId.ToString(),
-                ChapterTitle = domainEvent.Approval.CopyrightChapter.ChapterTitle,
+                ChapterTitle = domainEvent.Approval.ChapterTitle ?? String.Empty,
                 AuthorId = domainEvent.Approval.AuthorId.ToString(),
                 Content = x.Content,
                 Embeddings = x.Embedding.ToArray(),

@@ -8,23 +8,28 @@ public class CopyrightChapter
 {
     public string BookTitle { get; private set; }
     public string ChapterTitle { get; private set; }
+    public string ChapterSlug { get; private set; } 
+    public int ChapterNumber { get; private set; }  
     public string ChapterContent { get; private set; }
     public DigitalSignature? DigitalSignature { get; private set; }
     public DateTimeOffset DateTimeCopyright { get; private set; }
-    // If book has report it will remove in system
-    public bool IsActive { get; private set; }
     protected CopyrightChapter(){}
     private CopyrightChapter(string bookTitle,
-        string chapterTitle, string chapterContent,  string signatureValue,
-        string signatureAlgorithm)
+        string chapterTitle, string chapterContent,  string? signatureValue,
+        string? signatureAlgorithm, string chapterSlug, int chapterNumber)
     {
-        var signature = DigitalSignature.Create(signatureValue, signatureAlgorithm);
+        if (!string.IsNullOrWhiteSpace(signatureValue))
+        {
+            var signature = DigitalSignature.Create(signatureValue, signatureAlgorithm);
+            DigitalSignature = signature;
+        }
+
         BookTitle = bookTitle;
         ChapterTitle = chapterTitle;
         ChapterContent = chapterContent;
-        DigitalSignature = signature;
+        ChapterSlug = chapterSlug;
+        ChapterNumber = chapterNumber;
         DateTimeCopyright = DateTimeOffset.UtcNow;
-        IsActive = true;
     }
 
     public CopyrightChapter(string bookTitle,
@@ -33,30 +38,19 @@ public class CopyrightChapter
         BookTitle = bookTitle;
         ChapterTitle = chapterTitle;
         ChapterContent = chapterContent;
-        IsActive = false;
     }
         
     public static CopyrightChapter Create(string bookTitle,
         string chapterTitle, string chapterContent,  string signatureValue,
-        string signatureAlgorithm)
+        string signatureAlgorithm,string chapterSlug, int chapterNumber)
     {
         return new CopyrightChapter( bookTitle, chapterTitle, chapterContent
-            , signatureValue, signatureAlgorithm);
+            , signatureValue, signatureAlgorithm, chapterSlug, chapterNumber);
     }
     public static CopyrightChapter Create(string bookTitle,
-        string chapterTitle, string chapterContent)
+        string chapterTitle, string chapterContent,string chapterSlug, int chapterNumber)
     {
-        return new CopyrightChapter(bookTitle, chapterTitle, chapterContent);
-    }
-
-    public void Active()
-    {
-        IsActive = true;
-    }
-
-    public void UnActive()
-    {
-        IsActive = false;
+        return new CopyrightChapter( bookTitle, chapterTitle, chapterContent, null, null ,chapterSlug, chapterNumber);
     }
 
     public void Update(string bookTitle,string chapterTitle, string chapterContent,

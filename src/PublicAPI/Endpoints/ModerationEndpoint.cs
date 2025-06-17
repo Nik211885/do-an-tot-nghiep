@@ -32,6 +32,10 @@ public class ModerationEndpoint : IEndpoints
             .WithTags("ModerationChapter")
             .WithName("GetBookApprovalWithPaginationByStatus")
             .WithDescription("Get book approval with pagination by status");
+        apis.MapPost("add-signature", ModerationEndpointServices.AddSignature)
+            .WithTags("ModerationChapter")
+            .WithName("AddSignature")
+            .WithDescription("Add signature");
     }
 }
 
@@ -72,6 +76,17 @@ public static class ModerationEndpointServices
     )
     {
         var result =  await service.ModerationQueries.GetBookApprovalWithPaginationByStatusAsync(status, page);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>>  
+        AddSignature
+    (
+         [FromBody] CreateSignatureCommand command,
+        [FromServices] ModerationServiceWrapper service
+    )
+    {
+        var result = await service.FactoryHandler.Handler<CreateSignatureCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
 }
