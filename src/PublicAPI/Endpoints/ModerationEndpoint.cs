@@ -32,6 +32,14 @@ public class ModerationEndpoint : IEndpoints
             .WithTags("ModerationChapter")
             .WithName("GetBookApprovalWithPaginationByStatus")
             .WithDescription("Get book approval with pagination by status");
+        apis.MapGet("approval/id", ModerationEndpointServices.GetBookApprovalById)
+            .WithTags("ModerationChapter")
+            .WithName("GetBookApprovalById")
+            .WithDescription("Get book approval with ID");
+        apis.MapGet("decision/pagination", ModerationEndpointServices.GetBookApprovalDecisionByApprovalId)
+            .WithTags("ModerationChapter")
+            .WithName("GetDecisionWithPaginationByApprovalId")
+            .WithDescription("Get book approval with pagination ID");
         apis.MapPost("add-signature", ModerationEndpointServices.AddSignature)
             .WithTags("ModerationChapter")
             .WithName("AddSignature")
@@ -87,6 +95,31 @@ public static class ModerationEndpointServices
     )
     {
         var result = await service.FactoryHandler.Handler<CreateSignatureCommand, BookApprovalViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>>  
+        GetBookApprovalById
+    (
+        [FromQuery] Guid bookApprovalId,
+        [FromServices] ModerationServiceWrapper service
+    )
+    {
+        var result =  await service.ModerationQueries
+            .GetBookApprovalByIdAsync(bookApprovalId);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<ApprovalDecisionViewModel>>, ProblemHttpResult>>  
+        GetBookApprovalDecisionByApprovalId
+        (
+            [FromQuery] Guid bookApprovalId,
+            [AsParameters] PaginationRequest page,
+            [FromServices] ModerationServiceWrapper service
+        )
+    {
+        var result =  await service.ModerationQueries
+            .GetDecisionWithPaginationByApprovalIdAsync(bookApprovalId, page);
         return TypedResults.Ok(result);
     }
 }

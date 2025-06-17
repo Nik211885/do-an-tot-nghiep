@@ -31,14 +31,6 @@ public class CopyrightChapter
         ChapterNumber = chapterNumber;
         DateTimeCopyright = DateTimeOffset.UtcNow;
     }
-
-    public CopyrightChapter(string bookTitle,
-        string chapterTitle, string chapterContent)
-    {
-        BookTitle = bookTitle;
-        ChapterTitle = chapterTitle;
-        ChapterContent = chapterContent;
-    }
         
     public static CopyrightChapter Create(string bookTitle,
         string chapterTitle, string chapterContent,  string signatureValue,
@@ -52,17 +44,7 @@ public class CopyrightChapter
     {
         return new CopyrightChapter( bookTitle, chapterTitle, chapterContent, null, null ,chapterSlug, chapterNumber);
     }
-
-    public void Update(string bookTitle,string chapterTitle, string chapterContent,
-            string signatureValue,string signatureAlgorithm)
-    {
-        var newSignature = DigitalSignature.Create(signatureValue, signatureAlgorithm);
-        BookTitle = bookTitle;
-        ChapterTitle = chapterTitle;
-        ChapterContent = chapterContent;
-        DigitalSignature = newSignature;
-    }
-
+    
     public void AddSignature(string signatureAlgorithm, string signatureValue)
     {
         var signature = BookApprovalAggregate.DigitalSignature.Create(signatureValue, signatureAlgorithm);

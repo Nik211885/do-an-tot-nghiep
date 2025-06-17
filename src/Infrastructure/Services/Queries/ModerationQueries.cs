@@ -34,11 +34,54 @@ public class ModerationQueries(ModerationDbContext moderationDbContext) : IModer
                         approval.ChapterContent,
                         approval.Status,
                         null,
-                        null
-                        
+                        approval.CopyrightChapter == null
+                            ? null
+                            : new CopyrightChapterViewModel(
+                                approval.CopyrightChapter.BookTitle,
+                                approval.CopyrightChapter.ChapterTitle,
+                                approval.CopyrightChapter.ChapterContent,
+                                approval.CopyrightChapter.DateTimeCopyright,
+                                approval.CopyrightChapter.ChapterSlug,
+                                approval.CopyrightChapter.ChapterNumber,
+                                approval.CopyrightChapter.DigitalSignature == null
+                                    ? null
+                                    : new DigitalSignatureViewModel(
+                                        approval.CopyrightChapter.DigitalSignature.SignatureValue,
+                                        approval.CopyrightChapter.DigitalSignature.SignatureAlgorithm,
+                                        approval.CopyrightChapter.DigitalSignature.SigningDateTime
+                                    )
+                            )
                     ),
                     cancellationToken
                 );
         return bookApproval;
+    }
+
+    public async Task<BookApprovalViewModel?> GetBookApprovalByIdAsync(Guid bookApprovalId, CancellationToken cancellationToken = default)
+    {
+        var bookApproval = await _moderationDbContext.BookApprovals
+            .AsNoTracking()
+            .Where(x => x.Id == bookApprovalId)
+            .FirstOrDefaultAsync(cancellationToken);
+        return bookApproval?.ToViewModel();    
+    }
+
+    public async Task<PaginationItem<ApprovalDecisionViewModel>> GetDecisionWithPaginationByApprovalIdAsync(Guid bookApprovalId, PaginationRequest page,
+        CancellationToken cancellationToken = default)
+    {
+        var decision = await
+            _moderationDbContext.BookApprovals.AsNoTracking()
+                .Where(x => x.Id == bookApprovalId)
+                .Include(x => x.Decision)
+                .SelectMany(x => x.Decision)
+                .CreatePaginationAsync(page, m =>
+                        new ApprovalDecisionViewModel(
+                            m.ModeratorId,m.DecisionDateTime,
+                            m.Note,
+                            m.IsAutomated,
+                            m.Status
+                            )
+                , cancellationToken);
+        return decision;
     }
 }

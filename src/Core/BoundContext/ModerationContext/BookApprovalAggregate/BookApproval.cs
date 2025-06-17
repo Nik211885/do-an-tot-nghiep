@@ -64,7 +64,7 @@ public class BookApproval : BaseEntity, IAggregateRoot
         var decision = ApprovalDecision.Create(moderatorId, note, isAutomated, BookApprovalStatus.Approved);
         _decision.Add(decision);
         Status = BookApprovalStatus.Approved;
-        CopyrightChapter.Create(BookTitle, ChapterTitle, ChapterContent, ChapterSlug, ChapterNumber);
+        CopyrightChapter = CopyrightChapter.Create(BookTitle, ChapterTitle, ChapterContent, ChapterSlug, ChapterNumber);
         RaiseDomainEvent(new ApprovedBookDomainEvent(this));
     }
 

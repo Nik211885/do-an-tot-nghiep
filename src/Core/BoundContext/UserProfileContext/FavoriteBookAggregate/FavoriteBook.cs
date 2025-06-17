@@ -9,7 +9,7 @@ public class FavoriteBook : BaseEntity, IAggregateRoot
 {
     public Guid UserId { get; private set; }
     public Guid FavoriteBookId { get; private set; }
-    public DateTime CreatedOn { get; private set; }
+    public DateTimeOffset CreatedOn { get; private set; }
     protected FavoriteBook(){}
     private FavoriteBook(Guid userFavoriteBookId,Guid favoriteBookId)
     {
