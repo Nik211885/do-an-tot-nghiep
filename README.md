@@ -9,9 +9,6 @@
 
 ## Kiến trúc phần mềm
 
-## Luồng dữ liệu 
-### Biểu đồ tuần tự cho quá trình duyệt sách tự động
-![mermaid-diagram-2025-05-28-233411.png](business/mermaid-diagram-2025-05-28-233411.png)
 
 ## Cách cài đặt
 

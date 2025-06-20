@@ -3,6 +3,7 @@ using Application.BoundContext.OrderContext.Queries;
 using Application.BoundContext.OrderContext.ViewModel;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
+using Application.Models;
 using Application.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -40,6 +41,10 @@ public class OrderEndpoint : IEndpoints
             .WithTags("Order")
             .WithName("VerifyPaymentForOrder")
             .WithDescription("Verify Payment for Order");
+        api.MapGet("for-my/pagination", OrderEndpointServices.GetOrderForMyWithPagination)
+            .WithTags("Order")
+            .WithName("GetOrderForMyWithPagination")
+            .WithDescription("Get Order For My With Pagination");
     }
 }
 
@@ -107,6 +112,16 @@ public static class OrderEndpointServices
         var command = new OrderVerifyCommand(request);
         await service.FactoryHandler.Handler<OrderVerifyCommand,OrderViewModel>(command);
         return TypedResults.Redirect("https://localhost:4200/");
+    }
+    [Authorize]
+    public static async Task<Results<Ok<PaginationItem<OrderViewModel>>, ProblemHttpResult, NotFound>>
+        GetOrderForMyWithPagination(
+            [AsParameters] PaginationRequest page,
+            [FromServices] OrderServiceWrapper service
+        )
+    {
+        var result = await service.OrderQueries.GetOrderForUserWithPaginationAsync(service.IdentityProvider.UserIdentity(), page);
+        return TypedResults.Ok(result);
     }
 }
 
