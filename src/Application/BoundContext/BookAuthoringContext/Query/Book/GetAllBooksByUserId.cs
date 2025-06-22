@@ -17,14 +17,14 @@ public class GetAllBookByUserIdQueryHandler(ICache cache,
     private readonly IBookAuthoringQueries _bookAuthoringQueries = bookAuthoringQueries;
     public async Task<IReadOnlyCollection<BookViewModel>> Handle(GetAllBooksByUserIdQuery request, CancellationToken cancellationToken)
     {
-        var cacheKey = string.Format(CacheKey.BookByUserId, request.UserId);
+        /*var cacheKey = string.Format(CacheKey.BookByUserId, request.UserId);
         var book = await _cache.GetAsync<IReadOnlyCollection<BookViewModel>>(cacheKey);
         if (book != null)
         {
             return book;
-        }
-        book = await _bookAuthoringQueries.FindBookForUserAsync(request.UserId, cancellationToken);
-        await _cache.SetAsync(cacheKey, book, 600);
+        }*/
+        var book = await _bookAuthoringQueries.FindBookForUserAsync(request.UserId, cancellationToken);
+        /*await _cache.SetAsync(cacheKey, book, 600);*/
         return book;
     }
 }

@@ -20,6 +20,7 @@ export class SidebarService {
     MenuPermission.VIEW_STATISTICS,
     MenuPermission.MANAGE_INFO,
     MenuPermission.VIEW_ORDER,
+    MenuPermission.VIEW_MODERATION,
   ];
 
   constructor(private authService: AuthService) {}
@@ -118,6 +119,26 @@ export class SidebarService {
         permissions: [MenuPermission.VIEW_ORDER],
         icon: 'https://www.svgrepo.com/show/493951/order.svg',
         route: '/order/book',
+      },
+      {
+        id: 'moderation',
+        label: 'Kiểm duyệt',
+        permissions: [MenuPermission.VIEW_MODERATION],
+        icon: 'https://www.svgrepo.com/show/307792/exam-article-examination-test.svg',
+        children:[
+          {
+            id: 'view-moderation',
+            label: 'Cần kiểm duyệt',
+            permissions: [MenuPermission.VIEW_MODERATION],
+            route: '/moderation/view-moderation',
+          },
+          {
+            id: 'view-moderation-pass',
+            label: 'Đã kiểm duyệt',
+            permissions: [MenuPermission.VIEW_MODERATION],
+            route: '/moderation/view-moderation-pass',
+          }
+        ]
       }
     ];
   }

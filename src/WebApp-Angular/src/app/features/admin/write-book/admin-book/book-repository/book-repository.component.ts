@@ -34,7 +34,7 @@ export class BookRepositoryComponent implements OnInit {
   }
 
   loadBooks(): void {
-    this.bookService.getBookWithPagination(this.currentPage, this.pageSize, BookReleaseType.Complete)
+    this.bookService.getBookWithPagination(this.currentPage, this.pageSize)
       .subscribe({
         next: result => {
           if(result){

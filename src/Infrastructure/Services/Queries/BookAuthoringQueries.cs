@@ -48,7 +48,7 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
     {
         var books = await _bookAuthoringDbContext.Books
             .AsNoTracking()
-            .Where(x=>x.CreatedUerId == userId)
+            .Where(x=>x.CreatedUerId == userId && !x.IsComplete)
             .Include(c=>c.Tags)
             .Include(x=>x.Genres)
             .OrderByDescending(c=>c.CreatedDateTime)
@@ -166,7 +166,8 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
         CancellationToken cancellationToken = default)
     {
         var query = _bookAuthoringDbContext
-            .Books.AsNoTracking();
+            .Books.AsNoTracking()
+            .Where(x=>x.IsComplete);
         if (filter is not null)
         {
             if (filter.BookReleaseType != null)

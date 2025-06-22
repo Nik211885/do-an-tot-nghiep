@@ -9,4 +9,5 @@ export enum MenuPermission {
   MANAGE_INFO = "manage:infor",
   ADMIN = 'admin',
   VIEW_ORDER = 'view_order',
+  VIEW_MODERATION = 'view_moderation',
 }
