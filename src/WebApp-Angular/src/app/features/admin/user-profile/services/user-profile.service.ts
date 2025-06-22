@@ -21,4 +21,9 @@ export class UserProfileService {
     })
       .pipe(map(res=>res.status === 200));
   }
+  resetPasswordByEmail() : Observable<boolean>{
+    const url = `/user-profile/reset-password-by-email?clientId=${this.authConfig.clientId}&returnUri=${this.authConfig.publicUrl}`;
+    return this.httpClient.put<void>(url, null, {observe: 'response'})
+      .pipe(map(res=>res.status === 204));
+  }
 }

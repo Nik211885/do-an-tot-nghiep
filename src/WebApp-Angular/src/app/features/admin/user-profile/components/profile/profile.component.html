@@ -242,57 +242,87 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row justify-between items-center space-y-6 sm:space-y-0 sm:space-x-6
+          <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center space-y-4 lg:space-y-0 lg:space-x-4
                       pt-8 border-t-2 border-gradient-to-r from-purple-200 to-pink-200">
-            <!-- Back Button -->
-            <button
-              type="button"
-              (click)="onBack()"
-              [disabled]="isLoading"
-              class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-gray-100 to-gray-200
-                     border-2 border-gray-300 rounded-xl text-gray-700 font-semibold shadow-lg
-                     hover:from-gray-200 hover:to-gray-300 hover:shadow-xl hover:-translate-y-1
-                     focus:outline-none focus:ring-4 focus:ring-gray-300
-                     disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                     transition-all duration-300 transform hover:scale-105"
-            >
-              <span class="flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                <svg class="w-5 h-5 mr-3 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Quay lại
-              </span>
-            </button>
 
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              [disabled]="isLoading || profileForm.invalid"
-              class="group w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
-                     text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-purple-500/50
-                     hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 hover:-translate-y-1
-                     focus:outline-none focus:ring-4 focus:ring-purple-300
-                     disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                     transition-all duration-300 transform hover:scale-105 relative overflow-hidden"
-            >
-              <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0
-                          translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            <!-- Left Side Buttons -->
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <!-- Back Button -->
+              <button
+                type="button"
+                (click)="onBack()"
+                [disabled]="isLoading"
+                class="group px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200
+                       border-2 border-gray-300 rounded-xl text-gray-700 font-semibold shadow-lg
+                       hover:from-gray-200 hover:to-gray-300 hover:shadow-xl hover:-translate-y-1
+                       focus:outline-none focus:ring-4 focus:ring-gray-300
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       transition-all duration-300 transform hover:scale-105 flex-1 sm:flex-none"
+              >
+                <span class="flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                  <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                  Quay lại
+                </span>
+              </button>
 
-              <span *ngIf="!isLoading" class="relative flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                <svg class="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Cập nhật thông tin
-              </span>
+              <!-- Reset Password Button -->
+              <button
+                type="button"
+                (click)="onResetPassword()"
+                [disabled]="isLoading"
+                class="group px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500
+                       text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-orange-500/50
+                       hover:from-orange-600 hover:to-red-600 hover:-translate-y-1
+                       focus:outline-none focus:ring-4 focus:ring-orange-300
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       transition-all duration-300 transform hover:scale-105 relative overflow-hidden flex-1 sm:flex-none"
+              >
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0
+                            translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
 
-              <span *ngIf="isLoading" class="relative flex items-center justify-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Đang cập nhật...
-              </span>
-            </button>
+                <span class="relative flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                  <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 12H9v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.586l4.707-4.707C10.923 2.663 11.596 2 12.414 2s1.491.663 2.121 1.293L18.707 7.5A2 2 0 0120 9"></path>
+                  </svg>
+                  Đặt lại mật khẩu
+                </span>
+              </button>
+            </div>
+
+            <!-- Right Side Button -->
+            <div class="flex">
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                [disabled]="isLoading || profileForm.invalid"
+                class="group w-full lg:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
+                       text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-purple-500/50
+                       hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 hover:-translate-y-1
+                       focus:outline-none focus:ring-4 focus:ring-purple-300
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       transition-all duration-300 transform hover:scale-105 relative overflow-hidden"
+              >
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0
+                            translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+
+                <span *ngIf="!isLoading" class="relative flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                  <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Cập nhật thông tin
+                </span>
+
+                <span *ngIf="isLoading" class="relative flex items-center justify-center">
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Đang cập nhật...
+                </span>
+              </button>
+            </div>
           </div>
         </form>
       </div>

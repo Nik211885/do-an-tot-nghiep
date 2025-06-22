@@ -17,7 +17,9 @@ export class SidebarService {
     MenuPermission.MANAGE_BOOKS,
     MenuPermission.MANAGE_USERS,
     MenuPermission.VIEW_DASHBOARD,
-    MenuPermission.VIEW_STATISTICS
+    MenuPermission.VIEW_STATISTICS,
+    MenuPermission.MANAGE_INFO,
+    MenuPermission.VIEW_ORDER,
   ];
 
   constructor(private authService: AuthService) {}
@@ -84,6 +86,39 @@ export class SidebarService {
           },
         ]
       },
+      {
+        id: 'information',
+        label: 'Cá nhân',
+        permissions: [MenuPermission.MANAGE_INFO],
+        icon: 'https://www.svgrepo.com/show/487970/user-information.svg',
+        children: [
+          {
+            id:"view-profile",
+            label: 'Thông tin cá nhân',
+            permissions: [MenuPermission.MANAGE_INFO],
+            route: '/user-profile/profile'
+          },
+          {
+            id:"view-search-history",
+            label: 'Lịch sử tìm kiếm',
+            permissions: [MenuPermission.MANAGE_INFO],
+            route: '/user-profile/search-history',
+          },
+          {
+            id:"view-book-favorite",
+            label: 'Sách yêu thích',
+            permissions: [MenuPermission.MANAGE_INFO],
+            route: '/user-profile/favorite-book',
+          }
+        ]
+      },
+      {
+        id: 'order',
+        label: 'Sách mua',
+        permissions: [MenuPermission.VIEW_ORDER],
+        icon: 'https://www.svgrepo.com/show/493951/order.svg',
+        route: '/order/book',
+      }
     ];
   }
 }

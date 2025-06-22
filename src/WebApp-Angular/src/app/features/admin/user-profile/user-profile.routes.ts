@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {AdminLayoutComponent} from '../../../layout/layouts/admin-layout/admin-layout.component';
-import {ProfileComponent} from './profile/profile.component';
+import {ProfileComponent} from './components/profile/profile.component';
 
 export const userProfileRoutes: Routes = [
   {
@@ -9,7 +9,15 @@ export const userProfileRoutes: Routes = [
     children: [
       {
         path: "profile",
-        loadComponent:()=> import ("../user-profile/profile/profile.component").then(m=>m.ProfileComponent),
+        loadComponent:()=> import ("./components/profile/profile.component").then(m=>m.ProfileComponent),
+      },
+      {
+        path: 'favorite-book',
+        loadComponent:()=> import ("./components/book-favorite/book-favorite.component").then(m=>m.BookFavoriteComponent),
+      },
+      {
+        path: 'search-history',
+        loadComponent:()=> import ("./components/search-history/search-history.component").then(m=>m.SearchHistoryComponent),
       }
     ]
   }

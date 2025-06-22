@@ -7,6 +7,7 @@ import {statisPageRoutes} from "./features/static-pages/statis-pages.routes"
 import { authorRoutes } from './features/author/author.routes';
 import { moderationRoutes } from './features/admin/moderation/moderation.routes';
 import {userProfileRoutes} from './features/admin/user-profile/user-profile.routes';
+import {orderRoutes} from './features/admin/order/order.routes';
 export const routes: Routes = [
   {
     path:"admin",
@@ -14,6 +15,7 @@ export const routes: Routes = [
   },
     ...authorRoutes,
     ... moderationRoutes,
+    ... orderRoutes,
     ...writeBook,
     ...erorRoutes,
     ...bookRoutes,

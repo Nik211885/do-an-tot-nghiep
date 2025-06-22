@@ -11,11 +11,13 @@ namespace Infrastructure.Services.Keycloak;
 
 public class KeycloakServices(IOptions<KeycloakOptions> keyCloakConfiguration,
     IHttpClientFactory clientFactory,
+    IOptions<FontEndOptions> FontEndOptions,
     ILogger<KeycloakServices> logger) : IIdentityProviderServices
 {
     private readonly KeycloakOptions _keyCloakOptions = keyCloakConfiguration.Value;
     private readonly IHttpClientFactory _clientFactory = clientFactory;
     private readonly ILogger<KeycloakServices> _logger = logger;
+    private readonly FontEndOptions _fontEndOptions = FontEndOptions.Value;
     public async Task<TokenResult> GetTokenAsync()
     {
         var request = new Dictionary<string, string>()
@@ -65,6 +67,15 @@ public class KeycloakServices(IOptions<KeycloakOptions> keyCloakConfiguration,
         };
         var response = await GetHttpClient()
             .PutAsync(url, userRepresentation.GetStringContent());
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> ResetPasswordAsync(Guid userId, string clientId, string returnUrl)
+    {
+        var url = string.Format(KeycloakApiUri.ResetPassword, _keyCloakOptions.Realm, userId);
+        url += $"?client_id={clientId}&redirect_uri={returnUrl}";
+        var response = await GetHttpClient()
+            .PutAsync(url, new StringContent(string.Empty));
         return response.IsSuccessStatusCode;
     }
 

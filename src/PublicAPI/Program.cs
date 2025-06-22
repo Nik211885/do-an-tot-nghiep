@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp",
         policy => policy
-            .WithOrigins(builder.Configuration["FontEnd"]?? string.Empty) 
+            .WithOrigins(builder.Configuration["FontEnd:Address"]?? string.Empty) 
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()); 

@@ -12,4 +12,5 @@ public static class KeycloakApiUri
     public const string GetUserInfo = "admin/realms/{0}/users/{1}";
 
     public const string UpdateUserInfo = "admin/realms/{0}/users/{1}";
+    public const string ResetPassword = "/admin/realms/{0}/users/{1}/reset-password-email";
 }

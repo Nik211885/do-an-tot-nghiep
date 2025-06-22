@@ -9,6 +9,7 @@ public interface IIdentityProviderServices
     Task<TokenResult> GetTokenAsync();
     Task<UserInfo?> GetUserInfoAsync(string id);
     Task<bool> UpdateUserInfoAsync(UpdateUserProfileCommand update);
+    Task<bool> ResetPasswordAsync(Guid userId, string clientId, string returnUrl);
 }
 
 

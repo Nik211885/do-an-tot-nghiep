@@ -27,6 +27,10 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("UserProfile")
             .WithName("UpdateUserProfile")
             .WithDescription("Updated user profile");
+        apis.MapPut("reset-password-by-email", UserProfileEndpointService.ResetPasswordByEmail)
+            .WithTags("UserProfile")
+            .WithName("ResetPasswordByEmail")
+            .WithDescription("Reset password by email");
         apis.MapGet("by",  UserProfileEndpointService.GetUserProfileById)
             .WithTags("UserProfile")
             .WithName("GetUserProfileById")
@@ -241,15 +245,32 @@ public static class UserProfileEndpointService
             );
         return TypedResults.Ok(result);
     }
+    [Authorize]
+    public static async Task<Results<NoContent, BadRequest, ProblemHttpResult>> 
+        ResetPasswordByEmail(
+            [FromQuery] string clientId,
+            [FromQuery] string returnUri,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var result = await service.IdentityProviderServices
+            .ResetPasswordAsync(service.IdentityProvider
+                .UserIdentity(), clientId, returnUri);
+        return result ?
+            TypedResults.NoContent() :
+            TypedResults.BadRequest();
+    }
 }
 
 public class UserProfileServiceWrapper(
     IFactoryHandler factoryHandler,
     ILogger<UserProfileServiceWrapper> logger,
     IIdentityProvider identityProvider,
+    IIdentityProviderServices identityProviderServices,
     IUserProfileQueries userProfileQueries)
 {
     public IIdentityProvider IdentityProvider { get; } = identityProvider;
+    public IIdentityProviderServices IdentityProviderServices { get; } = identityProviderServices;
     public IFactoryHandler FactoryHandler {get;} = factoryHandler;
     public ILogger<UserProfileServiceWrapper> Logger {get;} = logger;
     public IUserProfileQueries UserProfileQueries {get;} = userProfileQueries;

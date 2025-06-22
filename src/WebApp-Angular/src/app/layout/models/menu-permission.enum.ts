@@ -6,5 +6,7 @@ export enum MenuPermission {
   MANAGE_COMMENTS = 'manage:comments',
   VIEW_STATISTICS = 'view:statistics',
   MANAGE_PAYMENTS = 'manage:payments',
+  MANAGE_INFO = "manage:infor",
   ADMIN = 'admin',
+  VIEW_ORDER = 'view_order',
 }

@@ -1,11 +1,12 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {UserProfileModel, UserProfileUpdateModel} from '../models/user-profile.model';
-import {UserProfileService} from '../services/user-profile.service';
-import {AuthService} from '../../../../core/auth/auth.service';
+import {UserProfileModel, UserProfileUpdateModel} from '../../models/user-profile.model';
+import {UserProfileService} from '../../services/user-profile.service';
+import {AuthService} from '../../../../../core/auth/auth.service';
 import {CommonModule, Location} from '@angular/common';
 import {Router} from '@angular/router';
-import {ToastService} from '../../../../shared/components/toast/toast.service';
+import {ToastService} from '../../../../../shared/components/toast/toast.service';
+import {DialogService} from '../../../../../shared/components/dialog/dialog.component.service';
 
 @Component({
   selector: 'app-profile',
@@ -28,6 +29,7 @@ export class ProfileComponent implements OnInit {
               private toastService: ToastService,
               private router: Router,
               private location: Location,
+              private dialogService: DialogService,
               private userProfileService: UserProfileService) {
   }
 
@@ -172,5 +174,30 @@ export class ProfileComponent implements OnInit {
 
   onBack(): void {
     this.location.back();
+  }
+  async onResetPassword(){
+    const resetPasswordResult = await this.dialogService
+      .open('Đặt lại mật khẩu', 'Bạn có chắc chắn muốn đặt lại mật khẩu của mình');
+    if(resetPasswordResult.isSuccess){
+      await this.dialogService.open('Đặt lại mật khẩu thành công', `
+                Chúng tôi sẻ gửi email đặt lại mật khẩu cho bạn,
+                 hãy kiểm tra lại email của bạn. nếu không được hãy chọn lại
+              `)
+      this.userProfileService.resetPasswordByEmail()
+        .subscribe({
+          next:  async (authProfile) => {
+            if(authProfile) {
+
+            }
+            else{
+              this.toastService.error("Có lỗi trong quá trình đặt lại mật khẩu vui lòng thử lại sau");
+            }
+          },
+          error: (error) => {
+            console.error(error);
+            this.toastService.error("Có lỗi trong quá trình đặt lại mật khẩu vui lòng thử lại sau");
+          }
+        })
+    }
   }
 }

@@ -27,5 +27,4 @@ public static class HttpClientHelper
         var json = JsonSerializer.Serialize(request, options);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
-
 }
