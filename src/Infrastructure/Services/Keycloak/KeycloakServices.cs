@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Application.BoundContext.UserProfileContext.Command.UserProfile;
 using Application.Interfaces.IdentityProvider;
 using Application.Models.KeyCloak;
 using Infrastructure.Options;
@@ -52,6 +53,21 @@ public class KeycloakServices(IOptions<KeycloakOptions> keyCloakConfiguration,
         var response = await GetHttpClient().GetAsync(string.Format(KeycloakApiUri.GetUserInfo,_keyCloakOptions.Realm, id));
         return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<UserInfo>() : null;
     }
+
+    public async Task<bool> UpdateUserInfoAsync(UpdateUserProfileCommand update)
+    {
+        var url = string.Format(KeycloakApiUri.UpdateUserInfo, _keyCloakOptions.Realm, update.Id);
+        var userRepresentation = new
+        {
+            id = update.Id,
+            firstName = update.Update.FirstName,   
+            lastName = update.Update.LastName,
+        };
+        var response = await GetHttpClient()
+            .PutAsync(url, userRepresentation.GetStringContent());
+        return response.IsSuccessStatusCode;
+    }
+
     private HttpClient GetHttpClient()
         => _clientFactory.CreateClient(HttpClientKeyFactory.KeyCloak);
 }

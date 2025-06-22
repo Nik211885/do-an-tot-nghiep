@@ -14,6 +14,15 @@ export interface Bookv1 {
   updatedAt?: Date;
 }
 
+export interface PaginationBook{
+  items: Bookv1[],
+  pageNumber: number,
+  totalPages: number,
+  totalCount: number,
+  hasPreviousPage: boolean,
+  hasNextPage: boolean,
+}
+
 
 export interface ChapterVersion{
   id: string,

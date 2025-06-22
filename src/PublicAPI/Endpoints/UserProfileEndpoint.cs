@@ -23,7 +23,7 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("UserProfile")
             .WithName("CreateUserProfile")
             .WithDescription("Creat new user profile");
-        apis.MapGet("update", UserProfileEndpointService.UpdateUserProfile)
+        apis.MapPut("update", UserProfileEndpointService.UpdateUserProfile)
             .WithTags("UserProfile")
             .WithName("UpdateUserProfile")
             .WithDescription("Updated user profile");
@@ -92,14 +92,18 @@ public static class UserProfileEndpointService
     }
     [Authorize]
     public static async Task<Results<Ok<UserProfileViewModel>, BadRequest, ProblemHttpResult>> 
-        UpdateUserProfile(
-            [FromBody] string bio,
-            [FromServices] UserProfileServiceWrapper service
+        UpdateUserProfile(  
+            [FromBody] UpdateUserRequest userUpdate,
+            [FromServices] UserProfileServiceWrapper service,
+            [FromServices] IIdentityProviderServices identityProviderServices
         )
     {
-        var command = new UpdateUserProfileCommand(service.IdentityProvider.UserIdentity(), bio);
+        var command = new UpdateUserProfileCommand(service.IdentityProvider.UserIdentity(), userUpdate);
         var result = await service.FactoryHandler.Handler<UpdateUserProfileCommand, UserProfileViewModel>(command);
-        return TypedResults.Ok(result);
+        var updatedFromKeyCloakService = await identityProviderServices.UpdateUserInfoAsync(command);
+        return updatedFromKeyCloakService
+            ? TypedResults.Ok(result)
+            : TypedResults.BadRequest();
     }
     [Authorize]
     public static async Task<Results<Ok<UserProfileViewModel>, BadRequest, ProblemHttpResult>> 

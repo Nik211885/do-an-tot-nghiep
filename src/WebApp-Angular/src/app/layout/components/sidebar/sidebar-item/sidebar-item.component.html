@@ -1,5 +1,5 @@
 <div class="mb-1 relative" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-  <a 
+  <a
     [href]="item.children && item.children.length > 0 ? 'javascript:void(0)' : item.route"
     class="sidebar-link flex items-center px-3 py-2 rounded-md transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
     [class.sidebar-link-active]="isActive"
@@ -18,17 +18,17 @@
         </svg>
       </ng-template>
     </span>
-    
+
     <ng-container *ngIf="!collapsed">
       <span class="truncate">{{ item.label }}</span>
-      
+
       <ng-container *ngIf="item.badge">
         <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
           [ngClass]="item.badge.color">
           {{ item.badge.text }}
         </span>
       </ng-container>
-      
+
       <ng-container *ngIf="item.children && item.children.length > 0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@
     </ng-container>
   </a>
 
-  <div *ngIf="item.children && item.children.length > 0 && isExpanded && !collapsed" 
+  <div *ngIf="item.children && item.children.length > 0 && isExpanded && !collapsed"
     class="mt-1 ml-4 pl-3 border-l border-gray-200 dark:border-gray-700 space-y-1">
     <ng-container *ngFor="let child of item.children; trackBy: trackById">
       <a
@@ -56,7 +56,7 @@
           <img src="{{child.icon}}"class="w-6 h-6">
         </span>
         <span class="truncate">{{ child.label }}</span>
-        
+
         <ng-container *ngIf="child.badge">
           <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
             [ngClass]="child.badge.color">
@@ -66,7 +66,7 @@
       </a>
     </ng-container>
   </div>
-  
+
   <!-- Hiển thị menu con khi hover (chỉ khi sidebar thu gọn) -->
   <div *ngIf="collapsed && item.children && item.children.length > 0"
     class="dropdown-menu absolute left-full top-0 ml-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700"
@@ -77,7 +77,7 @@
     </div>
     <ng-container *ngFor="let child of item.children; trackBy: trackById">
       <a
-        [href]="child.route"
+        [routerLink]="child.route"
         class="sidebar-link flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
         [class.sidebar-link-active]="false"
       >
@@ -85,7 +85,7 @@
           <img src="{{child.icon}}"class="w-6 h-6">
         </span>
         <span class="truncate">{{ child.label }}</span>
-        
+
         <ng-container *ngIf="child.badge">
           <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
             [ngClass]="child.badge.color">

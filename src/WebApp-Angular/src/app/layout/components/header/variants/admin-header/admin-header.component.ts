@@ -1,15 +1,15 @@
-import { Component, Host, HostListener, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { LayoutService } from '../../../../services/layout.service';
 import { HeaderComponent } from '../../header.component';
 import { CommonModule } from '@angular/common';
 import { UserModel } from '../../../../../core/models/user.model';
 import { AuthService } from '../../../../../core/auth/auth.service';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-admin-header',
-  imports: [HeaderComponent, CommonModule],
+  imports: [HeaderComponent, CommonModule, RouterLink],
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.css'
 })
@@ -17,7 +17,7 @@ export class AdminHeaderComponent implements OnInit {
   showNotifications = false;
   showUserDropdown = false;
   userModel = signal<UserModel | null>(null);
-  
+
   notifications = [
     {
       id: 1,
@@ -43,7 +43,8 @@ export class AdminHeaderComponent implements OnInit {
   ];
 
   constructor(private layoutService: LayoutService,
-    private authService: AuthService) {}
+    private authService: AuthService,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.authService.initialize().subscribe((authenticated) => {
@@ -75,13 +76,13 @@ export class AdminHeaderComponent implements OnInit {
   markAsRead(notification: any): void {
     notification.read = true;
   }
-  
+
   markAllAsRead(): void {
     this.notifications.forEach(notification => {
       notification.read = true;
     });
   }
-  
+
   viewAllNotifications(): void {
     // Navigate to notifications page
     console.log('Viewing all notifications...');
@@ -102,4 +103,5 @@ export class AdminHeaderComponent implements OnInit {
   hasUnreadNotifications() : boolean{
     return this.notifications.some(n => !n.read)
   }
+
 }

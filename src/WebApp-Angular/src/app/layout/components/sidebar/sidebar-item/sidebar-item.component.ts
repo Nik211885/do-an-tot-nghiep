@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../../services/sidebar.service';
 import { LayoutService } from '../../../services/layout.service';
 import { Subscription } from 'rxjs';
+import {RouterLink} from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-sidebar-item',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sidebar-item.component.html',
   styleUrl: './sidebar-item.component.css'
 })
@@ -30,7 +31,7 @@ export class SidebarItemComponent implements OnInit {
       this.isExpanded = true;
     }
   }
-  
+
   toggleExpand(event: Event): void {
     // Only toggle expand state if item has children
     if (this.item.children && this.item.children.length > 0) {
@@ -38,11 +39,11 @@ export class SidebarItemComponent implements OnInit {
       this.isExpanded = !this.isExpanded;
     }
   }
-  
+
   onMouseEnter(): void {
     this.isHovered = true;
   }
-  
+
   onMouseLeave(): void {
     this.isHovered = false;
   }

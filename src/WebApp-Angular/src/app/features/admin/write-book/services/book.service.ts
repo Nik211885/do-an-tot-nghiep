@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable, of} from 'rxjs';
-import {Bookv1, Chapter, ChapterVersion, Genre} from '../models/book.model';
+import {Bookv1, Chapter, ChapterVersion, Genre, PaginationBook} from '../models/book.model';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {BookPolicy, BookReleaseType, CreateBookCommand, UpdateBookCommand} from '../models/create-book.model';
-import {ToastService} from '../../../../shared/components/toast/toast.service';
 import {CreateChapterCommand, UpdateChapterCommand} from '../models/create-chapter.model';
 
 @Injectable({
@@ -97,19 +96,50 @@ export class BookService {
   }
 
   deleteBook(id: string): Observable<boolean> {
-    const initialLength = this.books.length;
-    this.books = this.books.filter(book => book.id !== id);
+    let url = `/book-authoring/book/delete?Id=${id}`;
+    return this.httpClient.delete<void>(url, {observe:'response'}).pipe(
+      map(response=>response.status === 204),
+    );
+  }
 
-    if (this.books.length !== initialLength) {
-      // Also delete all chapters for this book
-      this.chapters = this.chapters.filter(chapter => chapter.bookId !== id);
-
-      this.booksSubject.next([...this.books]);
-      this.saveToStorage();
-      return of(true);
+  getBookWithPagination(pageNumber: number, pageSize: number,
+                        bookReleaseType?: BookReleaseType, bookPolicy?: BookPolicy,
+                        tag?: string, genre?: string, title?: string)
+    : Observable<PaginationBook | undefined>{
+    let url = "book-authoring/book/pagination/filter?";
+    if(pageNumber && pageNumber > 0){
+      url += "&PageNumber=" + pageNumber;
     }
-
-    return of(false);
+    if(pageSize && pageSize >= 1){
+      url += "&PageSize=" + pageSize;
+    }
+    if(bookReleaseType){
+      url += "&BookReleaseType=" + bookReleaseType;
+    }
+    if(bookPolicy){
+      url += "&BookPolicy=" + bookPolicy;
+    }
+    if(tag){
+      url += "&Tag=" + tag;
+    }
+    if(genre){
+      url += "&Genre=" + genre;
+    }
+    if(title){
+      url += "&Title=" + title;
+    }
+    return this.httpClient.get<any>(url).pipe(
+      map(res=>{
+        return {
+          items: res.items.map((item:any)=> this.mapToBook(item)),
+          pageNumber: res.pageNumber,
+          totalPages: res.totalPages,
+          totalCount: res.totalCount,
+          hasPreviousPage: res.hasPreviousPage,
+          hasNextPage: res.hasNextPage,
+        }  as PaginationBook
+      })
+    )
   }
 
   // Chapter methods

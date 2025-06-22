@@ -6,7 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.BoundContext.UserProfileContext.Command.UserProfile;
 
-public record UpdateUserProfileCommand(Guid Id, string Bio)
+public record UpdateUserRequest(string Bio, string FirstName, string LastName);
+
+public record UpdateUserProfileCommand(Guid Id, UpdateUserRequest Update)
     : IUserProfileCommand<UserProfileViewModel>;
 
 public class UpdateUserProfileCommandHandler(
@@ -21,7 +23,7 @@ public class UpdateUserProfileCommandHandler(
         var userProfile = await _userProfileRepository.
             GetByIdAsync(request.Id, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(userProfile, "Thông tin cá nhân");
-        userProfile.UpdateBio(request.Bio);
+        userProfile.UpdateBio(request.Update.Bio);
         _userProfileRepository.Update(userProfile);
         _logger.LogInformation("Update bio for user {@id}", userProfile.Id);
         await _userProfileRepository.UnitOfWork.SaveChangeAsync(cancellationToken);

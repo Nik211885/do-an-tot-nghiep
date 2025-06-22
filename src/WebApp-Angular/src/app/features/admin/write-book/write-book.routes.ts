@@ -28,7 +28,11 @@ export const writeBook: Routes = [
       },
       {
         path: 'books-information/:id',
-        loadComponent:()=> import("../write-book/admin-book/book-detail/book-detail.component").then(m=>m.BookDetailComponent)
+        loadComponent:()=> import("../write-book/admin-book/book-detail/book-detail.component").then(m=>m.BookDetailComponent),
+      } ,
+      {
+        path:'repository',
+        loadComponent:()=> import("../write-book/admin-book/book-repository/book-repository.component").then(m=>m.BookRepositoryComponent)
       }
     ]
   }

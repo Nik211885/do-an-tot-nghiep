@@ -53,87 +53,37 @@ export class SidebarService {
     return [
       {
         id: 'dashboard',
-        label: 'Dashboard',
+        label: 'Trang chủ',
         icon: `https://www.svgrepo.com/show/459022/dashboard.svg`,
         route: '/admin/dashboard',
         permissions: [MenuPermission.VIEW_DASHBOARD]
       },
       {
         id: 'books',
-        label: 'Books',
+        label: 'Sách',
         icon: 'https://www.svgrepo.com/show/94674/books-stack-of-three.svg',
         permissions: [MenuPermission.MANAGE_BOOKS],
         children: [
           {
             id: 'all-books',
-            label: 'All Books',
+            label: 'Sách đang viết',
             route: '/write-book/books',
             permissions: [MenuPermission.MANAGE_BOOKS]
           },
           {
             id: 'add-book',
-            label: 'Add New Book',
-            route: '/write-book//books/create',
+            label: 'Thêm sách',
+            route: '/write-book/books/create',
             permissions: [MenuPermission.MANAGE_BOOKS]
           },
           {
-            id: 'categories',
-            label: 'Categories',
-            route: '/admin/categories',
-            permissions: [MenuPermission.MANAGE_CATEGORIES]
-          }
-        ]
-      },
-      {
-        id: 'users',
-        label: 'Users',
-        icon: 'https://www.svgrepo.com/show/532387/user-search.svg',
-        permissions: [MenuPermission.MANAGE_USERS],
-        children: [
-          {
-            id: 'all-users',
-            label: 'All Users',
-            route: '/admin/users',
-            permissions: [MenuPermission.MANAGE_USERS]
+            id: 'repository-book',
+            label: 'Sách đã viết',
+            route: '/write-book/repository',
+            permissions: [MenuPermission.MANAGE_BOOKS]
           },
-          {
-            id: 'authors',
-            label: 'Authors',
-            route: '/admin/authors',
-            permissions: [MenuPermission.MANAGE_USERS]
-          }
         ]
       },
-      {
-        id: 'divider-1',
-        label: '',
-        divider: true
-      },
-      {
-        id: 'statistics',
-        label: 'Statistics',
-        icon: 'https://www.svgrepo.com/show/408619/statistics-chart-graph-stats-analytics-business-2.svg',
-        route: '/admin/statistics',
-        permissions: [MenuPermission.VIEW_STATISTICS],
-        badge: {
-          text: 'New',
-          color: 'bg-green-500'
-        }
-      },
-      {
-        id: 'payments',
-        label: 'Payments',
-        icon: 'https://www.svgrepo.com/show/502788/payment-card.svg',
-        route: '/admin/payments',
-        permissions: [MenuPermission.MANAGE_PAYMENTS]
-      },
-      {
-        id: 'comments',
-        label: 'Comments',
-        icon: 'https://www.svgrepo.com/show/522070/comment-3.svg',
-        route: '/admin/comments',
-        permissions: [MenuPermission.MANAGE_COMMENTS]
-      }
     ];
   }
 }

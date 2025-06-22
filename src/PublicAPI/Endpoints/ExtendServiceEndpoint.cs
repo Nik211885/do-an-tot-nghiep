@@ -1,4 +1,6 @@
-﻿using Application.Interfaces.UploadFile;
+﻿using Application.BoundContext.UserProfileContext.Command.UserProfile;
+using Application.Interfaces.IdentityProvider;
+using Application.Interfaces.UploadFile;
 using Microsoft.AspNetCore.Mvc;
 using PublicAPI.Services.Endpoint;
 

@@ -8,7 +8,7 @@ public class UpdateUserProfileValidation : AbstractValidator<UpdateUserProfileCo
 {
     public UpdateUserProfileValidation()
     {
-        RuleFor(x => x.Bio)
+        RuleFor(x => x.Update.Bio)
             .MaximumLength(500)
             .WithMessage(UserProfileValidationMessage.MaxBioLength);
     }

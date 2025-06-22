@@ -5,12 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Data.DbContext;
+
 /// <summary>
 /// 
 /// </summary>
 /// <param name="options"></param>
 /// <param name="dbConnectionStringSelector"></param>
-public class BaseDbContext(DbContextOptions options, 
+public class BaseDbContext(
+    DbContextOptions options,
     IDbConnectionStringSelector dbConnectionStringSelector,
     DispatcherDomainEventInterceptors interceptors)
     : Microsoft.EntityFrameworkCore.DbContext(options), IUnitOfWork
@@ -21,16 +23,19 @@ public class BaseDbContext(DbContextOptions options,
     private IDbContextTransaction? _transaction;
 
     private readonly DispatcherDomainEventInterceptors _interceptors = interceptors;
+
     /// <summary>
     /// 
     /// </summary>
     private readonly IDbConnectionStringSelector _dbConnectionStringSelector = dbConnectionStringSelector;
+
     /// <summary>
     /// 
     /// </summary>
     private bool _isReadOnly = false;
+
     /*/// <summary>
-    /// 
+    ///
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +51,7 @@ public class BaseDbContext(DbContextOptions options,
         _isReadOnly = true;
         return this;
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -57,13 +63,14 @@ public class BaseDbContext(DbContextOptions options,
         optionsBuilder.UseNpgsql(connectionString)
             .AddInterceptors(_interceptors);
     }
-    
+
     /// <summary>
     /// 
     /// </summary>  
     /// <param name="cancellationToken"></param>
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
         => _transaction = await base.Database.BeginTransactionAsync(cancellationToken);
+
     /// <summary>
     /// 
     /// </summary>
@@ -71,6 +78,7 @@ public class BaseDbContext(DbContextOptions options,
     /// <returns></returns>
     public async Task<int> SaveChangeAsync(CancellationToken cancellationToken)
         => await base.SaveChangesAsync(cancellationToken);
+
     /// <summary>
     /// 
     /// </summary>
@@ -97,6 +105,7 @@ public class BaseDbContext(DbContextOptions options,
             }
         }
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -115,6 +124,7 @@ public class BaseDbContext(DbContextOptions options,
     /// 
     /// </summary>
     public bool HasActiveTransaction => _transaction is not null;
+
     /// <summary>
     /// 
     /// </summary>
@@ -122,7 +132,7 @@ public class BaseDbContext(DbContextOptions options,
     /// <exception cref="NotImplementedException"></exception>
     public async Task ExecutionStrategyRetry(Func<Task> func)
     {
-        var strategy = base.Database.CreateExecutionStrategy(); 
+        var strategy = base.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
             await func();
@@ -136,8 +146,10 @@ public class BaseDbContext(DbContextOptions options,
     /// </summary>
     /// <returns></returns>
     private string? GetConnectionString()
-    => _isReadOnly ? _dbConnectionStringSelector.GetSlaveDbConnectionString()
+        => _isReadOnly
+            ? _dbConnectionStringSelector.GetSlaveDbConnectionString()
             : _dbConnectionStringSelector.GetMasterDbConnectionString();
+
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
