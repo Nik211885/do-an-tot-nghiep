@@ -6,6 +6,7 @@ namespace Application.BoundContext.BookReviewContext.Queries;
 
 public interface IBookReviewQueries : IApplicationQueryServicesExtension
 {
+    Task<IEnumerable<BookReviewViewModel>> GetBookReviewByIdsAsync(CancellationToken cancellationToken = default,params Guid[] ids);
     Task<BookReviewViewModel?> GetBookReviewByBookId(Guid bookId, CancellationToken cancellationToken = default);
 
     Task<PaginationItem<CommentViewModel>?> GetCommentWithPaginationByBookIdAsync(Guid bookId, PaginationRequest page,

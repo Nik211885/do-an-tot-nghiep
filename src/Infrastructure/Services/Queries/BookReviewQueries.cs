@@ -11,6 +11,25 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
     : IBookReviewQueries
 {
     private readonly BookReviewDbContext _bookReviewDbContext = bookReviewDbContext;
+    public async Task<IEnumerable<BookReviewViewModel>> GetBookReviewByIdsAsync(CancellationToken cancellationToken = default, params Guid[] ids)
+    {
+        var query =
+            _bookReviewDbContext.BookReviews
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.BookId))
+                .Select(x=>new BookReviewViewModel(
+                    x.Id,
+                    x.BookId,
+                        x.ViewCount,
+                        x.CommentCount,
+                    x.RatingCount,
+                    x.TotalRating,
+                    x.CreatedAt,
+                    x.LastUpdated
+                    ));
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<BookReviewViewModel?> GetBookReviewByBookId(Guid bookId, CancellationToken cancellationToken = default)
     {
         var result = await _bookReviewDbContext.BookReviews

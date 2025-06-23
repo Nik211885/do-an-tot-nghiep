@@ -25,7 +25,7 @@ public class PaginationItem<TEntity>(
     /// 
     /// </summary>
     public int TotalCount { get; } = count;
-
+    public int PageSize { get; } = pageSize;
     /// <summary>
     /// 
     /// </summary>

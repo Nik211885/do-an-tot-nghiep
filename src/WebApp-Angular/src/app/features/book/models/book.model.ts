@@ -7,17 +7,21 @@ export interface Book{
     genres: Genre[];
     avatarUrl: string;
     description: string;
+    created?: Date;
+    lastModified?: Date;
     chapters?: Chapter[];
     slug: string;
     tagNames: string[];
     isCompeleted: boolean;
     policyReadBook: PolicyReadBook;
     bookReleaseType: BookReleaseType;
+    authorId?: string;
 }
 
 export interface Genre{
     id: string;
     name: string;
+    slug: string;
 }
 
 export interface PolicyReadBook{
@@ -41,3 +45,5 @@ export interface Chapter{
     version: number;
     title: string;
 }
+
+

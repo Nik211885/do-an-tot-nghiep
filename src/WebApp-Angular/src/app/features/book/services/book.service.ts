@@ -19,8 +19,8 @@ export class BookService{
       isCompeleted: true,
       author: 'Brandon Sanderson',
       genres: [
-        { id: '1', name: 'Fantasy' },
-        { id: '2', name: 'Epic' }
+        { id: '1', name: 'Fantasy', slug:'a' },
+        { id: '2', name: 'Epic' , slug:'b'}
       ],
       avatarUrl: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1605960703i/55974838.jpg',
       description: 'Roshar is a world of stone and storms. Uncanny tempests of incredible power sweep across the rocky terrain so frequently that they have shaped ecology and civilization alike.',
@@ -48,8 +48,8 @@ export class BookService{
       slug: 'project-hail-mary-efgh5678',
       author: 'Andy Weir',
       genres: [
-        { id: '3', name: 'Sci-Fi' },
-        { id: '4', name: 'Adventure' }
+        { id: '3', name: 'Sci-Fi' , slug: 'a'},
+        { id: '4', name: 'Adventure',  slug: 'a' }
       ],
       avatarUrl: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1605960703i/55974838.jpg',
       description: 'Ryland Grace is the sole survivor on a desperate, last-chance mission—and if he fails, humanity and the Earth itself will perish.',
@@ -69,8 +69,8 @@ export class BookService{
       coutRating: 12876,
       author: 'Erin Morgenstern',
       genres: [
-        { id: '5', name: 'Fantasy' },
-        { id: '6', name: 'Romance' }
+        { id: '5', name: 'Fantasy' , slug: 'a'},
+        { id: '6', name: 'Romance', slug: 'a' }
       ],
       avatarUrl: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1605960703i/55974838.jpg',
       description: 'The circus arrives without warning. No announcements precede it. It is simply there, when yesterday it was not.',

@@ -58,7 +58,7 @@
 
 public static class BookPublicEndpointServices
 {
-    private static QueryParamRequest _getSimpleQueryParam(PaginationRequest page, bool sortCreated = true)
+    public static QueryParamRequest _getSimpleQueryParam(PaginationRequest page, bool sortCreated = true)
         => new QueryParamRequest()
         {
             Page = page.PageNumber,
@@ -66,7 +66,7 @@ public static class BookPublicEndpointServices
             Sort = sortCreated ? $"{nameof(BookElasticModel.CreateDateTimeOffset)}:desc" : string.Empty,
         };
 
-    private static Action<QueryDescriptor<BookElasticModel>> BookActive
+    public static Action<QueryDescriptor<BookElasticModel>> BookActive
         => q => q.Term(t => t.Field(f => f.IsActive).Value(false));
         
     public static async Task<Results<Ok<PaginationItem<BookElasticModel>>,NotFound, ProblemHttpResult>>

@@ -143,7 +143,7 @@ export class BookRepositoryComponent implements OnInit {
       }
     }
 
-    return pages;
+      return pages;
   }
 
   isCurrentPage(page: number | string): boolean {

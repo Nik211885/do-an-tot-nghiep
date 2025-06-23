@@ -9,18 +9,21 @@ public class BookReviewViewModel
     public int ViewCount { get; }
     public int CommentCount { get; }
     public int RatingCount { get; }
-    public double AverageRating { get; }
+    public long RatingStar { get; }
     public DateTimeOffset CreatedAt { get; }
     public DateTimeOffset UpdatedAt { get; }
 
-    public BookReviewViewModel(Guid id,Guid bookId, int viewCount, int commentCount, int ratingCount, double averageRating, DateTimeOffset createdAt, DateTimeOffset updatedAt)
+    public BookReviewViewModel(Guid id,Guid bookId,
+        int viewCount, int commentCount, int ratingCount,
+        long ratingStar, DateTimeOffset createdAt,
+        DateTimeOffset updatedAt)
     {
         Id = id;
         BookId = bookId;
         ViewCount = viewCount;
         CommentCount = commentCount;
         RatingCount = ratingCount;
-        AverageRating = averageRating;
+        RatingStar = ratingStar;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }
@@ -36,7 +39,7 @@ public static class BookReviewMappingExtension
             viewCount: bookReview.ViewCount,
             commentCount: bookReview.CommentCount,
             ratingCount: bookReview.RatingCount,
-            averageRating: (double)bookReview.TotalRating / bookReview.RatingCount,
+            ratingStar: bookReview.TotalRating,
             createdAt: bookReview.CreatedAt,
             updatedAt: bookReview.LastUpdated
         );

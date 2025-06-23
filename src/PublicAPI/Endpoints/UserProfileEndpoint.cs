@@ -1,12 +1,16 @@
-﻿using Application.BoundContext.UserProfileContext.Command.Favorite;
+﻿using Application.BoundContext.BookReviewContext.Queries;
+using Application.BoundContext.UserProfileContext.Command.Favorite;
 using Application.BoundContext.UserProfileContext.Command.Follower;
 using Application.BoundContext.UserProfileContext.Command.SearchHistory;
 using Application.BoundContext.UserProfileContext.Command.UserProfile;
 using Application.BoundContext.UserProfileContext.Queries;
 using Application.BoundContext.UserProfileContext.ViewModel;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.Elastic;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
+using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +63,10 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("Favorite")
             .WithName("FavoriteWithPaginationByUserId")
             .WithDescription("Favorite book with pagination for user id");
+        apis.MapGet("book/my-favorite/pagination/v1", UserProfileEndpointService.GetFavoriteAggregateWithPaginationByUserId)
+            .WithTags("Favorite")
+            .WithName("FavoriteWithPaginationByUserIdV1")
+            .WithDescription("Favorite book with pagination for user idV1");
         apis.MapPost("book/favorite-in", UserProfileEndpointService.GetFavoriteWithBookInForUser)
             .WithTags("Favorite")
             .WithName("GetFavoriteInCollectionBookHasSpecific")
@@ -246,6 +254,34 @@ public static class UserProfileEndpointService
         return TypedResults.Ok(result);
     }
     [Authorize]
+    public static async Task<Results<Ok<PaginationItem<FavoriteBookViewModelAggregate>>, BadRequest, ProblemHttpResult>> 
+        GetFavoriteAggregateWithPaginationByUserId(
+            [AsParameters] PaginationRequest page,
+            [FromServices] UserProfileServiceWrapper service
+        )
+    {
+        var favoriteBook = await service.UserProfileQueries
+            .GetFavoriteBookWithPaginationByUserIdAsync(
+                service.IdentityProvider.UserIdentity(),
+                page
+            );
+        var ids = favoriteBook.Items.Select(x => x.FavoriteBookId).ToList();
+        var review = await service.BookReviewQueries
+            .GetBookReviewByIdsAsync(CancellationToken.None, ids.ToArray());
+        var book = await service.BookServices
+            .ListAsync(new QueryParamRequest(),
+                filter: q => q.Bool(b => b
+                    .Must(BookPublicEndpointServices.BookActive,
+                        m=>m.Terms(t=>t.Field("id.keyword").Terms(new TermsQueryField(
+                            ids.Select(x=>FieldValue.String(x.ToString())).ToArray()
+                        )))
+                    )));
+        var aggregate = favoriteBook.ToPaginationAggregate(book.Documents,
+            review);
+        return TypedResults.Ok(aggregate);
+    }
+    
+    [Authorize]
     public static async Task<Results<NoContent, BadRequest, ProblemHttpResult>> 
         ResetPasswordByEmail(
             [FromQuery] string clientId,
@@ -264,11 +300,15 @@ public static class UserProfileEndpointService
 
 public class UserProfileServiceWrapper(
     IFactoryHandler factoryHandler,
+    IElasticServices<BookElasticModel> bookServices,
+    IBookReviewQueries bookReviewsQueries,
     ILogger<UserProfileServiceWrapper> logger,
     IIdentityProvider identityProvider,
     IIdentityProviderServices identityProviderServices,
     IUserProfileQueries userProfileQueries)
 {
+    public IElasticServices<BookElasticModel> BookServices { get; } = bookServices;
+    public IBookReviewQueries BookReviewQueries { get; } = bookReviewsQueries;
     public IIdentityProvider IdentityProvider { get; } = identityProvider;
     public IIdentityProviderServices IdentityProviderServices { get; } = identityProviderServices;
     public IFactoryHandler FactoryHandler {get;} = factoryHandler;
