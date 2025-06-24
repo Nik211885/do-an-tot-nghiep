@@ -1,0 +1,41 @@
+<nav class="flex items-center gap-2">
+  <!-- Previous Button -->
+  <button
+    *ngIf="currentPage > 1"
+    (click)="previousPage()"
+    class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+    </svg>
+  </button>
+
+  <!-- Page Numbers -->
+  <ng-container *ngFor="let page of getVisiblePages()">
+    <!-- Regular Page Number -->
+    <button
+      *ngIf="isClickablePage(page)"
+      (click)="goToPage(Number(page))"
+      [class]="isCurrentPage(page)
+              ? 'flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl shadow-lg font-bold transition-all duration-200 transform hover:scale-105'
+              : 'flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 cursor-pointer bg-white/80 backdrop-blur-sm border border-white/50 font-medium'">
+      {{page}}
+    </button>
+
+    <!-- Ellipsis -->
+    <span
+      *ngIf="!isClickablePage(page)"
+      class="flex items-center justify-center w-12 h-12 text-gray-400 font-medium">
+            {{page}}
+          </span>
+  </ng-container>
+
+  <!-- Next Button -->
+  <button
+    *ngIf="currentPage < (pagination?.totalPages ?? 1)"
+    (click)="nextPage()"
+    class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+    </svg>
+  </button>
+</nav>

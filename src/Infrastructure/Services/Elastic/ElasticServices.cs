@@ -100,9 +100,9 @@ public class ElasticServices<T>(ElasticsearchClient client)
         SearchResponse<T> searchResponse = await SearchAsync(request, filter);
         return new PaginationItem<T>(
             searchResponse.Documents.AsEnumerable().ToList(),
-            (int)searchResponse.Total,
             request.Page,
-            request.PageSize
+            request.PageSize,
+            (int)searchResponse.Total
         );
     }
 

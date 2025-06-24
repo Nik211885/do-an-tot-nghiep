@@ -5,24 +5,24 @@
       <a [routerLink]="['/genere']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Thể Loại Sách</a>
       <a [routerLink]="['/books']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tất Cả Sách</a>
       <a [routerLink]="['/free-books']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Miễn Phí</a>
-      <a [routerLink]="['/premium']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Trả Phí</a>
+      <a [routerLink]="['/paid-books']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Sách Trả Phí</a>
       <a [routerLink]="['/author']" class="nav-link text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 whitespace-nowrap">Tác Giả Nổi Bật</a>
     </div>
-    
+
     <div class="flex items-center space-x-4">
       <button (click)="toggleSearchOverlay()" class="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </button>
-      
+
       <!-- Nút đăng nhập - hiển thị trên desktop -->
       <div class="hidden lg:block">
         <div *ngIf="isAuthenticated" class="relative user-menu-wrapper">
           <button (click)="toggleMenu()" class="h-10 w-10 rounded-full bg-blue-500 overflow-hidden flex items-center justify-center">
             <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover">
           </button>
-        
+
           <!-- Dropdown menu with animation -->
           <div *ngIf="isMenuOpen"
                @dropdownAnimation
@@ -39,10 +39,10 @@
             <a routerLink="/admin" class="block py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Quản lý tài khoản</a>
             <button (click)="logout()" class="block w-full text-left py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">Đăng xuất</button>
           </div>
-        </div>        
+        </div>
         <button *ngIf="!isAuthenticated" (click)="login()" class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg whitespace-nowrap">Đăng Nhập</button>
       </div>
-    
+
       <!-- Nút hamburger menu mobile -->
       <button (click)="toggleMobileMenu()" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 focus:outline-none">
         <svg *ngIf="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,7 +56,7 @@
   </div>
 
   <!-- Menu Mobile - đẩy từ dưới lên trên kiểu Etsy -->
-  <div class="fixed inset-0 bg-opacity-50 z-10 transition-opacity duration-300 dark:border-white" 
+  <div class="fixed inset-0 bg-opacity-50 z-10 transition-opacity duration-300 dark:border-white"
        [ngClass]="{'opacity-100': isMobileMenuOpen, 'opacity-0 pointer-events-none': !isMobileMenuOpen}">
     <app-header>
       <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-10 transition-transform duration-300 ease-out overflow-y-auto max-h-[80vh]"
@@ -66,14 +66,14 @@
           <div class="flex justify-center -mt-2 mb-2">
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
           </div>
-          
+
           <a [routerLink]="['/genere']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Thể Loại Sách</a>
           <a [routerLink]="['/books']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tất Cả Sách</a>
           <a [routerLink]="['/free-books']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Miễn Phí</a>
-          <a [routerLink]="['/premium']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Trả Phí</a>
+          <a [routerLink]="['/paid-books']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Sách Trả Phí</a>
           <a [routerLink]="['/author']" class="py-3 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700">Tác Giả Nổi Bật</a>
           <button *ngIf="!isAuthenticated" (click)="login()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center my-5">Đăng Nhập</button>
-        
+
           <div *ngIf="isAuthenticated" class="relative elative flex justify-center">
             <button (click)="toggleMenu()" class="h-10 w-10 rounded-full overflow-hidden flex items-center justify-center">
               <img src="https://i.pinimg.com/736x/b7/91/44/b79144e03dc4996ce319ff59118caf65.jpg" alt="Avatar" class="h-full w-full object-cover">
@@ -119,12 +119,12 @@
           </svg>
         </button>
       </div>
-      
+
       <!-- Input tìm kiếm -->
       <div class="relative">
-        <input 
-          type="text" 
-          placeholder="Tìm kiếm sách..." 
+        <input
+          type="text"
+          placeholder="Tìm kiếm sách..."
           class="w-full py-3 px-4 pr-12 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           (input)="onSearchInput($event)"
           #searchInput
@@ -135,12 +135,12 @@
           </svg>
         </button>
       </div>
-      
+
       <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
       <div *ngIf="searchResults.length > 0" class="mt-6">
         <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">Kết quả tìm kiếm</h3>
         <div class="space-y-4">
-          <div *ngFor="let result of searchResults" 
+          <div *ngFor="let result of searchResults"
                class="flex items-start p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                (click)="selectSearchResult(result)">
             <!-- Preview hình ảnh -->
@@ -153,7 +153,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Lịch sử tìm kiếm -->
       <div *ngIf="searchHistory.length > 0 && !searchResults.length" class="mt-6">
         <div class="flex items-center justify-between">

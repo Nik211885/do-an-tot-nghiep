@@ -1,37 +1,38 @@
 <!-- book-card.component.html -->
 <div class="cursor-pointer group flex flex-col rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl max-w-xs hover:translate-y-[-5px] h-full border border-gray-200 dark:border-gray-700">
   <!-- Book Cover Image with Overlay on Hover -->
-  <div class="relative h-64 sm:h-56 w-full overflow-hidden">
-    <img 
-      [src]="book.avatarUrl || '/assets/images/default-book-cover.jpg'" 
+  <div class="relative h-64 sm:h-72 w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+    <img
+      [src]="book.avatarUrl || '/assets/images/default-book-cover.jpg'"
       [alt]="book.title"
-      class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+      class="w-full h-full object-contain p-2 transition-all duration-500 group-hover:scale-105 drop-shadow-lg"
+      [style.filter]="'brightness(1.05) contrast(1.1) saturate(1.1)'"
     >
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    
+
     <!-- Favorite Heart Button -->
-    <button (click)="toggleFavorite(book.id); $event.stopPropagation()" class="absolute top-3 left-3 p-1.5 bg-white/90 rounded-full backdrop-blur-sm transition-all duration-300 
+    <button (click)="toggleFavorite(book.id); $event.stopPropagation()" class="absolute top-3 left-3 p-1.5 bg-white/90 rounded-full backdrop-blur-sm transition-all duration-300
               shadow-md hover:shadow-lg hover:scale-110 border border-white/20
               hover:bg-white/100 active:scale-95
               opacity-0 group-hover:opacity-100"
               [class.opacity-100]="false">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-            class="h-6 w-6 transition-all duration-300" 
-            [class.text-rose-500]="true" 
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 transition-all duration-300"
+            [class.text-rose-500]="true"
             [class.text-gray-500]="false"
             [class.drop-shadow-lg]="false"
-            fill="currentColor" 
+            fill="currentColor"
             viewBox="0 0 24 24">
-            <path [attr.fill]="false  ? 'currentColor' : 'none'" 
-            stroke="currentColor" 
+            <path [attr.fill]="false  ? 'currentColor' : 'none'"
+            stroke="currentColor"
             stroke-width="1.5"
             d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
     </button>
-    
+
     <!-- Book Policy Badge -->
     <div class="absolute top-3 right-3">
-      <span 
+      <span
         class="text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md"
         [ngClass]="{
           'bg-emerald-500': book.policyReadBook.bookPolicy === BookPolicy.Free,
@@ -46,15 +47,15 @@
       </span>
     </div>
   </div>
-  
+
   <!-- Book Info -->
   <div class="p-5 flex flex-col flex-grow dark:bg-gray-800">
     <!-- Title -->
     <h3 class="font-bold text-lg mb-1.5 text-gray-800 dark:text-gray-100 line-clamp-1">{{ book.title }}</h3>
-    
+
     <!-- Author -->
     <p class="text-gray-600 dark:text-gray-400 text-sm mb-2.5">bởi <span class="font-medium">{{ book.author }}</span></p>
-    
+
     <!-- Rating -->
     <div class="flex items-center mb-3">
       <div class="flex text-amber-400">
@@ -69,12 +70,12 @@
       </div>
       <span class="text-xs text-gray-500 dark:text-gray-400 ml-1.5">{{ book.rating.toFixed(1) }} ({{ book.coutRating }})</span>
     </div>
-    
+
     <!-- Description -->
     <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
       {{ truncateDescription(book.description) }}
     </p>
-    
+
     <!-- Genres & Tags -->
     <div class="mt-auto">
       <!-- Genres -->
@@ -88,7 +89,7 @@
           <span class="ml-1">+{{ book.genres.length - 2 }}</span>
         </span>
       </div>
-      
+
       <!-- Tags -->
       <div *ngIf="book.tagNames?.length" class="flex flex-wrap gap-2">
         <ng-container *ngFor="let tag of book.tagNames.slice(0, 2)">

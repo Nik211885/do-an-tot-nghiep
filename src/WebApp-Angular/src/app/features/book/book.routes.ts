@@ -15,6 +15,14 @@ export const bookRoutes: Routes = [
                 loadComponent: () => import("./components/book-detail/book-detail.component").then(m => m.BookDetailComponent)
             },
             {
+              path: "free-books",
+              loadComponent: ()=> import("./components/free-book/free-book.component").then(m => m.FreeBookComponent)
+            },
+            {
+              path: "paid-books",
+              loadComponent: ()=> import("./components/paid-book/paid-book.component").then(m => m.PaidBookComponent)
+            },
+            {
                 path: 'genere',
                 children: [
                     {

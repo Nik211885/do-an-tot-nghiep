@@ -136,7 +136,7 @@ export class SidebarService {
             id: 'view-moderation-pass',
             label: 'Đã kiểm duyệt',
             permissions: [MenuPermission.VIEW_MODERATION],
-            route: '/moderation/view-moderation-pass',
+            route: '/moderation/repository',
           }
         ]
       }

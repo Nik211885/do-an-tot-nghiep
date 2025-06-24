@@ -24,6 +24,10 @@ public class BookReviewEndpoint : IEndpoints
             .WithTags("BookReview")
             .WithName("CreateBookReview")
             .WithDescription("Creates a new book review.");
+        apis.MapGet("by-ids", BookReviewEndpointService.GetBookReviewByIds)
+            .WithTags("BookReview")
+            .WithName("GetBookReviewByIds")
+            .WithDescription("Get book review by ids.");
         apis.MapPost("comment/create", BookReviewEndpointService.CreateComment)
             .WithTags("Comment")
             .WithName("CreateComment")
@@ -182,6 +186,15 @@ public static class BookReviewEndpointService
             [FromServices] BookReviewServiceWrapper service)
     {
         var result = await service.BookReviewQueries.GetCommentReplyWithPaginationAsync(commentReplyId, page);
+        return TypedResults.Ok(result);
+    }
+    
+    public static async Task<Results<Ok<IEnumerable<BookReviewViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetBookReviewByIds(
+            [FromServices] BookReviewServiceWrapper service,
+            [FromQuery] params Guid[] bookIds)
+    {
+        var result = await service.BookReviewQueries.GetBookReviewByBookIdsAsync(CancellationToken.None, bookIds);
         return TypedResults.Ok(result);
     }
 }

@@ -36,4 +36,20 @@ export class UserProfileService {
     const url = `/user-profile/book/my-favorite/pagination?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     return this.httpClient.get<PaginationFavoriteBookViewModel>(url);
   }
+  deleteSearchHistory(id: string) : Observable<boolean>{
+    const url = "/user-profile/search-history/delete";
+    const body = {
+      searchHistoryIds: [id]
+    }
+    return this.httpClient.delete(url, {
+      body,
+      observe: 'response'
+    }).pipe(map(res=>res.status === 204));
+  }
+  cleanSearchHistory() : Observable<boolean>{
+    const url = "/user-profile/search-history/clean";
+    return this.httpClient.delete(url, {
+      observe: 'response'
+    }).pipe(map(res=>res.status === 204));
+  }
 }

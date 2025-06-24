@@ -11,7 +11,7 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
     : IBookReviewQueries
 {
     private readonly BookReviewDbContext _bookReviewDbContext = bookReviewDbContext;
-    public async Task<IEnumerable<BookReviewViewModel>> GetBookReviewByIdsAsync(CancellationToken cancellationToken = default, params Guid[] ids)
+    public async Task<IEnumerable<BookReviewViewModel>> GetBookReviewByBookIdsAsync(CancellationToken cancellationToken = default, params Guid[] ids)
     {
         var query =
             _bookReviewDbContext.BookReviews

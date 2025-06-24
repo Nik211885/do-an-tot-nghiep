@@ -1,3 +1,5 @@
+import {Pagination} from '../../../shared/components/pagination/pagination.component';
+
 export interface Book{
     id: string;
     title: string;
@@ -47,3 +49,4 @@ export interface Chapter{
 }
 
 
+export type PaginationBook = Pagination<Book>;

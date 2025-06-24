@@ -267,7 +267,7 @@ public static class UserProfileEndpointService
             );
         var ids = favoriteBook.Items.Select(x => x.FavoriteBookId).ToList();
         var review = await service.BookReviewQueries
-            .GetBookReviewByIdsAsync(CancellationToken.None, ids.ToArray());
+            .GetBookReviewByBookIdsAsync(CancellationToken.None, ids.ToArray());
         var book = await service.BookServices
             .ListAsync(new QueryParamRequest(),
                 filter: q => q.Bool(b => b

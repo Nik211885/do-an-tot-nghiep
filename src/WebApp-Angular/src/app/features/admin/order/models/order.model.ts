@@ -1,5 +1,5 @@
 export interface OrderItemViewModel{
-  id: string,
+  bookId: string,
   bookName: string,
   price: number
 }
@@ -20,7 +20,7 @@ export enum OrderStatus {
 }
 
 export interface PaginationOrder{
-  items: OrderItemViewModel[];
+  items: OrderViewModel[];
   pageNumber: number;
   totalPages: number;
   totalCount: number;
