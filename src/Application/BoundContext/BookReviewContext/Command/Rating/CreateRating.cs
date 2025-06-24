@@ -28,15 +28,14 @@ public class CreateRatingCommandHandler(
     public async Task<RatingViewModel> Handle(CreateRatingCommand request, CancellationToken cancellationToken)
     {
         var bookReview = await _validationBookReviewServices.AnyAsync(b=>b.BookId ==  request.BookId, cancellationToken);
-        var bookReviewViewModel = bookReview?.MapToViewModel(); 
-        if (bookReviewViewModel is null)
+        if (bookReview is null)
         {
             _logger.LogInformation("Can't not find book review for book {@BookId} Create new Book review",
                 request.BookId);
-            ThrowHelper.ThrowNotFoundWhenItemIsNull(bookReviewViewModel,"không tìm thấy sách" );
+            ThrowHelper.ThrowNotFoundWhenItemIsNull(bookReview,"không tìm thấy sách" );
         }
         var rating = Core.BoundContext.BookReviewContext.RatingAggregate.Rating.Create(
-            bookReviewId: bookReviewViewModel.BookId,
+            bookReviewId: bookReview.Id,
             reviewerId: _identityProvider.UserIdentity(),
             starValue: request.starValue
         );

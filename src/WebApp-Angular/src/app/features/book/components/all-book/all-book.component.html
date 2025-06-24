@@ -1,0 +1,288 @@
+<div class="min-h-screen bg-gradient-to-tr from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 relative overflow-hidden">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 opacity-5">
+    <div class="absolute top-20 left-20 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+    <div class="absolute top-40 right-20 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+    <div class="absolute -bottom-32 left-40 w-72 h-72 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+  </div>
+
+  <!-- Loading Component -->
+  <div *ngIf="!paginationBook" class="fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="max-w-md w-full mx-4">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/20 dark:border-gray-700/20 text-center">
+        <!-- Main Loading Animation -->
+        <div class="relative mb-8">
+          <!-- Outer spinning ring -->
+          <div class="w-24 h-24 mx-auto relative">
+            <div class="absolute inset-0 rounded-full border-4 border-emerald-200 dark:border-emerald-800"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin"></div>
+            <div class="absolute inset-2 rounded-full border-4 border-transparent border-t-teal-500 animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+
+            <!-- Center icon -->
+            <div class="absolute inset-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Floating dots -->
+          <div class="absolute -top-2 left-1/2 transform -translate-x-1/2">
+            <div class="flex space-x-1">
+              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+              <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading text -->
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          Đang tải thư viện
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+          Chúng tôi đang chuẩn bị những cuốn sách tuyệt vời cho bạn...
+        </p>
+
+        <!-- Progress indicator -->
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full animate-pulse" style="width: 60%;"></div>
+        </div>
+
+        <!-- Loading steps -->
+        <div class="flex justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span>Kết nối</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-teal-500 rounded-full animate-pulse" style="animation-delay: 0.3s;"></div>
+            <span>Tải dữ liệu</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" style="animation-delay: 0.6s;"></div>
+            <span>Hiển thị</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-6 py-12 relative z-10">
+    <!-- Header Section -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl mb-6 shadow-xl transform rotate-12 hover:rotate-0 transition-transform duration-300">
+        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-black mb-6">
+        <span class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          Thư Viện Sách
+        </span>
+        <br>
+        <span class="text-3xl md:text-4xl font-light text-gray-700 dark:text-gray-300">
+          Điện Tử Hiện Đại
+        </span>
+      </h1>
+
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed mb-10">
+        Khám phá tri thức không giới hạn với
+        <span class="font-bold text-emerald-600 dark:text-emerald-400">{{this.paginationBook.totalCount}}</span>
+        cuốn sách được tuyển chọn kỹ lưỡng từ khắp nơi trên thế giới
+      </p>
+
+      <!-- Stats Cards Row -->
+      <div class="flex flex-wrap justify-center gap-6 mb-12">
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-emerald-100 dark:border-gray-700 group">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900 dark:to-emerald-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{this.paginationBook.totalCount}}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Tổng sách</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-teal-100 dark:border-gray-700 group">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-teal-100 to-teal-200 dark:from-teal-900 dark:to-teal-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{this.paginationBook.totalPages}}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Trang</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-cyan-100 dark:border-gray-700 group">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900 dark:to-cyan-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{this.pageSize}}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Sách/trang</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton for Books -->
+    <div *ngIf="!paginationBook" class="mb-16">
+      <div class="flex items-center justify-between mb-10">
+        <div class="flex items-center space-x-4">
+          <div class="w-1 h-10 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full"></div>
+          <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-96 animate-pulse"></div>
+        </div>
+      </div>
+
+      <div class="relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+          <div *ngFor="let item of [1,2,3,4,5,6,7,8,9,10]" class="animate-pulse">
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-2xl h-80"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Books Section -->
+    <div *ngIf="paginationBook && paginationBook.totalCount > 0" class="mb-16">
+      <!-- Section Title -->
+      <div class="flex items-center justify-between mb-10">
+        <div class="flex items-center space-x-4">
+          <div class="w-1 h-10 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full"></div>
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            Toàn bộ sách hiện hành trên hệ thống
+          </h2>
+        </div>
+        <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex items-center space-x-1">
+            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span>Cập nhật liên tục</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Books Grid Container -->
+      <div class="relative">
+        <!-- Decorative Elements -->
+        <div class="absolute -top-6 -left-6 w-24 h-24 bg-gradient-to-br from-emerald-200/30 to-teal-200/30 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 rounded-full blur-2xl"></div>
+
+        <!-- Main Grid -->
+        <div class="relative bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/20">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+            <div *ngFor="let book of paginationBook.items; let i = index"
+                 class="group transform transition-all duration-500 hover:scale-105 hover:-translate-y-2"
+                 [style.animation-delay]="i * 100 + 'ms'">
+              <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+                <app-book-card [book]="book"></app-book-card>
+                <!-- Hover Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="paginationBook && paginationBook.totalCount === 0" class="mb-16">
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl p-16 shadow-2xl border border-white/20 dark:border-gray-700/20">
+          <!-- Animated Icon -->
+          <div class="relative mb-8">
+            <div class="w-32 h-32 bg-gradient-to-br from-emerald-100 to-teal-200 dark:from-emerald-900 dark:to-teal-800 rounded-full flex items-center justify-center mx-auto shadow-lg">
+              <svg class="w-16 h-16 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <!-- Floating Dots -->
+            <div class="absolute top-2 right-2 w-4 h-4 bg-emerald-400 rounded-full animate-bounce"></div>
+            <div class="absolute bottom-2 left-2 w-3 h-3 bg-teal-400 rounded-full animate-bounce delay-150"></div>
+            <div class="absolute top-8 left-8 w-2 h-2 bg-cyan-400 rounded-full animate-bounce delay-300"></div>
+          </div>
+
+          <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Đang chuẩn bị nội dung
+          </h3>
+          <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            Thư viện đang được cập nhật với những cuốn sách tuyệt vời.
+            Hãy quay lại sau để khám phá kho tàng tri thức!
+          </p>
+
+          <!-- Action Button -->
+          <button class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Làm mới trang
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Section -->
+    <div *ngIf="paginationBook && paginationBook.totalPages > 1" class="mt-16">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 dark:border-gray-700/20">
+          <!-- Pagination Header -->
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div class="flex items-center space-x-3 mb-4 md:mb-0">
+              <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                Khám phá thêm
+              </h3>
+            </div>
+            <div class="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Trang {{currentPage}} / {{paginationBook.totalPages}}</span>
+              </div>
+              <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                <span>{{pageSize}} sách mỗi trang</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination Component -->
+          <div class="flex justify-center">
+            <app-pagination
+              (changeCurrentPage)="changeCurrentPage($event)"
+              [pageSize]="pageSize"
+              [currentPage]="currentPage"
+              [pagination]="paginationBook">
+            </app-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <!--    <div class="fixed bottom-8 right-8 z-50">
+          <button class="w-14 h-14 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center group">
+            <svg class="w-6 h-6 transform group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
+            </svg>
+          </button>
+        </div>-->
+  </div>
+</div>

@@ -22,10 +22,11 @@ public interface IGenresRepository: IRepository<Genres>
     /// <summary>
     ///    Get list genres active by ids
     /// </summary>
-    /// <param name="ids"></param>
     /// <param name="cancellationToken"></param>
+    /// <param name="ignore"></param>
+    /// <param name="ids"></param>
     /// <returns></returns>
-    Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids);
+    Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken,bool ignore = false , params Guid[] ids);
     /// <summary>
     /// 
     /// </summary>

@@ -19,6 +19,10 @@ export const bookRoutes: Routes = [
               loadComponent: ()=> import("./components/free-book/free-book.component").then(m => m.FreeBookComponent)
             },
             {
+              path: "books",
+              loadComponent: ()=> import("./components/all-book/all-book.component").then(m => m.AllBookComponent)
+            },
+            {
               path: "paid-books",
               loadComponent: ()=> import("./components/paid-book/paid-book.component").then(m => m.PaidBookComponent)
             },

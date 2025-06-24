@@ -31,10 +31,10 @@ public class CreateFavoriteBookCommandHandler(
         var elasticFoBook = _elasticFactory.GetInstance<BookElasticModel>();
         var bookInElastic = await elasticFoBook.GetAsync(request.BookId);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(bookInElastic, "Không tìm thấy sách");
-        if (!bookInElastic.IsActive)
+        /*if (!bookInElastic.IsActive)
         {
             ThrowHelper.ThrowNotFound("Sách");
-        }
+        }*/
         // check book has active and has exits in elastic services
         var favoriteBookExits = await favoriteBookRepository
             .FindByBookAndUserAsync(_identityProvider.UserIdentity(), request.BookId, cancellationToken);

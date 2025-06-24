@@ -38,7 +38,7 @@ public class AddedGenreForBookDomainEventHandler(
         var genres =
             await _genresRepository
                 .FindActiveByIdsAsync(cancellationToken, 
-                    book.Genres.Select(x=>x.GenreId).ToArray());
+                    false,book.Genres.Select(x=>x.GenreId).ToArray());
         Parallel.ForEach(genres, genre =>
         {
             genre.AddCoutForBook();

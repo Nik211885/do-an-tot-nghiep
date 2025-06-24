@@ -28,13 +28,17 @@ public class GenresRepository(BookAuthoringDbContext bookAuthoringDbContext)
         return genre;
     }
     
-    public async Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, params Guid[] ids)
+    public async Task<IReadOnlyCollection<Genres>> FindActiveByIdsAsync(CancellationToken cancellationToken, bool ignore = false, params Guid[] ids)
     {
-        var genre = await _bookAuthoringDbContext.Genres
-            .AsNoTracking()
-            .Where(GenreFilter.ConstanisId(ids))
+        var genre = _bookAuthoringDbContext.Genres
+            .AsNoTracking();
+        if (!ignore)
+        {
+            genre = genre.IgnoreQueryFilters();
+        }
+        var result = await genre.Where(GenreFilter.ConstanisId(ids))
             .ToListAsync(cancellationToken);
-        return genre.AsReadOnly();
+        return result.AsReadOnly();
     }
 
     public Genres Create(Genres genre)

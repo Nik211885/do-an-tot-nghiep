@@ -21,7 +21,7 @@ public class UpdateBookCommandValidator :  AbstractValidator<UpdateBookCommand>
 
         RuleFor(b => b.Request.Description)
             .MaximumLength(LengthPropForBook.DescriptionMaxLenght)
-            .WithMessage(string.Format(BookValidationMessages.DescriptionMaxLength, LengthPropForBook.DescriptionMaxLenght))
+            .WithMessage(string.Format(BookValidationMessages.DescriptionCanNotNull, LengthPropForBook.DescriptionMaxLenght))
             .When(b => !string.IsNullOrWhiteSpace(b.Request.Description));
 
         RuleFor(b => b.Request.ReaderBookPolicy)

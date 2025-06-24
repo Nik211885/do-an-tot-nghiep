@@ -34,6 +34,7 @@ export class FreeBookComponent implements OnInit {
           if(result) {
             this.paginationBook = result;
             this.publicBookService.paginationBookAggregate(this.paginationBook);
+            console.log(this.paginationBook);
           }
         },
         error: err => {

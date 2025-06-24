@@ -16,7 +16,7 @@ public static class BookValidationMessages
     public const string TitleRequired = "Tiêu đề sách không được để trống.";
     public static readonly string TitleMaxLength = $"Tiêu đề sách không được vượt quá {LengthPropForBook.TitleMaxLenght} ký tự.";
     public static readonly string AvatarUrlMaxLength = $"Đường dẫn ảnh đại diện không được vượt quá {LengthPropForBook.AvatarUrlMaxLenght} ký tự.";
-    public static readonly string DescriptionMaxLength = $"Mô tả sách không được vượt quá {LengthPropForBook.DescriptionMaxLenght} ký tự.";
+    public static readonly string DescriptionCanNotNull = $"Mô tả sách không được để trống";
     public const string ReaderBookPolicyInvalid = "Chính sách đọc sách không hợp lệ.";
     public const string BookReleaseTypeInvalid = "Loại phát hành sách không hợp lệ.";
     public const string TagNameRequired = "Tên tag không được để trống.";

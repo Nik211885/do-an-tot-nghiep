@@ -11,16 +11,16 @@
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
     <!-- Favorite Heart Button -->
-    <button (click)="toggleFavorite(book.id); $event.stopPropagation()" class="absolute top-3 left-3 p-1.5 bg-white/90 rounded-full backdrop-blur-sm transition-all duration-300
+    <button (click)="toggleFavorite($event);" class="absolute top-3 left-3 p-1.5 bg-white/90 rounded-full backdrop-blur-sm transition-all duration-300
               shadow-md hover:shadow-lg hover:scale-110 border border-white/20
               hover:bg-white/100 active:scale-95
               opacity-0 group-hover:opacity-100"
-              [class.opacity-100]="false">
+              [class.opacity-100]="book.isFavorite">
             <svg xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6 transition-all duration-300"
             [class.text-rose-500]="true"
-            [class.text-gray-500]="false"
-            [class.drop-shadow-lg]="false"
+            [class.text-gray-500]="true"
+            [class.drop-shadow-lg]="true"
             fill="currentColor"
             viewBox="0 0 24 24">
             <path [attr.fill]="false  ? 'currentColor' : 'none'"
@@ -68,7 +68,9 @@
           </svg>
         </ng-container>
       </div>
-      <span class="text-xs text-gray-500 dark:text-gray-400 ml-1.5">{{ book.rating.toFixed(1) }} ({{ book.coutRating }})</span>
+      <span class="text-xs text-gray-500 dark:text-gray-400 ml-1.5">
+        {{book.meanRatingStar }}({{ book.coutRating || 0 }})
+      </span>
     </div>
 
     <!-- Description -->

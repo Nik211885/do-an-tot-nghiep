@@ -49,7 +49,7 @@ export class PublicHeaderComponent implements OnInit {
   searchResults: any[] = [];
   searchHistory: string[] = ['Harry Potter', 'Đắc Nhân Tâm', 'Sherlock Holmes'];
   searchQuery: string = '';
-  
+
   @Input() variant: 'public' | 'authenticated' = 'public';
 
   constructor(
@@ -62,16 +62,27 @@ export class PublicHeaderComponent implements OnInit {
     // Thêm event listener để đóng menu khi click vào overlay
     this.renderer.listen('document', 'click', (event: Event) => {
       const target = event.target as HTMLElement;
-      // Kiểm tra nếu click vào overlay (không phải menu hay các phần tử trong header)
-      if (this.isMobileMenuOpen && 
-          !target.closest('.fixed.bottom-0') && 
-          !target.closest('button')) {
-        this.isMobileMenuOpen = false;
+
+      // Chỉ xử lý khi mobile menu đang mở
+      if (this.isMobileMenuOpen) {
+        // Kiểm tra nếu click vào overlay (phần tử có class overlay)
+        const clickedOnOverlay = target.classList.contains('bg-opacity-50');
+
+        // Hoặc click bên ngoài mobile menu container
+        const clickedOutsideMenu = !target.closest('.fixed.bottom-0') &&
+          !target.closest('.lg\\:hidden') && // hamburger button
+          !target.closest('app-header');
+
+        if (clickedOnOverlay || clickedOutsideMenu) {
+          this.isMobileMenuOpen = false;
+          this.renderer.removeClass(document.body, 'overflow-hidden');
+        }
       }
     });
 
     // Thêm event listener cho sự kiện vuốt lên để đóng mobile menu
     this.setupSwipeDetection();
+
     this.authService.initialize().subscribe((intialize)=>{
       if(intialize){
         this.isAuthenticated = this.authService.isAuthenticated();
@@ -86,14 +97,14 @@ export class PublicHeaderComponent implements OnInit {
   setupSwipeDetection(): void {
     let touchStartY: number;
     let touchEndY: number;
-    
+
     this.renderer.listen('document', 'touchstart', (event: TouchEvent) => {
       touchStartY = event.touches[0].clientY;
     });
-    
+
     this.renderer.listen('document', 'touchend', (event: TouchEvent) => {
       touchEndY = event.changedTouches[0].clientY;
-      
+
       // Phát hiện vuốt xuống để đóng menu
       if (this.isMobileMenuOpen && touchEndY - touchStartY > 70) {
         this.isMobileMenuOpen = false;
@@ -103,12 +114,12 @@ export class PublicHeaderComponent implements OnInit {
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    
+
     // Đóng search overlay nếu đang mở
     if (this.isSearchOverlayOpen && this.isMobileMenuOpen) {
       this.isSearchOverlayOpen = false;
     }
-    
+
     // Ngăn chặn cuộn trang khi menu mobile mở
     if (this.isMobileMenuOpen) {
       this.renderer.addClass(document.body, 'overflow-hidden');
@@ -119,12 +130,12 @@ export class PublicHeaderComponent implements OnInit {
 
   toggleSearchOverlay(): void {
     this.isSearchOverlayOpen = !this.isSearchOverlayOpen;
-    
+
     // Đóng mobile menu nếu đang mở
     if (this.isMobileMenuOpen && this.isSearchOverlayOpen) {
       this.isMobileMenuOpen = false;
     }
-    
+
     // Focus vào ô tìm kiếm khi mở overlay
     if (this.isSearchOverlayOpen) {
       setTimeout(() => {
@@ -136,14 +147,14 @@ export class PublicHeaderComponent implements OnInit {
   onSearchInput(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.searchQuery = query;
-    
+
     if (query.length >= 2) {
       // Giả lập kết quả tìm kiếm - trong thực tế bạn sẽ gọi API
       this.searchResults = [
         { id: 1, title: 'Harry Potter và Hòn Đá Phù Thủy', author: 'J.K. Rowling' },
         { id: 2, title: 'Đắc Nhân Tâm', author: 'Dale Carnegie' },
         { id: 3, title: 'Sherlock Holmes: Vụ Án Baskervilles', author: 'Arthur Conan Doyle' }
-      ].filter(book => 
+      ].filter(book =>
         book.title.toLowerCase().includes(query.toLowerCase()) ||
         book.author.toLowerCase().includes(query.toLowerCase())
       );
@@ -158,7 +169,7 @@ export class PublicHeaderComponent implements OnInit {
     if (this.isSearchOverlayOpen) {
       this.isSearchOverlayOpen = false;
     }
-    
+
     if (this.isMobileMenuOpen) {
       this.isMobileMenuOpen = false;
     }
@@ -174,10 +185,10 @@ export class PublicHeaderComponent implements OnInit {
         this.searchHistory.pop();
       }
     }
-    
+
     // Đóng overlay
     this.isSearchOverlayOpen = false;
-    
+
     // Điều hướng đến trang chi tiết sách
     this.router.navigate(['/books', result.id]);
   }
@@ -213,6 +224,12 @@ export class PublicHeaderComponent implements OnInit {
 
     if (!clickedInsideDropdown && !clickedInsideHeader) {
       this.isMenuOpen = false;
+    }
+  }
+  closeMobileMenuOnNavigation(): void {
+    if (this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      this.renderer.removeClass(document.body, 'overflow-hidden');
     }
   }
 }

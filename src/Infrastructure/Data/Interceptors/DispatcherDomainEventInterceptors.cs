@@ -46,13 +46,18 @@ public class DispatcherDomainEventInterceptors(IEventDispatcher eventDispatcher)
         var events = entities
             .SelectMany(e => e.DomainEvents!)
             .ToList();
-        foreach (var entity in entities)
-        {
-            entity.ClearDomainEvents();
-        }
-        if (events.Any())
+        try
         {
             await _eventDispatcher.Dispatch(events.AsReadOnly(), cancellationToken);
+            
+            foreach (var entity in entities)
+            {
+                entity.ClearDomainEvents();
+            }
+        }
+        catch (Exception)
+        {
+            throw; 
         }
     }
 }

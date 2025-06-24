@@ -12,7 +12,9 @@ export class BookService{
     {
       id: '1',
       title: 'The Way of Kings',
+      isFavorite: true,
       rating: 4.8,
+      meanRatingStar: 4.2,
       coutRating: 24356,
       bookReleaseType: BookReleaseType.Complete,
       slug: 'the-way-of-kings-abcd1234',
@@ -34,6 +36,8 @@ export class BookService{
       title: 'Project Hail Mary',
       rating: 4.7,
       isCompeleted: true,
+      meanRatingStar: 4.2,
+      isFavorite: false,
       bookReleaseType: BookReleaseType.Serialized,
       chapters: [{
         id: '1',
@@ -63,6 +67,8 @@ export class BookService{
       id: '3',
       title: 'The Night Circus',
       slug: 'the-night-circus-ijkl9012',
+      meanRatingStar: 4.2,
+      isFavorite: true,
       rating: 4.5,
       isCompeleted: true,
       bookReleaseType: BookReleaseType.Complete,

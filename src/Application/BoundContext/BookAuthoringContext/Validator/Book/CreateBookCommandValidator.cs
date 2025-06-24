@@ -20,9 +20,8 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
             .When(b => !string.IsNullOrWhiteSpace(b.AvatarUrl));
 
         RuleFor(b => b.Description)
-            .MaximumLength(LengthPropForBook.DescriptionMaxLenght)
-            .WithMessage(string.Format(BookValidationMessages.DescriptionMaxLength, LengthPropForBook.DescriptionMaxLenght))
-            .When(b => !string.IsNullOrWhiteSpace(b.Description));
+            .NotNull()
+            .WithMessage(BookValidationMessages.DescriptionCanNotNull);
 
         RuleFor(b => b.ReaderBookPolicy)
             .IsInEnum()

@@ -1,9 +1,10 @@
 // book-card.component.ts
-import { Component, EventEmitter, Host, HostListener, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Host, HostListener, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Book, BookPolicy } from '../../models/book.model';
 import { Router } from '@angular/router';
 import { state } from '@angular/animations';
+import {PublicBookService} from '../../services/public-book.service';
 
 @Component({
   selector: 'app-book-card',
@@ -12,12 +13,17 @@ import { state } from '@angular/animations';
   templateUrl: './book-card.component.html',
   styleUrls: ['./book-card.component.css']
 })
-export class BookCardComponent {
+export class BookCardComponent implements OnInit {
   @Input() book!: Book;
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+              private publicBookService: PublicBookService) {}
+
+  ngOnInit(): void {
+
+    }
   // BookPolicy enum for template access
   BookPolicy = BookPolicy;
-  
+
   // Returns appropriate policy label in Vietnamese
   getPolicyLabel(policy: BookPolicy): string {
     switch(policy) {
@@ -31,12 +37,12 @@ export class BookCardComponent {
         return '';
     }
   }
-  
+
   // Returns stars array for the rating display
   get ratingStars(): number[] {
     return Array(5).fill(0).map((_, i) => i < Math.round(this.book.rating) ? 1 : 0);
   }
-  
+
   // Truncates description to specific length
   truncateDescription(description: string, maxLength: number = 100): string {
     if (description.length <= maxLength) return description;
@@ -50,7 +56,16 @@ export class BookCardComponent {
       state: { book: this.book }
     });
   }
-  toggleFavorite(id: string){
-    console.log("Toggle favorite", id);
+  toggleFavorite(event: Event){
+    event.stopPropagation();
+    this.book.isFavorite = !this.book.isFavorite;
+    if(this.book.isFavorite){
+      this.publicBookService.favoriteBook(this.book.id)
+        .subscribe();
+    }
+    else{
+      this.publicBookService.unFavoriteBook(this.book.id)
+        .subscribe();
+    }
   }
 }

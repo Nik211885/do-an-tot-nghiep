@@ -33,19 +33,18 @@ public class CreateCommentCommandHandler(
     public async Task<CommentViewModel> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
     {
         var bookReview = await _validationBookReviewServices.AnyAsync(b=>b.BookId ==  request.BookId, cancellationToken);
-        var bookReviewViewModel = bookReview?.MapToViewModel(); 
-        if (bookReviewViewModel is null)
+        if (bookReview is null)
         {
             _logger.LogInformation("Can't not find book review for book {@BookId} Create new Book review", request.BookId);
-            ThrowHelper.ThrowNotFoundWhenItemIsNull(bookReviewViewModel,"không tìm thấy sách" );
+            ThrowHelper.ThrowNotFoundWhenItemIsNull(bookReview,"không tìm thấy sách" );
         }
 
         var commentExitsByBookCombieUserRating = await _validationCommentServices.AnyAsync(c =>
-            c.BookReviewId == bookReviewViewModel.Id && c.ReviewerId == _identityProvider.UserIdentity(), cancellationToken);
+            c.BookReviewId == bookReview.Id && c.ReviewerId == _identityProvider.UserIdentity(), cancellationToken);
         ThrowHelper.ThrowBadRequestWhenITemIsNotNull(commentExitsByBookCombieUserRating, "Cảm ơn bạn nhưng bạn đã đánh giá tác phẩm này rồi");
         
         var comment = Core.BoundContext.BookReviewContext.CommentAggregate.Comment.Create(
-            bookReviewId: bookReviewViewModel.Id,
+            bookReviewId: bookReview.Id,
             reviewerId: _identityProvider.UserIdentity(),
             content: request.Content,
             parentCommentId: request.ParentCommentId

@@ -10,7 +10,9 @@ export interface Book{
     avatarUrl: string;
     description: string;
     created?: Date;
+    isFavorite: boolean;
     lastModified?: Date;
+    meanRatingStar: number;
     chapters?: Chapter[];
     slug: string;
     tagNames: string[];
@@ -32,9 +34,9 @@ export interface PolicyReadBook{
 }
 
 export enum BookPolicy{
-    Free = 1,
-    Paid = 2,
-    Subscription = 3,
+    Free = 'Free',
+    Paid = 'Paid',
+    Subscription = 'Subscription',
 }
 export enum BookReleaseType
 {

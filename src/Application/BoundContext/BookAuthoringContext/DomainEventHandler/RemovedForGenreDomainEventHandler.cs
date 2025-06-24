@@ -9,7 +9,8 @@ public class RemovedGenreForBookDomainEventHandler(
     ILogger<AddedGenreForBookDomainEventHandler> logger,
     IBookRepository  bookRepository,
     IGenresRepository  genresRepository)
-    : IEventHandler<RemovedGenreForBookDomainEvent>
+    : IEventHandler<RemovedGenreForBookDomainEvent>,
+        IEventHandler<DeletedBookDomainEvent>
 {
     private readonly ILogger<AddedGenreForBookDomainEventHandler> _logger = logger;
     private readonly IBookRepository _bookRepository = bookRepository;
@@ -22,14 +23,29 @@ public class RemovedGenreForBookDomainEventHandler(
             _logger.LogError("Not find book in event store {domainEvent}", domainEvent);
             return;
         }
+        await RemovedGenreForBookAsync(domainEvent.BookGenres.Select(x=>x.GenreId).ToArray(), cancellationToken);
+    }
 
+    public async Task Handler(DeletedBookDomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        var book = await _bookRepository.FindByIdAsync(domainEvent.Book.Id,cancellationToken);
+        if (book is null)
+        {
+            _logger.LogError("Not find book in event store {domainEvent}", domainEvent);
+            return;
+        }
+
+        await RemovedGenreForBookAsync(domainEvent.Book.Genres.Select(x => x.GenreId).ToArray(), cancellationToken);
+    }
+
+    private async Task RemovedGenreForBookAsync(Guid[] genreId, CancellationToken cancellationToken)
+    {
         var genres = await _genresRepository
-            .FindActiveByIdsAsync(cancellationToken,
-            domainEvent.BookGenres.Select(x => x.GenreId).ToArray());
+            .FindActiveByIdsAsync(cancellationToken,false,genreId);
         Parallel.ForEach(genres, genre =>
         {
             genre.RemoveCoutForBook();
-        });
+        });   
         await _genresRepository.UpdateBulkAsync(genres, cancellationToken);
     }
 }

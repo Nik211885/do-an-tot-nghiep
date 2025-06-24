@@ -11,6 +11,8 @@ import { CommentBookSectionComponent } from "./comment-book-section/comment-book
 import { DialogService } from '../../../../shared/components/dialog/dialog.component.service';
 import { RatingFormComponent } from './rating-form/rating-form.component';
 import { BookRating, RatingService } from '../../services/rating.service';
+import {PublicBookService} from '../../services/public-book.service';
+import {RatingViewModel} from '../../models/rating.model';
 
 @Component({
   selector: 'app-book-detail',
@@ -31,16 +33,18 @@ import { BookRating, RatingService } from '../../services/rating.service';
 export class BookDetailComponent implements OnInit {
   @ViewChild('ratingDialog') ratingDialogTemplate!: TemplateRef<any>;
   @ViewChild('ratingForm') ratingForm!: RatingFormComponent;
+  rating: number = 5;
+  ratingViewModel: RatingViewModel | null = null;
   book!: Book;
   BookPolicy = BookPolicy;
   BookReleaseType = BookReleaseType;
   isDescriptionExpanded = false;
-  isFavorite = false;
   activeTab: 'chapters' | 'comments' = 'chapters';
   constructor(private route: ActivatedRoute,
      private ratingService: RatingService,
      private bookService: BookService,
      private dialogService: DialogService,
+    private publicBookService: PublicBookService,
     private router: Router) {
 
   }
@@ -62,30 +66,38 @@ export class BookDetailComponent implements OnInit {
   get genreNames(): string {
     return (this.book.genres ?? []).map(g => g.name).join(', ');
   }
-  
+
   /**
    * Toggles the favorite state
    */
   toggleFavorite(e: Event): void {
     e.preventDefault();
     e.stopPropagation();
-    this.isFavorite = !this.isFavorite;
+    this.book.isFavorite = !this.book.isFavorite;
+    if(this.book.isFavorite){
+      this.publicBookService.favoriteBook(this.book.id)
+        .subscribe();
+    }
+    else{
+      this.publicBookService.unFavoriteBook(this.book.id)
+        .subscribe();
+    }
   }
-  
+
   /**
    * Toggles the description expanded state
    */
   toggleDescription(): void {
     this.isDescriptionExpanded = !this.isDescriptionExpanded;
   }
-  
+
   /**
    * Sets the active tab
    */
   setActiveTab(tab: 'chapters' | 'comments'): void {
     this.activeTab = tab;
   }
-  
+
   /**
    * Returns the appropriate status label based on book completion and release type
    */
@@ -95,7 +107,7 @@ export class BookDetailComponent implements OnInit {
     }
     return this.book.bookReleaseType === BookReleaseType.Serialized ? 'Đang ra' : 'Sắp ra mắt';
   }
-  
+
   /**
    * Returns the appropriate status color class based on book status
    */
@@ -103,11 +115,11 @@ export class BookDetailComponent implements OnInit {
     if (this.book.isCompeleted) {
       return 'bg-emerald-100 text-emerald-800';
     }
-    return this.book.bookReleaseType === BookReleaseType.Serialized 
-      ? 'bg-blue-100 text-blue-800' 
+    return this.book.bookReleaseType === BookReleaseType.Serialized
+      ? 'bg-blue-100 text-blue-800'
       : 'bg-amber-100 text-amber-800';
   }
-  
+
   /**
    * Returns the appropriate CTA button text based on book policy
    */
@@ -123,7 +135,7 @@ export class BookDetailComponent implements OnInit {
         return 'Đọc Ngay';
     }
   }
-  
+
   /**
    * Returns the appropriate CTA button color based on book policy
    */
@@ -139,7 +151,7 @@ export class BookDetailComponent implements OnInit {
         return 'bg-emerald-600 hover:bg-emerald-700';
     }
   }
-  
+
   /**
    * Returns the policy display text
    */
@@ -155,7 +167,7 @@ export class BookDetailComponent implements OnInit {
         return 'Miễn phí';
     }
   }
-  
+
   /**
    * Returns the appropriate policy text color
    */
@@ -171,7 +183,7 @@ export class BookDetailComponent implements OnInit {
         return 'text-emerald-600';
     }
   }
-  
+
   /**
    * Returns a random percentage for the rating distribution visualization
    */
@@ -179,40 +191,76 @@ export class BookDetailComponent implements OnInit {
     return Math.floor(Math.random() * 100);
   }
 
-  async openRatingDialog() {
-    // Cài đặt dialog options
+  openRatingDialog() {
+    this.publicBookService.getMyRatingForBook(this.book.id).subscribe({
+      next: async result => {
+        if (result) {
+          this.ratingViewModel = result;
+          this.rating = this.ratingViewModel.star
+        }
+        await this.processRating();
+      }
+    });
+  }
+
+  async processRating(){
     const dialogOptions = {
       title: 'Đánh giá sách',
       size: 'md' as const,
+      context: {
+        rating: 5,
+      },
       customContent: this.ratingDialogTemplate,
       confirmButtonText: 'Gửi đánh giá',
       cancelButtonText: 'Hủy bỏ',
       showCancelButton: true
     };
-    
+
     // Mở dialog
     const dialog = await this.dialogService.open(dialogOptions);
-      if (dialog.isSuccess) {
-        const isValid = this.ratingForm.submitRating();
-        
-        if (isValid) {
-          const bookRating: BookRating = {
-            bookId: this.book.id,
-            rating: this.ratingForm.rating,
-          };
-          this.ratingService.submitRating(bookRating).subscribe({
-            next: (response) => {
-              this.showSuccessMessage();
-            },
-            error: (error) => {
-              console.error('Error submitting rating:', error);
-              this.showErrorMessage();
-            }
-          });
-        } else {
+    if (dialog.isSuccess) {
+      const isValid = this.ratingForm.submitRating();
+
+      if (isValid) {
+        if(this.ratingViewModel){
+          // Update
+          this.publicBookService.updateRating(this.ratingViewModel.id, this.ratingForm.rating)
+            .subscribe({
+              next: result => {
+                if(result) {
+                  this.showSuccessMessage();
+                }
+                else{
+                  this.showErrorMessage();
+                }
+              },
+              error: result => {
+                console.log(result);
+                this.showErrorMessage();
+              }
+            })
         }
-      } else {
-        this.ratingForm.resetForm();
+        else{
+          // Add
+          this.publicBookService.createRatingBook(this.book.id, this.ratingForm.rating)
+            .subscribe({
+              next: result => {
+                if(result) {
+                  this.showSuccessMessage();
+                }
+                else{
+                  this.showErrorMessage();
+                }
+              },
+              error: result => {
+                console.log(result);
+                this.showErrorMessage();
+              }
+            })
+        }
+      }
+    } else {
+      this.ratingForm.resetForm();
     }
   }
   showSuccessMessage(): void {
@@ -224,7 +272,7 @@ export class BookDetailComponent implements OnInit {
       confirmButtonText: 'Đóng'
     });
   }
-  
+
   showErrorMessage(): void {
     this.dialogService.open({
       title: 'Lỗi',

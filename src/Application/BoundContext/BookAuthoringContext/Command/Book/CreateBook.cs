@@ -36,7 +36,7 @@ public class CreateBookCommandHandler(IBookRepository bookRepository,
     {
         //
         var genresByIds = await _genresRepository
-            .FindActiveByIdsAsync(cancellationToken, request.GenreIds.ToArray());
+            .FindActiveByIdsAsync(cancellationToken, true,request.GenreIds.ToArray());
         // You have compare with count genres user  request with genres has find in repository
         // It sure user don't miss genres active when user create new book
         if (genresByIds.Count != request.GenreIds.Count)

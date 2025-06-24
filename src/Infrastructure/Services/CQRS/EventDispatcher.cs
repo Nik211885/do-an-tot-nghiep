@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.CQRS;
+﻿using System.Reflection;
+using Application.Interfaces.CQRS;
 using Core.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,41 +12,37 @@ public class EventDispatcher(
 {
     public async Task Dispatch(IReadOnlyCollection<IEvent> events, CancellationToken cancellationToken)
     {
-        var tasks = new List<Task>();
+        using var scope = serviceProvider.CreateScope();
 
         foreach (var @event in events)
         {
             var eventType = @event.GetType();
             var handlerType = typeof(IEventHandler<>).MakeGenericType(eventType);
+            var handlers = scope.ServiceProvider.GetServices(handlerType);
 
-            var handlerInstances = serviceProvider.GetServices(handlerType);
-            foreach (var handler in handlerInstances)
+            foreach (var handler in handlers)
             {
-                tasks.Add(Task.Run(async () =>
+                var handleMethod = handlerType.GetMethod("Handler");
+                if (handleMethod == null) continue;
+
+                if (handler != null)
                 {
-                    try
-                    {
-                        using var scope = serviceProvider.CreateScope();
-                        
-                        var scopedHandler = scope.ServiceProvider.GetRequiredService(handlerType);
-                        var handleMethod = handlerType.GetMethod("Handler");
-
-                        if (handleMethod != null)
-                        {
-                            var result = handleMethod.Invoke(scopedHandler, [@event, cancellationToken]);
-
-                            if (result is Task taskResult)
-                                await taskResult;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Error when handling domain event {EventType}", eventType.Name);
-                    }
-                }, cancellationToken));
+                    await InvokeHandlerAsync(handleMethod, handler, @event, cancellationToken, eventType.Name);
+                }
             }
         }
-
-        await Task.WhenAll(tasks);
+    }
+    private async Task InvokeHandlerAsync(MethodInfo handleMethod, object handler, IEvent @event, CancellationToken cancellationToken, string eventTypeName)
+    {
+        try
+        {
+            var result = handleMethod.Invoke(handler, [@event, cancellationToken]);
+            if (result is Task taskResult)
+                await taskResult;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error when handling domain event {EventType}", eventTypeName);
+        }
     }
 }

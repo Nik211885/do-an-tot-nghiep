@@ -41,7 +41,7 @@ public class UserProfileQueries(UserProfileDbContext userProfileDbContext) : IUs
     {
         var favorite = await _userProfileDbContext
             .FavoriteBooks
-            .Where(x => bookIds.Contains(x.Id)
+            .Where(x => bookIds.Contains(x.FavoriteBookId)
             && x.UserId == userId)
             .ToListAsync(cancellationToken);
         return favorite.ToViewModel().ToList();

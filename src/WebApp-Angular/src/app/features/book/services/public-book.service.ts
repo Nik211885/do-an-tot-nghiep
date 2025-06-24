@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {catchError, map, Observable, of} from 'rxjs';
 import {Book, BookPolicy, Genre, PaginationBook, PolicyReadBook} from '../models/book.model';
 import {BookReviewModel} from '../models/book-review.model';
+import {BookFavoriteViewModel} from '../models/book-favorite.model';
+import {RatingViewModel} from '../models/rating.model';
 
 @Injectable({
   providedIn: "root",
@@ -41,10 +43,30 @@ export class PublicBookService {
     })
     return this.http.get<BookReviewModel[]>(url);
   }
+  getFavoriteBook(ids: string[]) : Observable<BookFavoriteViewModel[]> {
+    const url = "user-profile/book/favorite-in";
+    return this.http.post<BookFavoriteViewModel[]>(url, ids);
+  }
   getBookByPolicy(bookPolicy: BookPolicy, pageNumber: number, pageSize: number)
     : Observable<PaginationBook> {
     const url = `public-books/policy?policy=${bookPolicy}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
     return this.http.get<any>(url).pipe(
+      map(res=> {
+        const items = res.items.map(this.mapToBook);
+        return {
+          items: items,
+          pageNumber: res.pageNumber,
+          pageSize: res.pageSize,
+          totalPages: res.totalPages,
+          totalCount: res.totalCount,
+          hasPreviousPage:res.hasPreviousPage,
+          hasNextPage:res.hasNextPage,
+        } as PaginationBook})
+    )
+  }
+  getAllBookWithPagination(pageNumber: number, pageSize: number): Observable<PaginationBook> {
+    const url = `public-books/all?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    return this.http.get<PaginationBook>(url).pipe(
       map(res=> {
         const items = res.items.map(this.mapToBook);
         return {
@@ -73,6 +95,9 @@ export class PublicBookService {
                     .find(r => r.bookId === item.id);
                   item.rating = bookReview?.ratingStar ?? 0;
                   item.coutRating = bookReview?.ratingCount ?? 0;
+                  item.meanRatingStar = item.coutRating
+                    ? parseFloat((item.rating / item.coutRating).toFixed(1))
+                    : 0;
                 })
             }
           }
@@ -81,8 +106,65 @@ export class PublicBookService {
           console.error(err);
         }
       })
+    this.getFavoriteBook(ids)
+      .subscribe({
+        next: (result) => {
+          if(result){
+            paginationBook.items
+              .forEach(item => {
+                const favoriteBook = result
+                  .find(x=>x.favoriteBookId === item.id);
+                item.isFavorite = favoriteBook ? true : false;
+              })
+          }
+        },
+        error: err => {
+          console.error(err)
+        }
+      })
   }
 
+  favoriteBook(id: string): Observable<boolean> {
+    const url = `user-profile/book/favorite?BookId=${id}`;
+    return this.http.get<any>(url).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
+  unFavoriteBook(id: string): Observable<boolean> {
+    const url = `user-profile/book/un-favorite?BookId=${id}`
+    return this.http.get<any>(url).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
+
+  createRatingBook(id: string, starValue: number) : Observable<boolean>{
+    const  url = `book-review/rating/create`;
+    const body = {
+      bookId: id,
+      starValue
+    }
+    return this.http.post<any>(url, body).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    )
+  }
+  getMyRatingForBook(id: string) : Observable<RatingViewModel>{
+    const url = `book-review/rating/book-and-user?bookId=${id}`;
+    return this.http.get<RatingViewModel>(url);
+  }
+  updateRating(id: string, starValue: number) : Observable<boolean>{
+    const url = `book-review/rating/update`;
+    const body = {
+      id,
+      star: starValue
+    };
+    return this.http.post<any>(url, body).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    )
+  }
   private mapToBook(res: any): Book {
     return {
       authorId: res.authorId,
