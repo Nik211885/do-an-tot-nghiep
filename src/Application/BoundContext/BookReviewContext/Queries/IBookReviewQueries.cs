@@ -20,8 +20,9 @@ public interface IBookReviewQueries : IApplicationQueryServicesExtension
     Task<PaginationItem<RatingViewModel>> GetRatingWithPaginationByUserIdAsync(Guid userId, PaginationRequest page,
         CancellationToken cancellationToken = default);
     Task<RatingViewModel?> GetRatingByUSerIdAndBookIdAsync(Guid userId, Guid bookId, CancellationToken cancellationToken = default);
-
+    Task<IReadOnlyCollection<RatingViewModel>> GetRatingByBookIdsForUserAsync(Guid userId, Guid[] bookIds, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<CommentViewModel>> GetAllCommentByUserIdAndBookIdAsync(Guid userId, Guid bookId,
         CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<BookReviewViewModel>> GetBookReviewHasTopViewBookAsync(int top, CancellationToken cancellationToken = default);
     Task<PaginationItem<CommentViewModel>> GetCommentReplyWithPaginationAsync(Guid commentReplyId, PaginationRequest page, CancellationToken cancellationToken = default);
 }

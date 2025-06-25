@@ -11,6 +11,7 @@ export interface Book{
     description: string;
     created?: Date;
     isFavorite: boolean;
+    myRating?: number;
     lastModified?: Date;
     meanRatingStar: number;
     chapters?: Chapter[];

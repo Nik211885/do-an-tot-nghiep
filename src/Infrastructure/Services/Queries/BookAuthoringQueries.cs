@@ -44,6 +44,18 @@ public class BookAuthoringQueries(BookAuthoringDbContext bookAuthoringDbContext)
         return genre?.MapToViewModel();
     }
 
+    public async Task<GenreViewModel?> GetTopGenresHasManyBookAsync(int top, CancellationToken cancellationToken = default)
+    {
+        var query =
+            _bookAuthoringDbContext.Genres
+                .AsNoTracking()
+                .OrderByDescending(x => x.CountBook)
+                .Skip(top)
+                .Take(1);
+        var result = await query.FirstOrDefaultAsync(cancellationToken);
+        return result?.MapToViewModel();
+    }
+
     public async Task<IReadOnlyCollection<BookViewModel>> FindBookForUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         var books = await _bookAuthoringDbContext.Books

@@ -3,6 +3,7 @@ using Application.BoundContext.BookReviewContext.ViewModel;
 using Application.Models;
 using Infrastructure.Data.DbContext;
 using Infrastructure.Helper;
+using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services.Queries;
@@ -82,7 +83,8 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
                 rating.ReviewerId,
                 rating.Star.Star,
                 rating.DateTimeSubmitted,
-                rating.LastUpdated
+                rating.LastUpdated,
+                bookId
             ), cancellationToken);
         return ratingWithPagination;
     }
@@ -116,7 +118,8 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
                 rating.ReviewerId,
                 rating.Star.Star,
                 rating.DateTimeSubmitted,
-                rating.LastUpdated), cancellationToken);
+                rating.LastUpdated,
+                null),cancellationToken);
         return ratings;
     }
 
@@ -136,6 +139,27 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         return rating?.MapToViewModel();
     }
 
+    public async Task<IReadOnlyCollection<RatingViewModel>> 
+        GetRatingByBookIdsForUserAsync(Guid userId, Guid[] bookIds, CancellationToken cancellationToken = default)
+    {
+        var query = _bookReviewDbContext
+            .BookReviews.AsNoTracking()
+            .Where(x => bookIds.Contains(x.BookId))
+            .Join(_bookReviewDbContext.Ratings,
+                o => o.Id,
+                b => b.BookReviewId,
+                (o,b)=>new RatingViewModel(
+                    b.Id,
+                    b.BookReviewId,
+                    b.ReviewerId,
+                    b.Star.Star,
+                    b.DateTimeSubmitted,
+                    b.LastUpdated,
+                    o.BookId
+                    ));
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<CommentViewModel>> GetAllCommentByUserIdAndBookIdAsync(Guid userId, Guid bookId, CancellationToken cancellationToken = default)
     {
         var bookReviews = await GetBookReviewByBookId(bookId, cancellationToken);
@@ -150,6 +174,16 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
             .OrderByDescending(x=>x.DatetimeCommented)
             .ToListAsync(cancellationToken);
         return comment.MapToViewModel();
+    }
+
+    public async Task<IReadOnlyCollection<BookReviewViewModel>> GetBookReviewHasTopViewBookAsync(int top, CancellationToken cancellationToken= default)
+    {
+        var query =
+            _bookReviewDbContext.BookReviews.AsNoTracking()
+                .OrderByDescending(x => x.ViewCount)
+                .Take(top);
+        var result = await query.ToListAsync(cancellationToken);
+        return result.Select(x => x.MapToViewModel()).ToList();
     }
 
     public async Task<PaginationItem<CommentViewModel>> GetCommentReplyWithPaginationAsync(Guid commentReplyId, PaginationRequest page,

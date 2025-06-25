@@ -6,6 +6,7 @@ import {Book, Genre} from '../../../../book/models/book.model';
 import {AuthService} from '../../../../../core/auth/auth.service';
 import {UserModel} from '../../../../../core/models/user.model';
 import {NgForOf, NgIf} from '@angular/common';
+import {range} from 'rxjs';
 
 @Component({
   selector: 'app-book-favorite',
@@ -62,6 +63,23 @@ export class BookFavoriteComponent  implements OnInit {
       this.publicBookService.getBookInIds(ids).subscribe({
         next: (value)=>{
           this.bookInFavorite = value;
+          const ids = this.paginationFavoriteBook
+            .items.map(x=>x.favoriteBookId);
+          this.publicBookService.getMyRatingForBookIds(ids)
+            .subscribe({
+              next: (value)=>{
+                if(value){
+                  this.bookInFavorite.forEach(x=>{
+                    const item = value.find(y=>y.bookId === x.id);
+                    console.log(x.id);
+                    console.log(value);
+                    if(item){
+                      x.myRating = item.star
+                    }
+                  })
+                }
+              }
+            })
         },
         error: (err)=>{
           console.error(err)
@@ -138,4 +156,5 @@ export class BookFavoriteComponent  implements OnInit {
   }
 
   protected readonly Number = Number;
+  protected readonly range = range;
 }

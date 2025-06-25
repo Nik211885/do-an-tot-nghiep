@@ -1,6 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Book, BookPolicy, BookReleaseType } from '../../models/book.model';
-import { BookService } from '../../services/book.service';
+import { Book, BookPolicy, BookReleaseType } from '../../models/book.model'
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BookGenreTagComponent } from './book-genre-tag/book-genre-tag.component';
@@ -42,7 +41,6 @@ export class BookDetailComponent implements OnInit {
   activeTab: 'chapters' | 'comments' = 'chapters';
   constructor(private route: ActivatedRoute,
      private ratingService: RatingService,
-     private bookService: BookService,
      private dialogService: DialogService,
     private publicBookService: PublicBookService,
     private router: Router) {
@@ -54,13 +52,6 @@ export class BookDetailComponent implements OnInit {
     }
     else{
       const bookSlug = decodeURIComponent(this.route.snapshot.paramMap.get('slug') || '');
-      const bookFinSlug = this.bookService.getBookBySlug(bookSlug);
-      if(bookFinSlug){
-        this.book = bookFinSlug;
-      }
-      else{
-        this.router.navigate(["/error/not-found"])
-      }
     }
   }
   get genreNames(): string {

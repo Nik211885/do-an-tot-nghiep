@@ -123,6 +123,26 @@ export class PublicBookService {
         }
       })
   }
+  getMyBook(currentPage: number, pageSize: number) : Observable<PaginationBook>{
+    const url = `public-books/my-book?PageNumber=${currentPage}&PageSize=${pageSize}`;
+    return this.http.get<any>(url).pipe(
+      map(res=> {
+        const items = res.items.map(this.mapToBook);
+        return {
+          items: items,
+          pageNumber: res.pageNumber,
+          pageSize: res.pageSize,
+          totalPages: res.totalPages,
+          totalCount: res.totalCount,
+          hasPreviousPage:res.hasPreviousPage,
+          hasNextPage:res.hasNextPage,
+        } as PaginationBook})
+    );
+  }
+  getBookReviewHasTopView(top: number) : Observable<BookReviewModel[]>{
+    const url = `book-review/top/view?top=${top}`;
+    return this.http.get<BookReviewModel[]>(url);
+  }
 
   favoriteBook(id: string): Observable<boolean> {
     const url = `user-profile/book/favorite?BookId=${id}`;
@@ -138,7 +158,10 @@ export class PublicBookService {
       catchError(() => of(false))
     );
   }
-
+  getTopGenres(top: number) : Observable<Genre>{
+    const url =`book-authoring/top/genre?top=${top}`;
+    return this.http.get<Genre>(url);
+  }
   createRatingBook(id: string, starValue: number) : Observable<boolean>{
     const  url = `book-review/rating/create`;
     const body = {
@@ -164,6 +187,13 @@ export class PublicBookService {
       map(() => true),
       catchError(() => of(false))
     )
+  }
+  getMyRatingForBookIds(ids: string[]): Observable<RatingViewModel[]>{
+    let url = "/book-review/my-rating/books-in?";
+    ids.forEach(id=>{
+      url += `bookIds=${id}&`
+    });
+    return this.http.get<RatingViewModel[]>(url);
   }
   private mapToBook(res: any): Book {
     return {

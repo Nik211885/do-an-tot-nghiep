@@ -86,6 +86,11 @@ public class BookAuthoringEndpoint : IEndpoints
             .WithTags("Genres")
             .WithName("GetGenreBySlug")
             .WithDescription("Get Genre by Slug");
+        apis.MapGet("top/genre", BookAuthoringService
+            .GetTopGenreHasMaxBookChoose)
+            .WithTags("Genres")
+            .WithName("GetTopGenresHasMaxBookChoose")
+            .WithDescription("Get top genres has max book choose");
             
         
         // endpoint for chapter
@@ -370,6 +375,15 @@ public static class BookAuthoringService
     {
         var result = await service.BookAuthoringQueries.FindBookWithPaginationForUserIdAsync(
             service.IdentityProvider.UserIdentity(), filter, page);
+        return TypedResults.Ok(result);
+    }
+    public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
+        GetTopGenreHasMaxBookChoose(
+            [FromQuery] int top,
+            [FromServices] BookAuthoringServiceWrapper service)
+    {
+        var result = await service.BookAuthoringQueries
+            .GetTopGenresHasManyBookAsync(top);
         return TypedResults.Ok(result);
     }
 }

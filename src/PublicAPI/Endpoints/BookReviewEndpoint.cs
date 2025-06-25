@@ -28,6 +28,10 @@ public class BookReviewEndpoint : IEndpoints
             .WithTags("BookReview")
             .WithName("GetBookReviewByIds")
             .WithDescription("Get book review by ids.");
+        apis.MapGet("top/view", BookReviewEndpointService.GetTopBookView)
+            .WithTags("BookReview")
+            .WithName("GetBookReviewHasTopViewBook")
+            .WithDescription("Get book reviews has top view book");
         apis.MapPost("comment/create", BookReviewEndpointService.CreateComment)
             .WithTags("Comment")
             .WithName("CreateComment")
@@ -72,6 +76,10 @@ public class BookReviewEndpoint : IEndpoints
             .WithTags("Rating")
             .WithName("GetRatingWithBookAndUser")
             .WithDescription("Get rating with book and user");
+        apis.MapGet("my-rating/books-in", BookReviewEndpointService.GetRatingByBookIdsForUserId)
+            .WithTags("Rating")
+            .WithName("GetRatingByBookIdsForUserId")
+            .WithDescription("Get rating by book ids for user");
 
     }
 }
@@ -195,6 +203,24 @@ public static class BookReviewEndpointService
             [FromQuery] params Guid[] bookIds)
     {
         var result = await service.BookReviewQueries.GetBookReviewByBookIdsAsync(CancellationToken.None, bookIds);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<RatingViewModel>>, BadRequest, ProblemHttpResult>> 
+        GetRatingByBookIdsForUserId(
+            [FromQuery] Guid[] bookIds,
+            [FromServices] BookReviewServiceWrapper service)
+    {
+        var result = await service.BookReviewQueries
+            .GetRatingByBookIdsForUserAsync(service.IdentityProvider.UserIdentity(), bookIds);
+        return TypedResults.Ok(result);
+    }
+    public static async Task<Results<Ok<IReadOnlyCollection<BookReviewViewModel>>, BadRequest, ProblemHttpResult>> GetTopBookView(
+            [FromQuery] int top,
+            [FromServices] BookReviewServiceWrapper service)
+    {
+        var result = await service.BookReviewQueries
+            .GetBookReviewHasTopViewBookAsync(top);
         return TypedResults.Ok(result);
     }
 }

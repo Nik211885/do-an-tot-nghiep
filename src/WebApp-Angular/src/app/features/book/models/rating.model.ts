@@ -3,6 +3,7 @@ export interface RatingViewModel{
   bookReviewId: string;
   reviewerId: string;
   star: number;
+  bookId: string;
   dateTimeSubmitted: Date;
   lastUpdated: Date;
 }

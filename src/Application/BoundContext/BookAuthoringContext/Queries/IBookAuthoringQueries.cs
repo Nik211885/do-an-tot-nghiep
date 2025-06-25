@@ -12,6 +12,7 @@ public interface IBookAuthoringQueries : IApplicationQueryServicesExtension
     Task<IReadOnlyCollection<GenreViewModel>> FindGenresActiveAsync(CancellationToken cancellationToken);
     Task<IReadOnlyCollection<Genres>> FindGenresByIdsAsync(CancellationToken cancellationToken = default, params Guid[] ids);
     Task<GenreViewModel?> FindGenreBySlugAsync(string slug, CancellationToken cancellationToken);
+    Task<GenreViewModel?> GetTopGenresHasManyBookAsync(int top, CancellationToken cancellationToken = default);
     // you can use pagination in here but in fact I think  user just have some book
     // because write new book lost has many time iit calculate equals year or
     // Books
