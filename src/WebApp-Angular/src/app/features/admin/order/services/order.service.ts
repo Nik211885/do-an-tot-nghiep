@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {OrderViewModel, PaginationOrder} from '../models/order.model';
+import {OrderStatus, OrderViewModel, PaginationOrder} from '../models/order.model';
 import {Observable} from 'rxjs';
 import {PaymentInfo} from '../../../book/models/order.model';
 
@@ -24,5 +24,13 @@ export class OrderService {
       bookId:bookId,
     }
     return this.httpClient.post<OrderViewModel>(url, body);
+  }
+  getOrderInBookIdsHasSuccess(bookId: string[]) : Observable<OrderViewModel[]>{
+    let url = "/order/my-order/book-in?";
+    bookId.forEach(id=>{
+      url += `bookId=${id}&`;
+    });
+    url += `status=${OrderStatus.Success}`;
+    return this.httpClient.get<OrderViewModel[]>(url);
   }
 }

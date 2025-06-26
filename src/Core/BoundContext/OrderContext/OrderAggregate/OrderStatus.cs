@@ -1,5 +1,7 @@
-﻿namespace Core.BoundContext.OrderContext.OrderAggregate;
+﻿using System.Text.Json.Serialization;
 
+namespace Core.BoundContext.OrderContext.OrderAggregate;
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OrderStatus
 {
     /// <summary>

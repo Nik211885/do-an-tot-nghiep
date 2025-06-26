@@ -1,16 +1,19 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, Observable, of} from 'rxjs';
 import {Book, BookPolicy, Genre, PaginationBook, PolicyReadBook} from '../models/book.model';
 import {BookReviewModel} from '../models/book-review.model';
 import {BookFavoriteViewModel} from '../models/book-favorite.model';
 import {RatingViewModel} from '../models/rating.model';
+import {OrderService} from "../../admin/order/services/order.service";
+import {OrderStatus} from '../../admin/order/models/order.model';
 
 @Injectable({
   providedIn: "root",
 })
 export class PublicBookService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private orderService: OrderService) {}
   getBookInIds(ids: string[]) : Observable<Book[]> {
     const url = "/public-books/by-ids";
     return this.http.post<any>(url, ids).pipe(
@@ -98,6 +101,7 @@ export class PublicBookService {
                   item.meanRatingStar = item.coutRating
                     ? parseFloat((item.rating / item.coutRating).toFixed(1))
                     : 0;
+                  item.coutComment = bookReview?.commentCount ?? 0;
                 })
             }
           }
@@ -120,6 +124,27 @@ export class PublicBookService {
         },
         error: err => {
           console.error(err)
+        }
+      })
+    const idsBookPaid = paginationBook.items
+      .filter(i=> i.policyReadBook.bookPolicy === BookPolicy.Paid)
+      .map(b=>b.id);
+    this.orderService.getOrderInBookIdsHasSuccess(idsBookPaid)
+      .subscribe({
+        next: (result) => {
+          if(result && result.length > 0){
+            paginationBook.items.forEach(item=>{
+              const order = result
+                .find(x=>x.orderItems
+                  .find(y=>y.bookId == item.id));
+              if(order && order.status === OrderStatus.Success){
+                item.isPayemnt = true;
+              }
+            })
+          }
+        },
+        error: err => {
+          console.error(err);
         }
       })
   }

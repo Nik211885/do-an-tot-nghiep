@@ -6,6 +6,7 @@ export interface Book{
     rating: number;
     coutRating: number;
     author: string;
+    isPayemnt?: boolean;
     genres: Genre[];
     avatarUrl: string;
     description: string;
@@ -15,6 +16,7 @@ export interface Book{
     lastModified?: Date;
     meanRatingStar: number;
     chapters?: Chapter[];
+    coutComment: number;
     slug: string;
     tagNames: string[];
     isCompeleted: boolean;

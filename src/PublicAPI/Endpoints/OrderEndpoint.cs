@@ -5,6 +5,7 @@ using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
 using Application.Models.Payment;
+using Core.BoundContext.OrderContext.OrderAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,10 @@ public class OrderEndpoint : IEndpoints
             .WithTags("Order")
             .WithName("CreateOrderWithOrderItem")
             .WithDescription("Create new Order Item");
+        api.MapGet("my-order/book-in", OrderEndpointServices.GetOrderItemInIdsAndStatus)
+            .WithTags("Order")
+            .WithName("GetMyOrderItemInIdsAndStatus")
+            .WithDescription("Get my order item In Ids and Status");
     }
 }
 
@@ -136,6 +141,20 @@ public static class OrderEndpointServices
     {
         var result = await service.FactoryHandler
             .Handler<CreateOrderWithOrderItemCommand, OrderViewModel>(command);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<OrderViewModel>>, BadRequest, NotFound>>
+        GetOrderItemInIdsAndStatus(
+            [FromQuery] Guid[] bookId,
+            [FromQuery] OrderStatus? status,
+            [FromServices] OrderServiceWrapper service
+        )
+    {
+        var result = await service.OrderQueries
+            .GetAllOrderByBookIdsAsync(bookId,
+                service.IdentityProvider.UserIdentity(),
+                status);
         return TypedResults.Ok(result);
     }
 }

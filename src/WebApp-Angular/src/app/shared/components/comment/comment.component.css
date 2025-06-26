@@ -1,0 +1,40 @@
+.comment-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+}
+
+.gradient-border {
+  padding: 1px;
+  border-radius: 12px;
+}
+
+.reply-indicator {
+  position: relative;
+}
+
+.reply-indicator::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 2px;
+}
+
+.avatar-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.content-card {
+  border: 1px solid #e2e8f0;
+}
+
+.reply-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}

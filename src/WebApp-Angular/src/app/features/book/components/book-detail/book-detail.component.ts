@@ -45,6 +45,7 @@ export class BookDetailComponent implements OnInit {
   order: OrderViewModel | null = null;
   paymentInfo: PaymentInfo | null = null;
   isDescriptionExpanded = false;
+  paymentLoadding = false;
   activeTab: 'chapters' | 'comments' = 'chapters';
   constructor(private route: ActivatedRoute,
    private ratingService: RatingService,
@@ -149,6 +150,9 @@ export class BookDetailComponent implements OnInit {
       case BookPolicy.Free:
         return 'Đọc Ngay';
       case BookPolicy.Paid:
+        if(this.book.isPayemnt){
+          return 'Đọc Ngay';
+        }
         return `Mua ${this.book.policyReadBook.price?.toLocaleString('vi-VN')}đ`;
       case BookPolicy.Subscription:
         return 'Đăng Ký Để Đọc';
@@ -310,6 +314,7 @@ export class BookDetailComponent implements OnInit {
     }
     else {
       if(this.book.policyReadBook.bookPolicy === BookPolicy.Paid){
+        this.paymentLoadding = true;
         this.orderService.createOrder(this.book.id)
           .subscribe({
             next: (result)=>{
@@ -323,12 +328,14 @@ export class BookDetailComponent implements OnInit {
                     }
                   },
                   error: result => {
+                    this.paymentLoadding = false;
                     this.toastService.error("Có lỗi xãy ra")
                     console.error(result);
                   }
                 })
             },
             error: result => {
+              this.paymentLoadding = false;
               this.toastService.error("Có lỗi xãy ra")
               console.error(result);
             }

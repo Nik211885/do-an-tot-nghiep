@@ -19,7 +19,7 @@ export class BookCardComponent implements OnInit {
               private publicBookService: PublicBookService) {}
 
   ngOnInit(): void {
-
+    console.log(this.book.isPayemnt);
     }
   // BookPolicy enum for template access
   BookPolicy = BookPolicy;

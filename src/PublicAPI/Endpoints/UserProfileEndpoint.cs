@@ -9,6 +9,7 @@ using Application.Interfaces.CQRS;
 using Application.Interfaces.Elastic;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
+using Application.Models.KeyCloak;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,10 @@ public class UserProfileEndpoint : IEndpoints
             .WithTags("UserProfile")
             .WithName("UpdateUserProfile")
             .WithDescription("Updated user profile");
+        apis.MapGet("by-ids", UserProfileEndpointService.GetUserInfoByIds)
+            .WithTags("UserProfile")
+            .WithName("GetUserProfileByIds")
+            .WithDescription("Get user profile by ids");
         apis.MapPut("reset-password-by-email", UserProfileEndpointService.ResetPasswordByEmail)
             .WithTags("UserProfile")
             .WithName("ResetPasswordByEmail")
@@ -295,6 +300,18 @@ public static class UserProfileEndpointService
         return result ?
             TypedResults.NoContent() :
             TypedResults.BadRequest();
+    }
+    [Authorize]
+    public static async Task<Results<Ok<IReadOnlyCollection<UserInfo>>, BadRequest, ProblemHttpResult>>
+        GetUserInfoByIds(string[] userIds, [FromServices] UserProfileServiceWrapper service)
+    {
+        var tasks = userIds.Distinct().Select(service.IdentityProviderServices.GetUserInfoAsync);
+        var result = await Task.WhenAll(tasks);
+        var nonNullResults = result
+            .Where(user => user is not null)
+            .Cast<UserInfo>()
+            .ToList();
+        return TypedResults.Ok((IReadOnlyCollection<UserInfo>)nonNullResults);
     }
 }
 

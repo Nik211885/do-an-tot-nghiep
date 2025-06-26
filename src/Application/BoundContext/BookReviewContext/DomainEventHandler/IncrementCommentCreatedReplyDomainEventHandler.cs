@@ -15,7 +15,7 @@ public class IncrementCommentCreatedReplyDomainEventHandler(
 
     public async Task Handler(ReplyCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        var parentComment = await _commentRepository.GetCommentByIdAsync(domainEvent.CommentId, cancellationToken);
+        var parentComment = await _commentRepository.GetCommentByIdAsync(domainEvent.ParentCommentId, cancellationToken);
         if (parentComment is null)
         {
             return;

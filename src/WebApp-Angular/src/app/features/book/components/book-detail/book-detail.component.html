@@ -13,6 +13,53 @@
   </div>
 </div>
 
+
+<!-- Overlay với hiệu ứng gradient đẹp -->
+<div *ngIf="paymentLoadding" class="fixed inset-0 bg-gradient-to-br from-black/20 to-black/40 flex items-center justify-center z-50">
+
+  <!-- Modal Container -->
+  <div class="bg-white/95 backdrop-saturate-200 rounded-3xl shadow-2xl p-10 max-w-md w-full mx-4 text-center border border-white/20 glow">
+
+    <!-- Spinner Animation với hiệu ứng gradient -->
+    <div class="relative mb-8 float-animation">
+      <div class="w-24 h-24 mx-auto border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin shadow-lg"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-pulse shadow-lg">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Title với gradient text -->
+    <h3 class="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-3">
+      Đang xử lý thanh toán
+    </h3>
+
+    <!-- Subtitle -->
+    <p class="text-slate-600 mb-8 text-lg">Vui lòng đợi trong giây lát...</p>
+
+    <!-- Progress Dots với hiệu ứng đẹp hơn -->
+    <div class="flex justify-center space-x-3 mb-8">
+      <div class="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full animate-bounce shadow-md"></div>
+      <div class="w-4 h-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full animate-bounce shadow-md" style="animation-delay: 0.1s"></div>
+      <div class="w-4 h-4 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full animate-bounce shadow-md" style="animation-delay: 0.2s"></div>
+    </div>
+
+
+    <!-- Progress Bar -->
+    <div class="mt-6 w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+      <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shimmer"></div>
+    </div>
+
+    <!-- Status Text -->
+    <p class="text-slate-500 text-sm mt-4">
+      Đang kết nối cổng thanh toán...
+    </p>
+  </div>
+</div>
+
 <!-- Main Content -->
 <div *ngIf="book" class="min-h-screen rounded-sm">
   <!-- Hero Section with Backdrop -->
@@ -183,7 +230,7 @@
         </div>
 
         <div *ngIf="activeTab === 'comments'">
-          <app-comment-book-section [bookId]="book.id"></app-comment-book-section>
+          <app-comment-book-section [bookId]="book.id" [commentCount]="book.coutComment"></app-comment-book-section>
         </div>
       </div>
 

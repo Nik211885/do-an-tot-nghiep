@@ -15,10 +15,10 @@ export interface OrderViewModel{
 
 
 export enum OrderStatus {
-  Pending = 0,
-  Success = 1,
-  Failure,
-  Canceled
+  Pending = 'Pending',
+  Success = 'Success',
+  Failure = 'Failure',
+  Canceled = 'Canceled'
 }
 
 export interface PaginationOrder{

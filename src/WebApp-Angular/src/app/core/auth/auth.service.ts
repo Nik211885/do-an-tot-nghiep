@@ -55,7 +55,7 @@ export class AuthService {
     return this.init$;
   }
 
-  public loadUserProfile(): Observable<UserModel> {
+    public loadUserProfile(): Observable<UserModel> {
     return this.keyCloakService.loadProfile().pipe(
       map(profile => {
         const user: UserModel = new UserModel({

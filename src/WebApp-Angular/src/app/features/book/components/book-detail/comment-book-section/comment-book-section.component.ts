@@ -1,9 +1,13 @@
-import { Component, Input, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {CommentBookService} from "../../../services/comment-book.service";
 import { CommentInputComponent } from "../../../../../shared/components/comment-input/comment-input.component";
 import { CommonModule } from '@angular/common';
-import { Comment, CommentComponent, ReplyComment, User } from "../../../../../shared/components/comment/comment.component";
-
+import { Comment, CommentComponent} from "../../../../../shared/components/comment/comment.component";
+import {AuthService} from '../../../../../core/auth/auth.service';
+import {UserModel} from '../../../../../core/models/user.model';
+import {CreateComment} from '../../../models/comment.model';
+import {PaginationComment} from '../../../models/rating.model';
+import {ToastService} from '../../../../../shared/components/toast/toast.service';
 
 @Component({
   standalone: true,
@@ -14,81 +18,126 @@ import { Comment, CommentComponent, ReplyComment, User } from "../../../../../sh
 })
 export class CommentBookSectionComponent implements OnInit {
   @Input() bookId!: string;
-  
-  comments: Comment[] = [];
-  
-  // Example current user - in a real app, this would come from an auth service
-  currentUser: User = {
-    id: 'user-1',
-    name: 'Current User',
-    avatar: ''
-  };
-  constructor(private commentBookService: CommentBookService){}
-  
-  get totalComments(): number {
-    return this.countComments(this.comments);
-  }
-  
+  @Input() commentCount: number = 0;
+  currentPage = 1;
+  pageSize  = 1;
+  isNexPage: boolean = false;
+  comments: Comment[] | undefined = undefined;
+  currentUser: UserModel | undefined = undefined;
+
+  constructor(private commentBookService: CommentBookService,
+              private toastService: ToastService,
+              private authService: AuthService){}
+
   ngOnInit(): void {
-    // Initialize with any comments passed in
-    this.comments = this.commentBookService.getCommentByBookId(this.bookId);
+    this.authService.getCurrentUser()
+      .subscribe({
+        next: params => {
+          if(params){
+            this.currentUser = params;
+          }
+        }
+      });
+    this.loadCommentForBookForBook();
   }
-  
+
   addComment(content: string): void {
-    const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      content,
-      user: this.currentUser,
-      createdAt: new Date(),
-      replies: []
-    };
-    
-    this.comments = [newComment, ...this.comments];
+    this.commentBookService.createComment({
+      bookId: this.bookId,
+      content: content,
+    } as CreateComment)
+      .subscribe({
+        next: (comment) => {
+          if(comment){
+            if(this.currentUser){
+              comment.user  = this.currentUser;
+            }
+            this.comments = [comment, ...(this.comments || [])];
+            this.commentCount +=1;
+          }
+          else{
+            this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          }
+        },
+        error: (error) => {
+          this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          console.error(error);
+        }
+      })
   }
-  
-  addReply(data: {parentId: string, content: string}): void {
-    const { parentId, content } = data;
-    
-    const newReply: Comment = {
-      id: `comment-${Date.now()}`,
-      content,
-      user: this.currentUser,
-      createdAt: new Date(),
-      replies: []
-    };
-    
-    this.comments = this.addReplyToComment(this.comments, parentId, newReply);
+
+  addReply(data: {parentComment: Comment, content: string}): void {
+    this.commentBookService.createComment({
+      bookId: this.bookId,
+      content: data.content,
+      parentCommentId: data.parentComment.id,
+    } as CreateComment)
+      .subscribe({
+        next: (comment) => {
+          if(comment){
+            if(this.currentUser){
+              comment.user = this.currentUser;
+            }
+            data.parentComment.replyCount +=1;
+            this.commentCount +=1;
+            data.parentComment.comments =[comment, ...(data.parentComment.comments || [])];
+          }
+          else{
+            this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          }
+        },
+        error: (error) => {
+          this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          console.error(error);
+        }
+      })
   }
-  
-  private addReplyToComment(comments: Comment[], parentId: string, newReply: Comment): Comment[] {
-    return comments.map(comment => {
-      if (comment.id === parentId) {
-        return {
-          ...comment,
-          replies: [...comment.replies, newReply]
-        };
-      } else if (comment.replies.length > 0) {
-        return {
-          ...comment,
-          replies: this.addReplyToComment(comment.replies, parentId, newReply)
-        };
+  loadCommentForBookForBook(){
+    this.commentBookService.getCommentForBookWithPagination(this.bookId, this.currentPage, this.pageSize)
+      .subscribe({
+        next: params => {
+          if(params){
+            this.commentBookService.aggregateCommentWithUser(params)
+            this.comments = [ ...(this.comments || []), ...params.items];
+            this.currentPage +=1;
+            this.isNexPage = params.hasNextPage;
+          }
+          else{
+            this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          }
+        },
+        error: (error) => {
+          this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+          console.error(error);
+        }
+      })
+  }
+  loadCommentReply(data: {
+    parentComment: Comment;
+    currentPage: number;
+    pageSize: number;
+    hasNextPage: {hasNextPage: boolean};
+  })
+  {
+    console.log(data);
+    this.commentBookService.getCommentReplyWithPagination(data.parentComment.id,
+        data.currentPage, data.pageSize
+      ).subscribe({
+      next: (comment) => {
+        if(comment){
+          this.commentBookService.aggregateCommentWithUser(comment)
+          data.parentComment.comments = [ ...(data.parentComment.comments || []), ...comment.items];
+          data.hasNextPage.hasNextPage = comment.hasNextPage;
+        }
+        else{
+          this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+        }
+      },
+      error: (error) => {
+        this.toastService.error("Có lỗi trong quá trình viết bình luận vui lòng thử lại sau");
+        console.error(error);
       }
-      return comment;
-    });
+    })
   }
-  
-  private countComments(comments: Comment[]): number {
-    let count = comments.length;
-    
-    for (const comment of comments) {
-      if (comment.replies && comment.replies.length > 0) {
-        count += this.countComments(comment.replies);
-      }
-    }
-    
-    return count;
-  }
-  
-  // Generate demo comments for display purposes
 
 }

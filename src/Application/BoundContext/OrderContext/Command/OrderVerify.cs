@@ -8,7 +8,7 @@
 
     namespace Application.BoundContext.OrderContext.Command;
 
-    public record OrderVerifyCommand(VerifyPaymentRequest verifyPaymentRequest)
+    public record OrderVerifyCommand(VerifyPaymentRequest VerifyPaymentRequest)
         : IOrderCommand<(string, OrderViewModel)>;
 
     public class OrderVerifyCommandHandler(
@@ -22,13 +22,13 @@
         private readonly IPayment _payment = payment;
         public async Task<(string,OrderViewModel)> Handle(OrderVerifyCommand request, CancellationToken cancellationToken)
         {
-            if (request.verifyPaymentRequest.OrderId is null)
+            if (request.VerifyPaymentRequest.OrderId is null)
             {
                 ThrowHelper.ThrowIfBadRequest("Khong tim thay don dat");
             }
-            var order = await _orderRepository.GetOrderByCodeAsync(request.verifyPaymentRequest.OrderId!, cancellationToken);
+            var order = await _orderRepository.GetOrderByCodeAsync(request.VerifyPaymentRequest.OrderId!, cancellationToken);
             ThrowHelper.ThrowNotFoundWhenItemIsNull(order, "Don dat");
-            var verifyPayment = _payment.VerifyPaymentResponse(request.verifyPaymentRequest);
+            var verifyPayment = _payment.VerifyPaymentResponse(request.VerifyPaymentRequest);
             if (verifyPayment)
             {
                 order.OrderSuccess();
@@ -39,6 +39,6 @@
             }
             _orderRepository.Update(order);
             await _orderRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
-            return (request.verifyPaymentRequest.ExtraData!,order.ToViewModel());
+            return (request.VerifyPaymentRequest.ExtraData!,order.ToViewModel());
         }
     }

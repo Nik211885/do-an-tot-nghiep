@@ -42,7 +42,7 @@ public class CreateOrderWithOrderItemCommandHandler(IOrderRepository orderReposi
         {
             ThrowHelper.ThrowIfBadRequest("Sách này không phải trả phí");
         }
-        var orderExits = await _orderQueries.GetOrderHasInBookIdAsync(request.BookId, cancellationToken);
+        var orderExits = await _orderQueries.GetOrderHasInBookIdAsync(_identityProvider.UserIdentity(), request.BookId, cancellationToken);
         if (orderExits is not null)
         {
             return orderExits;

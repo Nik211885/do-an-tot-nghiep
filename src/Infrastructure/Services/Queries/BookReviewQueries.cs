@@ -51,7 +51,8 @@ public class BookReviewQueries(BookReviewDbContext bookReviewDbContext)
         }
         var commentWithPagination = await _bookReviewDbContext.Comments
             .AsNoTracking()
-            .Where(x=>x.BookReviewId == bookReviews.Id)
+            .Where(x=>x.BookReviewId == bookReviews.Id 
+                      && x.ParentCommentId == null)
             .OrderByDescending(x=>x.DatetimeCommented)
             .CreatePaginationAsync(page, comment => new CommentViewModel(
                 comment.Id,
