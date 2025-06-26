@@ -3,6 +3,7 @@ using Application;
 using Application.Exceptions;
 using Elastic.Clients.Elasticsearch;
 using Infrastructure;
+using Infrastructure.Options;
 using Infrastructure.Services.Elastic;
 using PublicAPI.Services;
 using PublicAPI.Services.Endpoint;
@@ -20,11 +21,20 @@ builder.Services.AddServiceWrapper();
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(), builder.Configuration);
 builder.Services.AddConfigurationSerilog(Assembly.GetExecutingAssembly(),builder.Configuration);
 builder.Host.UseSerilog();
+
+const string corsName = "AllowClientsApp";
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularApp",
+    var clientAppSection = builder.Configuration.GetSection("ClientConfig").Get<ClientAppOptions>();
+    var allowedOrigins = clientAppSection?.Clients
+        .Select(x=>x.Address)
+        .Where(x=>!string.IsNullOrWhiteSpace(x))
+        .Distinct()
+        .ToArray();
+    options.AddPolicy(corsName,
         policy => policy
-            .WithOrigins(builder.Configuration["FontEnd:Address"]?? string.Empty) 
+            .WithOrigins(allowedOrigins ?? []) 
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()); 
@@ -50,7 +60,7 @@ app.UseMiddleware<ExceptionMiddlewareHandling>();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAngularApp");
+app.UseCors(corsName);
 
 app.UseAuthentication();
 

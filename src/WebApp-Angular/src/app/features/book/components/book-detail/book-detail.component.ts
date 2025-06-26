@@ -1,17 +1,22 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Book, BookPolicy, BookReleaseType } from '../../models/book.model'
-import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { BookGenreTagComponent } from './book-genre-tag/book-genre-tag.component';
-import { BookChapterListComponent } from './book-chapter-list/book-chapter-list.component';
-import { BookPolicyBadgeComponent } from './book-policy-badge/book-policy-badge.component';
-import { StarRatingComponent } from './star-rating/star-rating.component';
-import { CommentBookSectionComponent } from "./comment-book-section/comment-book-section.component";
-import { DialogService } from '../../../../shared/components/dialog/dialog.component.service';
-import { RatingFormComponent } from './rating-form/rating-form.component';
-import { BookRating, RatingService } from '../../services/rating.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Book, BookPolicy, BookReleaseType, PaginationBook} from '../../models/book.model'
+import {ActivatedRoute, Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {BookGenreTagComponent} from './book-genre-tag/book-genre-tag.component';
+import {BookChapterListComponent} from './book-chapter-list/book-chapter-list.component';
+import {BookPolicyBadgeComponent} from './book-policy-badge/book-policy-badge.component';
+import {StarRatingComponent} from './star-rating/star-rating.component';
+import {CommentBookSectionComponent} from "./comment-book-section/comment-book-section.component";
+import {DialogService} from '../../../../shared/components/dialog/dialog.component.service';
+import {RatingFormComponent} from './rating-form/rating-form.component';
+import {RatingService} from '../../services/rating.service';
 import {PublicBookService} from '../../services/public-book.service';
 import {RatingViewModel} from '../../models/rating.model';
+import {ToastService} from '../../../../shared/components/toast/toast.service';
+import {OrderService} from '../../../admin/order/services/order.service';
+import {OrderStatus, OrderViewModel} from '../../../admin/order/models/order.model';
+import {PaymentInfo} from '../../models/order.model';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-book-detail',
@@ -37,11 +42,15 @@ export class BookDetailComponent implements OnInit {
   book!: Book;
   BookPolicy = BookPolicy;
   BookReleaseType = BookReleaseType;
+  order: OrderViewModel | null = null;
+  paymentInfo: PaymentInfo | null = null;
   isDescriptionExpanded = false;
   activeTab: 'chapters' | 'comments' = 'chapters';
   constructor(private route: ActivatedRoute,
-     private ratingService: RatingService,
-     private dialogService: DialogService,
+   private ratingService: RatingService,
+   private toastService: ToastService,
+   private dialogService: DialogService,
+    private orderService: OrderService,
     private publicBookService: PublicBookService,
     private router: Router) {
 
@@ -52,7 +61,28 @@ export class BookDetailComponent implements OnInit {
     }
     else{
       const bookSlug = decodeURIComponent(this.route.snapshot.paramMap.get('slug') || '');
+      this.loadBookBySlug(bookSlug);
     }
+  }
+  loadBookBySlug(slug: string) {
+    this.publicBookService.getPublicBookBySlug(slug)
+      .subscribe({
+        next: data => {
+          if(data){
+            const pagination = {
+              items: [data]
+            } as PaginationBook;
+            this.publicBookService.paginationBookAggregate(pagination);
+            this.book = pagination.items[0];
+          }
+          else{
+            this.router.navigate(["error/not-found"])
+          }
+        },
+        error : error => {
+          this.toastService.error("Có lỗi xảy ra vui lòng thực hiện lại");
+        }
+      })
   }
   get genreNames(): string {
     return (this.book.genres ?? []).map(g => g.name).join(', ');
@@ -272,5 +302,38 @@ export class BookDetailComponent implements OnInit {
       showCancelButton: false,
       confirmButtonText: 'Đóng'
     });
+  }
+
+  actionForBook() {
+    if(this.book.policyReadBook.bookPolicy === BookPolicy.Free){
+
+    }
+    else {
+      if(this.book.policyReadBook.bookPolicy === BookPolicy.Paid){
+        this.orderService.createOrder(this.book.id)
+          .subscribe({
+            next: (result)=>{
+              this.order = result;
+              this.orderService.paymentForOrder(this.order.id, `${environment.publicUrl}/books/${this.book.slug}`)
+                .subscribe({
+                  next: (result)=>{
+                    if(result){
+                      this.paymentInfo = result;
+                      window.location.href = this.paymentInfo.paymentUrl
+                    }
+                  },
+                  error: result => {
+                    this.toastService.error("Có lỗi xãy ra")
+                    console.error(result);
+                  }
+                })
+            },
+            error: result => {
+              this.toastService.error("Có lỗi xãy ra")
+              console.error(result);
+            }
+          })
+      }
+    }
   }
 }

@@ -9,15 +9,17 @@ public class PaymentRequest
     public string OrderInfo { get; }
     public PaymentMethod PaymentMethod { get; }
     public string Lang { get; }
+    public string ExtraData { get; }
 
     public PaymentRequest(decimal amount, string orderId, string orderInfo, 
-        PaymentMethod paymentMethod, string? lang)
+        PaymentMethod paymentMethod, string? lang, string extraData)
     {
         Amount = amount;
         OrderId = orderId;
         OrderInfo = orderInfo;
         PaymentMethod = paymentMethod;
         Lang = lang ?? "vi";
+        ExtraData = extraData;
     }
 }
 [JsonConverter(typeof(JsonStringEnumConverter))]

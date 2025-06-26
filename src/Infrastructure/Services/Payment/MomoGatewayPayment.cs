@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Application.Interfaces.Payment;
@@ -30,11 +29,10 @@ public class MomoGatewayPayment(
             var requestId = DateTime.UtcNow.Ticks.ToString();
             var orderId = paymentRequest.OrderId;
             var orderInfo = paymentRequest.OrderInfo;
-            var amount = paymentRequest.Amount.ToString(CultureInfo.InvariantCulture);
-            var ipnUrl = _momoConfigOptions.IpnUrl;
-            var redirectUrl = _momoConfigOptions.ReturnUrl;
-            string extraData = String.Empty;
-            string lang = paymentRequest.Lang;
+            // Fix 1: Viet nam use for 00000 don't use  decimal like 6.6999$ ;)))
+            var amount = ((long)paymentRequest.Amount).ToString();
+            string extraData = paymentRequest.ExtraData;
+            
             string requestType = paymentRequest.PaymentMethod switch
             {
                 PaymentMethod.Wallet => "captureWallet",
@@ -43,30 +41,41 @@ public class MomoGatewayPayment(
                 PaymentMethod.Qr => "captureWallet",
                 _ => throw new BadRequestException($"Can't not support payment method {paymentRequest.PaymentMethod}")
             };
-            // It must correct order for param should momo required
+            
             var rawHash =
-                $"accessKey={_momoConfigOptions.AccessKey}&amount={amount}&extraData={extraData}&ipnUrl={ipnUrl}&orderId={orderId}&orderInfo={orderInfo}&partnerCode={_momoConfigOptions.PartnerCode}&redirectUrl={redirectUrl}&requestId={requestId}&requestType={requestType}";
+                $"accessKey={_momoConfigOptions.AccessKey}" +
+                $"&amount={amount}" +
+                $"&extraData={extraData}" +
+                $"&ipnUrl={_momoConfigOptions.IpnUrl}" +
+                $"&orderId={orderId}" +
+                $"&orderInfo={orderInfo}" +
+                $"&partnerCode={_momoConfigOptions.PartnerCode}" +
+                $"&redirectUrl={_momoConfigOptions.ReturnUrl}" +  
+                $"&requestId={requestId}" +
+                $"&requestType={requestType}";
+
             _logger.LogInformation("Raw hash string: {RawHash}", rawHash);
             var signature = ComputeHmacSha256(rawHash, _momoConfigOptions.SecretKey);
             _logger.LogInformation("Generated signature: {Signature}", signature);
+
             var requestBody = new
             {
-                partnerCode = _momoConfigOptions.PartnerCode,   
-                requestId,
-                amount,
-                orderId,
-                orderInfo,
-                redirectUrl,
-                ipnUrl,
-                lang,
-                requestType,
-                extraData,
-                signature
+                accessKey = _momoConfigOptions.AccessKey,
+                partnerCode = _momoConfigOptions.PartnerCode,
+                requestType = requestType,
+                redirectUrl = _momoConfigOptions.ReturnUrl, 
+                ipnUrl = _momoConfigOptions.IpnUrl,
+                orderId = orderId,
+                amount = amount,
+                orderInfo = orderInfo,
+                requestId = requestId,
+                extraData = extraData,
+                signature = signature
             };
+
             _logger.LogInformation("Request body: {RequestBody}", JsonSerializer.Serialize(requestBody));
-            var response = await _client.PostAsync(
-                _momoConfigOptions.PaymentUrl,
-                requestBody.GetStringContent(), cancellationToken);
+
+            var response = await _client.PostAsync(_momoConfigOptions.PaymentUrl, requestBody.GetStringContent(), cancellationToken);
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
             _logger.LogInformation("MoMo response: {Response}", responseContent);
 
@@ -80,14 +89,14 @@ public class MomoGatewayPayment(
                     success: true,
                     paymentUrl: root.GetProperty("payUrl").GetString(),
                     qrCodeUrl: root.TryGetProperty("qrCodeUrl", out var qr) ? qr.GetString() : null,
-                    deeplink:  root.TryGetProperty("deeplink", out var dl) ? dl.GetString() : null,
-                    applink:   root.TryGetProperty("applink", out var al) ? al.GetString() : null,null
+                    deeplink: root.TryGetProperty("deeplink", out var dl) ? dl.GetString() : null,
+                    applink: root.TryGetProperty("applink", out var al) ? al.GetString() : null,
+                    message: null
                 );
             }
 
-
             throw new Exception(
-                $"MoMo payment creation failed: {root.GetProperty("message")}. Check raw signature before signed. Raw data before hash: {rawHash}");
+                $"MoMo payment creation failed: {root.GetProperty("message")}. ResultCode: {root.GetProperty("resultCode")}");
         }
         catch (Exception ex)
         {
@@ -100,11 +109,25 @@ public class MomoGatewayPayment(
     {
         try
         {
-            var rawHash = $"accessKey={_momoConfigOptions.AccessKey}&amount={verifyPaymentRequest.Amount}&extraData={verifyPaymentRequest.ExtraData}&ipnUrl={_momoConfigOptions.IpnUrl}&orderId={verifyPaymentRequest.OrderId}&orderInfo={verifyPaymentRequest.OrderInfo}&partnerCode={verifyPaymentRequest.PartnerCode}&redirectUrl={_momoConfigOptions.ReturnUrl}&requestId={verifyPaymentRequest.RequestId}&requestType={verifyPaymentRequest.RequestType}";
+            var rawHash = $"accessKey={_momoConfigOptions.AccessKey}" +
+                          $"&amount={verifyPaymentRequest.Amount}" +
+                          $"&extraData={verifyPaymentRequest.ExtraData}" +
+                          $"&message={verifyPaymentRequest.Message}" +
+                          $"&orderId={verifyPaymentRequest.OrderId}" +
+                          $"&orderInfo={verifyPaymentRequest.OrderInfo}" +
+                          $"&orderType={verifyPaymentRequest.OrderType}" +
+                          $"&partnerCode={verifyPaymentRequest.PartnerCode}" +
+                          $"&payType={verifyPaymentRequest.PayType}" +
+                          $"&requestId={verifyPaymentRequest.RequestId}" +
+                          $"&responseTime={verifyPaymentRequest.ResponseTime}" +
+                          $"&resultCode={verifyPaymentRequest.ResultCode}" +
+                          $"&transId={verifyPaymentRequest.TransId}";
+            
             _logger.LogInformation("Raw hash string for verification: {RawHash}", rawHash);
             var expectedSignature = ComputeHmacSha256(rawHash, _momoConfigOptions.SecretKey);
             _logger.LogInformation("Expected signature: {ExpectedSignature}", expectedSignature);
             _logger.LogInformation("Received signature: {ReceivedSignature}", verifyPaymentRequest.Signature);
+            
             if (verifyPaymentRequest.ResultCode == 0)
             {
                 var isSignatureValid = string.Equals(verifyPaymentRequest.Signature, expectedSignature, StringComparison.OrdinalIgnoreCase);
@@ -128,7 +151,7 @@ public class MomoGatewayPayment(
         var keyBytes = Encoding.UTF8.GetBytes(secretKey);
         var messageBytes = Encoding.UTF8.GetBytes(message);
         using var hmac = new HMACSHA256(keyBytes);
-        var hashBytes = hmac.ComputeHash(messageBytes); 
+        var hashBytes = hmac.ComputeHash(messageBytes);
         return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
     }
 }

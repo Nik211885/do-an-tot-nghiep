@@ -12,5 +12,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(x => x.Status)
             .HasConversion<string>()
             .HasMaxLength(50);
+        builder.Property(x => x.OrderCode)
+            .HasMaxLength(50);
     }
 }

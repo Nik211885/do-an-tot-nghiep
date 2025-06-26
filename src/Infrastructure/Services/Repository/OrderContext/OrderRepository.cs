@@ -24,6 +24,15 @@ public class OrderRepository(OrderDbContext orderDbContext)
         _orderDbContext.Remove(order); 
     }
 
+    public async Task<Order?> GetOrderByCodeAsync(string code, CancellationToken cancellationToken)
+    {
+        var query = _orderDbContext
+            .Orders.AsNoTracking()
+            .Include(x=>x.OrderItems)
+            .Where(x=>x.OrderCode == code);
+        return await query.FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var order = await _orderDbContext.Orders.

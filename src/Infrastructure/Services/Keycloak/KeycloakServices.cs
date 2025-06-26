@@ -11,13 +11,11 @@ namespace Infrastructure.Services.Keycloak;
 
 public class KeycloakServices(IOptions<KeycloakOptions> keyCloakConfiguration,
     IHttpClientFactory clientFactory,
-    IOptions<FontEndOptions> FontEndOptions,
     ILogger<KeycloakServices> logger) : IIdentityProviderServices
 {
     private readonly KeycloakOptions _keyCloakOptions = keyCloakConfiguration.Value;
     private readonly IHttpClientFactory _clientFactory = clientFactory;
     private readonly ILogger<KeycloakServices> _logger = logger;
-    private readonly FontEndOptions _fontEndOptions = FontEndOptions.Value;
     public async Task<TokenResult> GetTokenAsync()
     {
         var request = new Dictionary<string, string>()

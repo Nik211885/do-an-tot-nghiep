@@ -50,6 +50,7 @@ internal static class ThrowHelper
             throw new BadRequestException(message);
         }
     }
+    [DoesNotReturn]
     public static void ThrowIfBadRequest(string message)
     {
         throw new BadRequestException(message);

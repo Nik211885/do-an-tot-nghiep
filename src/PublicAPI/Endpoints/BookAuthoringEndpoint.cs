@@ -386,6 +386,7 @@ public static class BookAuthoringService
             .GetTopGenresHasManyBookAsync(top);
         return TypedResults.Ok(result);
     }
+    
 }
 
 public class BookAuthoringServiceWrapper(IFactoryHandler factoryHandler,

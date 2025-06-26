@@ -1,10 +1,12 @@
 export interface OrderItemViewModel{
+  id: string;
   bookId: string,
   bookName: string,
   price: number
 }
 
 export interface OrderViewModel{
+  id: string;
   orderDate: Date,
   buyerId: string,
   status: OrderStatus,

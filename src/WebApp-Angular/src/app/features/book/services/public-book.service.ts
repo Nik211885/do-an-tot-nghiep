@@ -143,7 +143,12 @@ export class PublicBookService {
     const url = `book-review/top/view?top=${top}`;
     return this.http.get<BookReviewModel[]>(url);
   }
-
+  getPublicBookBySlug(slug: string) : Observable<Book>{
+    const url =  `public-books/slug?slug=${encodeURIComponent(slug)}`;
+    return this.http.get<Book>(url).pipe(
+      map(this.mapToBook)
+    )
+  }
   favoriteBook(id: string): Observable<boolean> {
     const url = `user-profile/book/favorite?BookId=${id}`;
     return this.http.get<any>(url).pipe(

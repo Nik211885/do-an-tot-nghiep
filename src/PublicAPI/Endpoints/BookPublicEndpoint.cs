@@ -26,6 +26,10 @@
                 .WithTags("PublicBooks")
                 .WithName("GetPublicBookByGenre")
                 .WithDescription("Get public book by genre.");
+            apis.MapGet("slug", BookPublicEndpointServices.GetBookBySlug)
+                .WithTags("PublicBooks")
+                .WithName("PublicBooksGetBookBySlug")
+                .WithDescription("Public books get public book by Slug.");
             apis.MapGet("policy", BookPublicEndpointServices.GetWithPaginationBookByPolicy)
                 .WithTags("PublicBooks")
                 .WithDescription("Get public book by policy.");
@@ -316,6 +320,20 @@ public static class BookPublicEndpointServices
                     )
                     )));
         return TypedResults.Ok(result.Documents);
+    }
+    public static async Task<Results<Ok<BookElasticModel>, ProblemHttpResult, NotFound>>
+        GetBookBySlug(
+            [FromQuery] string slug,
+            [FromServices] BookPublicEndpointServiceWrapper service)
+    {
+        var result = await service.BookElasticServices
+            .ListAsync(new QueryParamRequest(), q => q
+                .Bool(b => b
+                    .Must(BookActive,
+                        m=>m.Term(t=>
+                            t.Field("slug.keyword").Value(slug))))
+            );
+        return TypedResults.Ok(result.Documents.FirstOrDefault());
     }
 }
 

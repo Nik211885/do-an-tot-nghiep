@@ -32,10 +32,13 @@ public class CreateOrderItemCommandHandler(
         var bookActive = await _bookElasticServices
             .GetAsync(request.BookId);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(bookActive, "Sach");
-        if (!bookActive.IsActive)
+        /*if (!bookActive.IsActive)
         {
             ThrowHelper.ThrowIfBadRequest(OrderValidationMessage.BookDontHasPaid);
-        }
+        }*/
+        // In fact need check book has censor for system 
+        // If has payment for order 
+        // notification for order has buyer
         var book = await _bookAuthoringQueries
             .FindBookByIdAsync(request.BookId, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(book, "Sach");

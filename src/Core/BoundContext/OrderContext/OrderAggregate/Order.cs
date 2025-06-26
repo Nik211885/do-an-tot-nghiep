@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using Core.Entities;
 using Core.Events.OrderContext;
 using Core.Exception;
 using Core.Interfaces;
@@ -12,7 +13,8 @@ public class Order : BaseEntity, IAggregateRoot
     // Buyer for user
     public Guid BuyerId { get; private set; }
     public OrderStatus Status { get; private set; }
-    private List<OrderItem> _orderItems;
+    public string OrderCode { get; private set; } = string.Empty;
+    private List<OrderItem> _orderItems =[];
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
     protected Order(){}
 
@@ -65,7 +67,15 @@ public class Order : BaseEntity, IAggregateRoot
         Status = OrderStatus.Canceled;
         RaiseDomainEvent(new OrderCanceledDomainEvent(this));
     }
-
+    public void Payment()
+    {
+        if (Status == OrderStatus.Success)
+        {
+            ThrowHelper.ThrowIfBadRequest("Đơn này đã thanh toán rồi");
+        }
+        OrderCode = Guid.NewGuid().ToString();
+    }
+    
     public void Delete()
     {
         

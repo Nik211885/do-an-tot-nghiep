@@ -45,6 +45,10 @@ public class OrderEndpoint : IEndpoints
             .WithTags("Order")
             .WithName("GetOrderForMyWithPagination")
             .WithDescription("Get Order For My With Pagination");
+        api.MapPost("create-order/v1", OrderEndpointServices.CreateOrderWithOrderItem)
+            .WithTags("Order")
+            .WithName("CreateOrderWithOrderItem")
+            .WithDescription("Create new Order Item");
     }
 }
 
@@ -101,7 +105,6 @@ public static class OrderEndpointServices
         var result = await service.FactoryHandler.Handler<PaymentCommand,PaymentResponse>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<RedirectHttpResult, ProblemHttpResult, NotFound>>
         VerifyOrder(
             [AsParameters] VerifyPaymentRequest request,
@@ -110,8 +113,9 @@ public static class OrderEndpointServices
     {
         
         var command = new OrderVerifyCommand(request);
-        await service.FactoryHandler.Handler<OrderVerifyCommand,OrderViewModel>(command);
-        return TypedResults.Redirect("https://localhost:4200/");
+        var (extraUrl,order) = await service.FactoryHandler.Handler<OrderVerifyCommand,(string,OrderViewModel)>(command);
+        var url = $"{extraUrl}?OrderId={order.Id}";
+        return TypedResults.Redirect(url);
     }
     [Authorize]
     public static async Task<Results<Ok<PaginationItem<OrderViewModel>>, ProblemHttpResult, NotFound>>
@@ -121,6 +125,17 @@ public static class OrderEndpointServices
         )
     {
         var result = await service.OrderQueries.GetOrderForUserWithPaginationAsync(service.IdentityProvider.UserIdentity(), page);
+        return TypedResults.Ok(result);
+    }
+    [Authorize]
+    public static async Task<Results<Ok<OrderViewModel>, BadRequest, NotFound>>
+        CreateOrderWithOrderItem(
+            [FromBody] CreateOrderWithOrderItemCommand command,
+            [FromServices] OrderServiceWrapper service
+        )
+    {
+        var result = await service.FactoryHandler
+            .Handler<CreateOrderWithOrderItemCommand, OrderViewModel>(command);
         return TypedResults.Ok(result);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.CQRS;
+﻿using Application.Interfaces.Clients;
+using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Interfaces.Notification;
 using Application.Interfaces.Signature;
@@ -10,6 +11,7 @@ using Infrastructure.Data.DbContext;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Data.Services;
 using Infrastructure.Services.Cache;
+using Infrastructure.Services.Clients;
 using Infrastructure.Services.CQRS;
 using Infrastructure.Services.DbContext;
 using Infrastructure.Services.Elastic;
@@ -42,6 +44,7 @@ public static class DependencyInjectionExtension
         services.AddOptionsExtension(configuration);
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
+        services.AddSingleton<ICheckClientAddressAppServices, CheckClientAddressAppServices>();
         services.AddScoped<IDigitalSignatureService,DigitalSignatureService>();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
         services.AddScoped<DispatcherDomainEventInterceptors>();
