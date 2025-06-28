@@ -62,6 +62,7 @@ export class CommentComponent{
     event.stopPropagation();
     if(this.isTurnOfComment){
       if(!(this.comment.comments && this.comment.comments.length > 0)){
+        console.log("Child")
         this.showMoreMessageEvent.emit({
           parentComment: this.comment,
           currentPage: this.currentPage,

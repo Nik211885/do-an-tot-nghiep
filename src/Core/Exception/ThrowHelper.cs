@@ -2,7 +2,7 @@
 
 namespace Core.Exception;
 
-internal static class ThrowHelper
+public static class ThrowHelper
 {
     public static void ThrowIfBadRequest(string message)
     {

@@ -1,4 +1,5 @@
-﻿using Application.BoundContext.ModerationContext.ViewModel;
+﻿using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.BoundContext.ModerationContext.ViewModel;
 using Application.Interfaces.Query;
 using Application.Models;
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
@@ -12,4 +13,8 @@ public interface IModerationQueries : IApplicationQueryServicesExtension
     Task<BookApprovalViewModel?> GetBookApprovalByIdAsync(Guid bookApprovalId, CancellationToken cancellationToken = default);
     Task<PaginationItem<ApprovalDecisionViewModel>> GetDecisionWithPaginationByApprovalIdAsync(Guid bookApprovalId, 
         PaginationRequest page, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<ChapterStoreViewModel>> GetAllChapterForBookIdAsync(Guid bookId,
+        CancellationToken cancellationToken = default);
+    Task<string?> GetContentForChapterAsync(string chapterSlug, CancellationToken cancellationToken = default);  
 }

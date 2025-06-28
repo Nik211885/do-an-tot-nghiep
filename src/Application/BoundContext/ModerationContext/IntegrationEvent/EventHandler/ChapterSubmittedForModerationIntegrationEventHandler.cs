@@ -27,8 +27,8 @@ public class ChapterSubmittedForModerationIntegrationEventHandler(
             AuthorId : @event.AuthorId,
             BookTitle: @event.BookTitle,
             ChapterTitle: @event.ChapterTitle,
-            ChapterNumber: 1,
-            ChapterSlug:""
+            ChapterNumber: @event.ChapterNumber,
+            ChapterSlug: @event.ChapterSlug
         );
         await _factoryHandler.Handler<CreateBookApprovalCommand, BookApprovalViewModel>(command, cancellationToken);
         _logger.LogInformation("Chapter has read {@command}", command);

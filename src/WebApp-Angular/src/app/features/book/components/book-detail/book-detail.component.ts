@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {Book, BookPolicy, BookReleaseType, PaginationBook} from '../../models/book.model'
+import {Book, BookPolicy, BookReleaseType, Chapter, PaginationBook} from '../../models/book.model'
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {BookGenreTagComponent} from './book-genre-tag/book-genre-tag.component';
@@ -17,6 +17,7 @@ import {OrderService} from '../../../admin/order/services/order.service';
 import {OrderStatus, OrderViewModel} from '../../../admin/order/models/order.model';
 import {PaymentInfo} from '../../models/order.model';
 import {environment} from '../../../../../environments/environment';
+import {ReaderServices} from '../../services/reader.service';
 
 @Component({
   selector: 'app-book-detail',
@@ -51,6 +52,7 @@ export class BookDetailComponent implements OnInit {
    private ratingService: RatingService,
    private toastService: ToastService,
    private dialogService: DialogService,
+    private readerService: ReaderServices,
     private orderService: OrderService,
     private publicBookService: PublicBookService,
     private router: Router) {
@@ -59,6 +61,7 @@ export class BookDetailComponent implements OnInit {
   ngOnInit(): void {
     if(history.state.book){
       this.book = history.state.book;
+      this.loadChapterForBook();
     }
     else{
       const bookSlug = decodeURIComponent(this.route.snapshot.paramMap.get('slug') || '');
@@ -75,6 +78,7 @@ export class BookDetailComponent implements OnInit {
             } as PaginationBook;
             this.publicBookService.paginationBookAggregate(pagination);
             this.book = pagination.items[0];
+            this.loadChapterForBook()
           }
           else{
             this.router.navigate(["error/not-found"])
@@ -310,10 +314,14 @@ export class BookDetailComponent implements OnInit {
 
   actionForBook() {
     if(this.book.policyReadBook.bookPolicy === BookPolicy.Free){
-
+      this.router.navigate(["/reader", this.book.slug]);
     }
     else {
       if(this.book.policyReadBook.bookPolicy === BookPolicy.Paid){
+        if(this.book.isPayemnt){
+          this.router.navigate(["/reader", this.book.slug]);
+          return;
+        }
         this.paymentLoadding = true;
         this.orderService.createOrder(this.book.id)
           .subscribe({
@@ -342,5 +350,29 @@ export class BookDetailComponent implements OnInit {
           })
       }
     }
+  }
+  loadChapterForBook(){
+    this.readerService.getChapterForBook(this.book.id)
+      .subscribe({
+        next: (result)=>{
+          if(result){
+            this.book.chapters = [...result]
+          }
+          else{
+            this.toastService.error("Có lỗi trong quá trình tải sách vui lòng thử lại sau")
+          }
+        },
+        error:(err)=>{
+          this.toastService.error("Có lỗi trong quá trình tải sách vui lòng thử lại sau")
+          console.error(err)
+        }
+      })
+  }
+
+  protected readonly console = console;
+
+  chapterClick($event: { chapterSlug: Chapter; bookSlug: string }) {
+    console.log($event);
+    this.router.navigate(["/reader", encodeURIComponent($event.bookSlug), encodeURIComponent($event.chapterSlug.slug)]);
   }
 }

@@ -9,6 +9,7 @@ public static class AddBoundContextServiceWrapperExtension
         services.AddScoped<BookAuthoringServiceWrapper>();
         services.AddScoped<ModerationServiceWrapper>();
         services.AddScoped<BookReviewServiceWrapper>();
+        services.AddScoped<ReaderServiceWrapper>();
         services.AddScoped<BookPublicEndpointServiceWrapper>();
         services.AddScoped<NotificationServicesWrapper>();
         services.AddScoped<UserProfileServiceWrapper>();

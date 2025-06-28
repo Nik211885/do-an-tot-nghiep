@@ -49,8 +49,10 @@ export enum BookReleaseType
 
 export interface Chapter{
     id: string;
+    slug: string;
     version: number;
     title: string;
+    content: string;
 }
 
 

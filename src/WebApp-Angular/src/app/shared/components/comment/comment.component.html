@@ -92,6 +92,7 @@
           *ngFor="let reply of comment.comments"
           [comment]="reply"
           [currentUser]="currentUser"
+          (showMoreMessageEvent)="showMoreMessageEvent.emit($event)"
           (addNewReply)="addNewReply.emit($event)"
           class="mb-4 last:mb-0"
         ></app-comment>

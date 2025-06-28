@@ -44,6 +44,10 @@ public class ModerationEndpoint : IEndpoints
             .WithTags("ModerationChapter")
             .WithName("AddSignature")
             .WithDescription("Add signature");
+        apis.MapGet("chapter-approval", ModerationEndpointServices.GetChapterForBook)
+            .WithTags("ModerationChapter")
+            .WithName("GetChapterApprovalInModeration")
+            .WithDescription("Get chapter approval in moderation");
     }
 }
 
@@ -120,6 +124,16 @@ public static class ModerationEndpointServices
     {
         var result =  await service.ModerationQueries
             .GetDecisionWithPaginationByApprovalIdAsync(bookApprovalId, page);
+        return TypedResults.Ok(result);
+    }
+
+    public static async Task<Results<Ok<IReadOnlyCollection<ChapterStoreViewModel>>, NotFound>>
+        GetChapterForBook(
+            [FromQuery] Guid bookId,
+            [FromServices] ModerationServiceWrapper service
+        )
+    {
+        var result = await service.ModerationQueries.GetAllChapterForBookIdAsync(bookId);
         return TypedResults.Ok(result);
     }
 }

@@ -8,10 +8,25 @@ import { authorRoutes } from './features/author/author.routes';
 import { moderationRoutes } from './features/admin/moderation/moderation.routes';
 import {userProfileRoutes} from './features/admin/user-profile/user-profile.routes';
 import {orderRoutes} from './features/admin/order/order.routes';
+import {ReaderLayoutComponent} from './layout/layouts/reader-layout/reader-layout.component';
 export const routes: Routes = [
   {
     path:"admin",
     component: AdminLayoutComponent
+  },
+  {
+    path: 'reader',
+    component: ReaderLayoutComponent,
+    children: [
+      {
+        path:":bookSlug",
+        loadComponent:()=>import("./features/reader-book/reader-book.component").then(x=>x.ReaderBookComponent)
+      },
+      {
+        path:":bookSlug/:chapterSlug",
+        loadComponent:()=>import("./features/reader-book/reader-book.component").then(x=>x.ReaderBookComponent)
+      },
+    ]
   },
     ...authorRoutes,
     ... moderationRoutes,

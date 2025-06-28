@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services.Queries;
 
-public class ModerationQueries(ModerationDbContext moderationDbContext) : IModerationQueries
+public class ModerationQueries(ModerationDbContext moderationDbContext)
+    : IModerationQueries
 {
     private readonly ModerationDbContext _moderationDbContext = moderationDbContext;
 
@@ -83,5 +84,30 @@ public class ModerationQueries(ModerationDbContext moderationDbContext) : IModer
                             )
                 , cancellationToken);
         return decision;
+    }
+
+    public async Task<IReadOnlyCollection<ChapterStoreViewModel>> GetAllChapterForBookIdAsync(
+        Guid bookId, CancellationToken cancellationToken = default)
+    {
+        var query = _moderationDbContext.BookApprovals
+            .Where(x => x.BookId == bookId 
+                        && x.CopyrightChapter != null)
+            .OrderBy(x=>x.CopyrightChapter!.ChapterNumber)
+            .Select(y => new ChapterStoreViewModel(
+                    y.CopyrightChapter!.ChapterTitle,
+                    y.CopyrightChapter.ChapterSlug,
+                    y.CopyrightChapter.ChapterNumber
+                ));
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<string?> GetContentForChapterAsync(string chapterSlug,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _moderationDbContext.BookApprovals
+            .Where(x => x.CopyrightChapter != null
+                        && x.CopyrightChapter.ChapterSlug == chapterSlug)
+            .Select(y => y.CopyrightChapter!.ChapterContent);
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
 }

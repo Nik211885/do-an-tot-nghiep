@@ -120,6 +120,7 @@ export class CommentBookSectionComponent implements OnInit {
   })
   {
     console.log(data);
+    console.log("Parent")
     this.commentBookService.getCommentReplyWithPagination(data.parentComment.id,
         data.currentPage, data.pageSize
       ).subscribe({
