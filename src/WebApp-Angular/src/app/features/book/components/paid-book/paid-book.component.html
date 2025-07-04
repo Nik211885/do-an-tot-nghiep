@@ -1,0 +1,269 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+  <!-- Hero Section -->
+  <div class="relative rounded-3xl overflow-hidden mb-12 shadow-2xl bg-cover bg-center"
+       style="background-image: linear-gradient(rgba(20,20,20,0.7), rgba(0,0,0,0.8)), url('https://i.pinimg.com/736x/1e/16/7f/1e167f76f5b5a2023fb5263d9c2c05b2.jpg')">
+
+    <!-- Floating Elements -->
+    <div class="absolute top-8 right-8 opacity-30">
+      <svg class="w-16 h-16 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+      </svg>
+    </div>
+    <div class="absolute bottom-8 left-8 opacity-20">
+      <svg class="w-12 h-12 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414-1.414L9 7.586 7.707 6.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 000-1.414z" clip-rule="evenodd"/>
+      </svg>
+    </div>
+
+    <div class="relative px-8 py-16 md:px-12 md:py-20">
+      <div class="max-w-4xl">
+        <!-- Premium Badge -->
+        <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 backdrop-blur-sm rounded-full border border-yellow-400/30 mb-6">
+          <svg class="w-5 h-5 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+          <span class="text-yellow-400 font-semibold text-sm uppercase tracking-wide">Bộ sưu tập sách trả phí</span>
+        </div>
+
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
+          Sách trả phí
+        </h1>
+
+        <p class="text-xl md:text-2xl text-white/90 mb-8 font-medium leading-relaxed max-w-3xl">
+          Trải nghiệm những tác phẩm độc quyền và chất lượng cao nhất.
+          Đầu tư cho tri thức, thu hoạch thành công.
+        </p>
+
+        <!-- Stats -->
+        <div class="flex flex-wrap items-center gap-6 text-white mb-8">
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-yellow-400 rounded-full mr-3"></div>
+            <span class="text-lg font-medium">
+              Kho sách premium có
+              <span class="font-bold text-2xl text-yellow-300">{{paginationBook?.totalCount ?? 0}}</span>
+              quyển
+            </span>
+          </div>
+          <div class="flex items-center text-white/80">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <span>Chất lượng được đảm bảo</span>
+          </div>
+        </div>
+
+        <!-- Value Proposition -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white/80">
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-emerald-400 rounded-full mr-3"></div>
+            <span class="text-sm">Nội dung độc quyền</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+            <span class="text-sm">Tác giả nổi tiếng</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
+            <span class="text-sm">Cập nhật liên tục</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Features Section -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <div class="w-12 h-12 bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 rounded-xl flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Nội dung độc quyền</h3>
+      <p class="text-gray-600 dark:text-gray-300">Truy cập các tác phẩm premium không có ở nơi khác</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <div class="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900 dark:to-green-900 rounded-xl flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Chất lượng đảm bảo</h3>
+      <p class="text-gray-600 dark:text-gray-300">Được biên tập chuyên nghiệp và kiểm duyệt kỹ lưỡng</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <div class="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900 dark:to-indigo-900 rounded-xl flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Hỗ trợ tác giả</h3>
+      <p class="text-gray-600 dark:text-gray-300">Đóng góp trực tiếp cho sự phát triển của tác giả</p>
+    </div>
+  </div>
+
+  <!-- Pricing Benefits -->
+ <!-- <div class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-3xl p-8 mb-12 border border-amber-200 dark:border-amber-800">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Tại sao chọn sách premium?</h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">Đầu tư nhỏ cho tri thức lớn</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Truy cập tức thì</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Đọc ngay sau khi thanh toán</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Không quảng cáo</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Trải nghiệm đọc không bị gián đoạn</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Chất lượng cao</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Định dạng HD, font chữ tối ưu</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Hỗ trợ 24/7</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Giải đáp mọi thắc mắc</p>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Books Section Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center">
+      <div class="w-1 h-8 bg-gradient-to-b from-yellow-500 to-amber-500 rounded-full mr-4"></div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Bộ sưu tập sách trả phí</h2>
+    </div>
+
+    <!-- Filter/Sort Options -->
+    <div class="hidden md:flex items-center space-x-4">
+      <button class="px-4 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 text-yellow-700 dark:text-yellow-300 rounded-lg font-medium hover:from-yellow-200 hover:to-amber-200 dark:hover:from-yellow-800 dark:hover:to-amber-800 transition-all duration-300">
+        Bán chạy nhất
+      </button>
+      <button class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+        Giá tăng dần
+      </button>
+      <button class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+        Đánh giá cao
+      </button>
+    </div>
+  </div>
+
+  <!-- Books Grid -->
+  @if (paginationBook && paginationBook.totalCount > 0) {
+    <!-- Filter Options -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Danh sách sách</h2>
+      <div class="flex space-x-2">
+        <button class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-md text-sm font-medium">
+          Mới nhất
+        </button>
+        <button class="px-3 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">
+          Bán chạy
+        </button>
+      </div>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div *ngFor="let book of paginationBook.items">
+        <app-book-card [book]="book"></app-book-card>
+      </div>
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-12 text-center border-2 border-dashed border-gray-300 dark:border-gray-600">
+      <div class="max-w-sm mx-auto">
+        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Chưa có sách trả phí</h3>
+        <p class="text-gray-500 dark:text-gray-400">Hiện tại chưa có sách trả phí nào. Vui lòng quay lại sau!</p>
+      </div>
+    </div>
+  }
+
+  <!-- Pagination -->
+  <div *ngIf="paginationBook && paginationBook.totalCount > 1" class="mt-16">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+      <app-pagination
+        (changeCurrentPage)="changeCurrentPage($event)"
+        [pageSize]="pageSize"
+        [currentPage]="currentPage"
+        [pagination]="paginationBook"
+        class="flex justify-center"
+      ></app-pagination>
+    </div>
+  </div>
+
+  <!-- Newsletter Subscription -->
+  <div class="mt-16 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl bg-cover bg-center relative overflow-hidden"
+       style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('https://i.pinimg.com/736x/aa/ab/b6/aaabb69c54e1eea123aa3d8e58e0c33b.jpg')">
+
+    <!-- Floating Elements -->
+    <div class="absolute top-4 left-4 opacity-20">
+      <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+      </svg>
+    </div>
+    <div class="absolute bottom-4 right-4 opacity-15">
+      <svg class="w-10 h-10 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+      </svg>
+    </div>
+
+    <h3 class="text-3xl md:text-4xl font-bold mb-4">Đăng ký nhận thông báo sách mới</h3>
+    <p class="text-xl text-white/90 mb-6 max-w-2xl mx-auto">
+      Luôn cập nhật những tác phẩm premium mới nhất và nhận ưu đãi đặc biệt
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto mb-6">
+      <input
+        type="email"
+        placeholder="Nhập email của bạn"
+        class="flex-1 px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+      >
+      <button class="px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 font-bold rounded-xl hover:from-yellow-300 hover:to-amber-400 transition-all duration-300 shadow-lg whitespace-nowrap">
+        Đăng ký
+      </button>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button class="px-8 py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 transition-colors shadow-lg">
+        Khám phá Premium
+      </button>
+      <button class="px-8 py-3 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-colors">
+        Tìm hiểu thêm
+      </button>
+    </div>
+  </div>
+</div>

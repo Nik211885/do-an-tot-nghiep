@@ -1,0 +1,31 @@
+    <div class="rating-container">
+    <h4 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">{{ bookTitle }}</h4>
+
+    <div class="flex items-center justify-center mb-6">
+    <div class="flex space-x-1">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+        <button 
+            type="button"
+            (click)="setRating(star)"
+            (mouseenter)="hoverRating = star"
+            (mouseleave)="hoverRating = 0"
+            class="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+            <svg 
+            [ngClass]="{
+                'text-yellow-400': star <= (hoverRating || rating),
+                'text-gray-300 dark:text-gray-600': star > (hoverRating || rating)
+            }"
+            class="w-8 h-8 transition-all duration-150" 
+            fill="currentColor"
+            viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+        </button>
+        </ng-container>
+    </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-red-500 text-sm mb-4">
+    {{ errorMessage }}
+    </div>
+</div>

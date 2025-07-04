@@ -1,0 +1,251 @@
+<!-- Loading Component với Tailwind CSS -->
+<div class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Loading State - Header Section -->
+    <div *ngIf="!userModel" class="flex flex-col md:flex-row items-start md:items-end space-y-6 md:space-y-0 md:space-x-8 mb-8">
+      <!-- Loading Book Collection Cover -->
+      <div class="relative group">
+        <div class="w-60 h-60 bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300 rounded-3xl shadow-2xl flex items-center justify-center animate-pulse relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+          <i class="fas fa-book-heart text-gray-400 text-7xl animate-bounce"></i>
+        </div>
+      </div>
+
+      <!-- Loading Collection Info -->
+      <div class="flex flex-col justify-end space-y-4">
+        <div class="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+        <div class="h-16 bg-gradient-to-r from-gray-300 to-gray-200 rounded-lg w-96 animate-pulse"></div>
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gray-300 rounded-full animate-pulse"></div>
+          <div class="h-4 bg-gray-300 rounded w-32 animate-pulse"></div>
+          <div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div>
+          <div class="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loaded State - Header Section -->
+    <div *ngIf="userModel" class="flex flex-col md:flex-row items-start md:items-end space-y-6 md:space-y-0 md:space-x-8 mb-8">
+      <!-- Book Collection Cover -->
+      <div class="relative group">
+        <div class="w-60 h-60 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl shadow-2xl flex items-center justify-center transition-all duration-500 hover:shadow-indigo-500/30 hover:scale-105 relative overflow-hidden">
+          <!-- Background pattern -->
+          <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+          <div class="absolute top-6 right-6 w-12 h-12 bg-white/20 rounded-full blur-sm"></div>
+          <div class="absolute bottom-8 left-8 w-16 h-16 bg-white/10 rounded-full blur-md"></div>
+          <!-- Main icon -->
+          <div class="relative z-10 flex flex-col items-center">
+            <i class="fas fa-book-heart text-white text-7xl mb-3 drop-shadow-xl"></i>
+            <div class="flex space-x-1">
+              <i class="fas fa-star text-yellow-300 text-lg drop-shadow-lg"></i>
+              <i class="fas fa-star text-yellow-300 text-lg drop-shadow-lg"></i>
+              <i class="fas fa-star text-yellow-300 text-lg drop-shadow-lg"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collection Info -->
+      <div class="flex flex-col justify-end">
+        <span class="text-sm font-medium text-indigo-600 mb-2 uppercase tracking-wider">Bộ sưu tập</span>
+        <h1 class="text-4xl md:text-7xl font-black mb-6 leading-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Sách yêu thích
+        </h1>
+        <div class="flex items-center space-x-3 text-sm">
+          <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg">
+            {{userModel.firstName.charAt(0)}}
+          </div>
+          <span class="font-semibold text-gray-700">{{userModel.getFullName()}}</span>
+          <span class="text-indigo-400">•</span>
+          <span class="text-gray-600">{{paginationFavoriteBook.totalCount}} cuốn sách</span>
+          <span class="text-indigo-400">•</span>
+          <span class="text-gray-600">Đã đọc xong</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State - Books Table -->
+    <div *ngIf="!bookInFavorite" class="bg-white/80 rounded-3xl backdrop-blur-xl border border-white/50 shadow-2xl overflow-hidden">
+      <!-- Loading Header -->
+      <div class="grid grid-cols-12 gap-4 px-8 py-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100">
+        <div class="col-span-1 text-center">
+          <div class="h-4 bg-gray-300 rounded w-6 mx-auto animate-pulse"></div>
+        </div>
+        <div class="col-span-6 md:col-span-5">
+          <div class="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+        </div>
+        <div class="col-span-3 hidden md:block">
+          <div class="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+        </div>
+        <div class="col-span-2 md:col-span-1 text-center">
+          <div class="h-4 bg-gray-300 rounded w-16 mx-auto animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Loading Book Rows -->
+      <div class="divide-y divide-gray-100">
+        <div *ngFor="let item of [1,2,3,4,5]" class="grid grid-cols-12 gap-4 px-8 py-6">
+          <div class="col-span-1 flex items-center justify-center">
+            <div class="w-6 h-6 bg-gray-300 rounded animate-pulse"></div>
+          </div>
+          <div class="col-span-6 md:col-span-5 flex items-center space-x-5">
+            <!-- Loading Book Cover -->
+            <div class="w-16 h-20 bg-gradient-to-br from-gray-300 to-gray-200 rounded-lg animate-pulse relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12 animate-ping"></div>
+            </div>
+            <div class="min-w-0 flex-1 space-y-2">
+              <div class="h-5 bg-gray-300 rounded w-3/4 animate-pulse"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+            </div>
+          </div>
+          <div class="col-span-3 hidden md:flex items-center">
+            <div class="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+          </div>
+          <div class="col-span-2 md:col-span-1 flex items-center justify-center">
+            <div class="flex space-x-1">
+              <div *ngFor="let star of [1,2,3,4,5]" class="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Animation Center -->
+      <div class="flex flex-col items-center justify-center py-16">
+        <div class="relative mb-6">
+          <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-500 rounded-full animate-spin"></div>
+          <div class="absolute inset-2 border-2 border-purple-200 border-b-purple-500 rounded-full animate-spin animate-reverse"></div>
+        </div>
+        <div class="flex items-center space-x-2 text-indigo-600">
+          <i class="fas fa-book animate-bounce"></i>
+          <span class="font-medium animate-pulse">Đang tải sách yêu thích...</span>
+        </div>
+        <div class="flex space-x-1 mt-4">
+          <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+          <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loaded State - Books Table -->
+    <div *ngIf="bookInFavorite && bookInFavorite.length > 0" class="bg-white/80 rounded-3xl backdrop-blur-xl border border-white/50 shadow-2xl overflow-hidden">
+      <!-- Table Header -->
+      <div class="grid grid-cols-12 gap-4 px-8 py-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100 text-sm text-gray-700 font-semibold">
+        <div class="col-span-1 text-center">#</div>
+        <div class="col-span-6 md:col-span-5">Tên sách</div>
+        <div class="col-span-3 hidden md:block">Tác giả</div>
+        <div class="col-span-2 md:col-span-1 text-center">Đánh giá</div>
+      </div>
+
+      <!-- Books List -->
+      <div class="divide-y divide-gray-100">
+        <!-- Book Row Template -->
+        <div (click)="viewDetail(b)" *ngFor="let b of bookInFavorite; let i = index" class="grid grid-cols-12 gap-4 px-8 py-6 hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 group transition-all duration-300 cursor-pointer opacity-0 animate-fade-in" style="; animation-fill-mode: forwards;">
+          <div class="col-span-1 flex items-center justify-center text-gray-500 relative">
+            <span class="font-semibold text-lg transition-opacity duration-300">{{i+1}}</span>
+          </div>
+          <div class="col-span-6 md:col-span-5 flex items-center space-x-5">
+            <!-- Book Cover Image -->
+            <div class="relative group-hover:scale-105 transition-transform duration-300">
+              <div class="w-16 h-20 bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 rounded-lg shadow-lg overflow-hidden flex-shrink-0 relative group-hover:shadow-xl transition-all duration-300">
+                <!-- Book cover image -->
+                <img *ngIf="b.avatarUrl" [src]="b.avatarUrl" [alt]="b.title" class="w-full h-full object-cover">
+                <!-- Fallback design -->
+                <div *ngIf="!b.avatarUrl" class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                <div *ngIf="!b.avatarUrl" class="absolute inset-2 border border-white/30 rounded-md"></div>
+                <div *ngIf="!b.avatarUrl" class="absolute bottom-2 left-2 right-2 h-1 bg-white/40 rounded-full"></div>
+                <div *ngIf="!b.avatarUrl" class="absolute bottom-4 left-2 right-2 h-1 bg-white/30 rounded-full"></div>
+                <div *ngIf="!b.avatarUrl" class="absolute bottom-6 left-2 right-2 h-1 bg-white/20 rounded-full"></div>
+                <!-- Book icon -->
+                <div *ngIf="!b.avatarUrl" class="absolute inset-0 flex items-center justify-center">
+                  <i class="fas fa-book text-white/60 text-sm"></i>
+                </div>
+              </div>
+              <!-- Hover effect shadow -->
+              <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="font-bold text-gray-900 group-hover:text-indigo-700 truncate transition-colors duration-300 text-lg mb-1">{{b.title}}</div>
+              <div class="text-sm text-gray-500 group-hover:text-gray-600 truncate transition-colors duration-300 flex items-center space-x-2">
+                <i class="fas fa-tags text-xs text-indigo-400"></i>
+                <span>{{getGenreNames(b.genres)}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-3 hidden md:flex items-center text-gray-600 group-hover:text-gray-800 font-medium transition-colors duration-300">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-user-edit text-indigo-400 text-sm"></i>
+              <span>{{b.author}}</span>
+            </div>
+          </div>
+          <div class="col-span-2 md:col-span-1 flex items-center justify-center">
+            <div class="flex space-x-1 group-hover:scale-110 transition-transform duration-300">
+              <i *ngFor="let s of [].constructor(b.myRating ?? 0);" class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>
+             <!-- <i class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>
+              <i class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>
+              <i class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>
+              <i class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>
+              <i class="fas fa-star text-yellow-400 text-base drop-shadow-sm"></i>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State - Pagination -->
+    <div *ngIf="!paginationFavoriteBook" class="mt-12 flex justify-center">
+      <div class="flex items-center gap-2">
+        <div class="w-12 h-12 bg-gray-300 rounded-xl animate-pulse"></div>
+        <div class="w-12 h-12 bg-gray-300 rounded-xl animate-pulse"></div>
+        <div class="w-12 h-12 bg-gray-300 rounded-xl animate-pulse"></div>
+        <div class="w-12 h-12 bg-gray-300 rounded-xl animate-pulse"></div>
+      </div>
+    </div>
+
+    <!-- Loaded State - Pagination Section -->
+    <div class="mt-12 flex justify-center" *ngIf="paginationFavoriteBook && paginationFavoriteBook.totalPages > 1">
+      <nav class="flex items-center gap-2">
+        <!-- Previous Button -->
+        <button
+          *ngIf="currentPage > 1"
+          (click)="previousPage()"
+          class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+
+        <!-- Page Numbers -->
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <!-- Regular Page Number -->
+          <button
+            *ngIf="isClickablePage(page)"
+            (click)="goToPage(Number(page))"
+            [class]="isCurrentPage(page)
+              ? 'flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl shadow-lg font-bold transition-all duration-200 transform hover:scale-105'
+              : 'flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 cursor-pointer bg-white/80 backdrop-blur-sm border border-white/50 font-medium'">
+            {{page}}
+          </button>
+
+          <!-- Ellipsis -->
+          <span
+            *ngIf="!isClickablePage(page)"
+            class="flex items-center justify-center w-12 h-12 text-gray-400 font-medium">
+            {{page}}
+          </span>
+        </ng-container>
+
+        <!-- Next Button -->
+        <button
+          *ngIf="currentPage < (paginationFavoriteBook?.totalPages ?? 1)"
+          (click)="nextPage()"
+          class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<!-- Premium Modern Modal Dialog Component -->
+<div class="fixed inset-0 bg-gradient-to-br from-black/80 to-indigo-900/70 backdrop-blur-lg z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl shadow-indigo-500/10 w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden border border-gray-100">
+
+    <!-- Premium Header with glassmorphism effect -->
+    <div class="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-4 border-b border-gray-100 z-10 shadow-sm">
+      <div class="flex items-center justify-between">
+        <!-- Version Info with enhanced typography -->
+        <div class="flex-shrink-0">
+          <div class="flex items-center gap-1.5">
+            <div class="h-2 w-2 rounded-full bg-indigo-500"></div>
+            <p class="text-gray-700 text-sm font-medium">
+              Sự thay đổi nội dung của chương ở version
+              <span class="font-semibold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{{chapterDiff.version}}</span>
+            </p>
+          </div>
+          <p class="text-gray-400 text-xs mt-1 ml-3.5">
+            Ngày cập nhật {{chapterDiff.dateCreateVersion}}
+          </p>
+        </div>
+
+        <!-- Premium styled Action and Close Buttons -->
+        <div class="flex items-center gap-3">
+          <!-- Action Buttons with improved styling -->
+          <button (click)="renameChapterVersion()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 shadow-sm hover:shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span>Đặt tên phiên bản</span>
+          </button>
+          <button (click)="rollBackToVersion()" class="px-3.5 py-2 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-gray-300 shadow-sm hover:shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+            </svg>
+            <span>Khôi phục</span>
+          </button>
+
+          <!-- Enhanced Close Button -->
+          <button (click)="closeDiffContent()" class="p-2 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300 hover:rotate-90 duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium Content Area with subtle patterns -->
+    <div class="flex-1 overflow-y-auto bg-gray-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCQkJCQkIiIGZpbGwtb3BhY2l0eT0iLjA1Ij48cGF0aCBkPSJNMzYgMzRjMC0yLjIgMS44LTQgNC00czQgMS44IDQgNC0xLjggNC00IDQtNC0xLjgtNC00TTAgNWMwLTIuOCAxLjEtNSA5LTVzOSAyLjIgOSA1LTEuMSA1LTkgNS05LTIuMi05LTV6Ii8+PC9nPjwvZz48L3N2Zz4=')] p-8 space-y-8">
+      <!-- Title Section with card effect -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-600 flex items-center ml-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Tiêu đề
+        </h3>
+        <div class="p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group" [innerHTML]="chapterDiff.diffTitle">
+          <!-- Subtle corner accent -->
+          <div class="absolute -top-1 -right-1 w-8 h-8 bg-indigo-100 rounded-full opacity-70 group-hover:bg-indigo-200 transition-colors"></div>
+        </div>
+      </div>
+
+      <!-- Content Section with enhanced styling -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-600 flex items-center ml-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Nội dung
+        </h3>
+        <div class="p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group whitespace-pre-wrap font-mono text-sm" [innerHTML]="chapterDiff.diffContent">
+          <!-- Subtle corner accent -->
+          <div class="absolute -top-1 -right-1 w-8 h-8 bg-indigo-100 rounded-full opacity-70 group-hover:bg-indigo-200 transition-colors"></div>
+        </div>
+      </div>
+
+      <!-- Additional helpful info at bottom -->
+      <div class="mt-auto pt-4">
+        <p class="text-xs text-gray-400 italic text-center">
+          Sử dụng tổ hợp phím <span class="px-1.5 py-0.5 bg-gray-100 rounded text-gray-500 font-mono">Ctrl + Z</span> để hoàn tác các thay đổi.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

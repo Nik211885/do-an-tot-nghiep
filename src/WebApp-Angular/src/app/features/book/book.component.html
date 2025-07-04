@@ -1,0 +1,392 @@
+<!-- home.component.html -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+
+  <!-- Hero Slideshow Section -->
+  <div class="relative h-96 md:h-[600px] overflow-hidden mb-12 rounded-2xl shadow-2xl"
+       (mouseenter)="onSlideMouseEnter()"
+       (mouseleave)="onSlideMouseLeave()">
+
+    <!-- Slideshow Container -->
+    <div class="relative h-full w-full">
+      <!-- Slides wrapper với transform để di chuyển -->
+      <div class="flex h-full transition-transform duration-700 ease-in-out"
+           [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
+
+        <!-- Mỗi slide -->
+        <div class="relative flex-shrink-0 w-full h-full"
+             *ngFor="let slide of heroSlides; let i = index">
+
+          <!-- Background Image -->
+          <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+               [style.background-image]="'url(' + slide.image + ')'">
+          </div>
+
+          <!-- Overlay gradients -->
+          <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+          <!-- Content -->
+          <div class="absolute inset-0 flex items-end z-10">
+            <div class="p-8 md:p-12 max-w-2xl">
+              <!-- Category badge -->
+              <div class="mb-4">
+              <span class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600
+                           rounded-full text-sm font-semibold text-white shadow-lg backdrop-blur-sm
+                           transform hover:scale-105 transition-transform duration-200">
+                {{slide.category}}
+              </span>
+              </div>
+
+              <!-- Title -->
+              <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight
+                       drop-shadow-2xl animate-fade-in-up">
+                {{slide.title}}
+              </h1>
+
+              <!-- Description -->
+              <p class="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed
+                      drop-shadow-lg animate-fade-in-up animation-delay-200">
+                {{slide.description}}
+              </p>
+
+              <!-- CTA Button -->
+              <button class="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
+                           px-8 py-4 rounded-xl font-semibold text-white shadow-xl
+                           transform hover:scale-105 hover:-translate-y-1 transition-all duration-300
+                           animate-fade-in-up animation-delay-400">
+              <span class="flex items-center space-x-2">
+                <span>Khám phá ngay</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"></path>
+                </svg>
+              </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20">
+      <div class="flex space-x-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2">
+        <button *ngFor="let slide of heroSlides; let i = index"
+                (click)="goToSlide(i)"
+                [class]="i === currentSlide ? 'w-8 h-3 bg-white' : 'w-3 h-3 bg-white/50 hover:bg-white/80'"
+                class="rounded-full transition-all duration-300">
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button (click)="previousSlide()"
+            class="absolute left-6 top-1/2 -translate-y-1/2 z-20
+                 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full p-4
+                 transition-all duration-300 hover:scale-110 group">
+      <svg class="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+
+    <button (click)="nextSlide()"
+            class="absolute right-6 top-1/2 -translate-y-1/2 z-20
+                 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full p-4
+                 transition-all duration-300 hover:scale-110 group">
+      <svg class="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+
+    <!-- Progress Bar -->
+    <div class="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-20">
+      <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+           [style.width]="((currentSlide + 1) / heroSlides.length * 100) + '%'">
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <div class="container mx-auto px-4 pb-12">
+
+    <!-- Sách Yêu Thích Section -->
+    <section class="mb-16" #favoriteSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Yêu Thích</h2>
+          <p class="text-gray-600 dark:text-gray-400">Những cuốn sách bạn đã yêu thích</p>
+        </div>
+        <a [routerLink]="['/user-profile/favorite-book']"
+           class="text-blue-600 hover:text-blue-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoadingFavorite" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <!-- Books Grid -->
+      <div *ngIf="!isLoadingFavorite"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of favoriteBooks; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoadingFavorite && favoriteBooks.length === 0"
+           class="text-center py-12">
+        <div class="text-gray-400 dark:text-gray-600 mb-4">
+          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </div>
+        <p class="text-gray-500 dark:text-gray-400">Chưa có sách yêu thích nào</p>
+      </div>
+    </section>
+
+    <!-- Sách Mới Section -->
+    <section class="mb-16" #newBookSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Mới</h2>
+          <p class="text-gray-600 dark:text-gray-400">Những cuốn sách mới nhất</p>
+        </div>
+        <button (click)="loadNewBook()" class="text-blue-600 hover:text-blue-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div *ngIf="isLoadingNew" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingNew"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of bookNew; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sách Miễn Phí Section -->
+    <section class="mb-16" #freeBookSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Miễn Phí</h2>
+          <p class="text-gray-600 dark:text-gray-400">Đọc miễn phí không giới hạn</p>
+        </div>
+        <a [routerLink]="['/free-books']" class="text-green-600 hover:text-green-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div *ngIf="isLoadingFree" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingFree"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of bookFree; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sách Trả Phí Section -->
+    <section class="mb-16" #paidBookSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Trả Phí</h2>
+          <p class="text-gray-600 dark:text-gray-400">Sách chất lượng cao</p>
+        </div>
+        <a [routerLink]="['/paid-books']" class="text-purple-600 hover:text-purple-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+
+      </div>
+
+      <div *ngIf="isLoadingPaid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingPaid"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of bookPaid; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sách Xem Nhiều Section -->
+    <section class="mb-16" #topViewSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Xem Nhiều</h2>
+          <p class="text-gray-600 dark:text-gray-400">Được độc giả yêu thích nhất</p>
+        </div>
+        <button (click)="loadBooksTopView()" class="text-red-600 hover:text-red-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div *ngIf="isLoadingTopView" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingTopView"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of booksTopView; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sách Của Bạn Section -->
+    <section class="mb-16" #yourBookSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sách Của Bạn</h2>
+          <p class="text-gray-600 dark:text-gray-400">Những cuốn sách bạn đã tạo</p>
+        </div>
+        <a [routerLink]="['/write-book/books']" class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div *ngIf="isLoadingYourBook" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingYourBook"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of yourBook; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Genres Sections -->
+    <section *ngFor="let genreSection of bookTopForGenres; trackBy: trackByGenreId"
+             class="mb-16"
+             [attr.data-genre-id]="genreSection.genres.id"
+             #genreSection>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+             {{genreSection.genres.name}}
+          </h2>
+          <!--<p class="text-gray-600 dark:text-gray-400">{{genreSection.genres.description}}</p>-->
+        </div>
+        <a [routerLink]="['/genere',genreSection.genres.slug]" class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center">
+          Xem tất cả
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+
+      </div>
+
+      <div *ngIf="isLoadingGenre" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+          <div class="bg-gray-200 dark:bg-gray-700 h-80 rounded-lg mb-4"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded mb-2"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingGenre"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6
+                  transition-all duration-500 ease-in-out">
+        <div *ngFor="let book of genreSection.books; trackBy: trackByBookId"
+             class="transform hover:scale-105 transition-transform duration-300">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading More Indicator -->
+    <div *ngIf="isLoadingMore" class="text-center py-8">
+      <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm text-blue-600 bg-blue-100 rounded-lg">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Đang tải thêm...
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+  <!--  <button *ngIf="showScrollTop"
+            (click)="scrollToTop()"
+            class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg
+                   transition-all duration-300 transform hover:scale-110 z-50">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+      </svg>
+    </button>-->
+  </div>
+</div>

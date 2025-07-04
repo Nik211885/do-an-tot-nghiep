@@ -1,0 +1,214 @@
+<div class="container mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Quản lý kiểm duyệt sách</h1>
+    <p class="text-gray-600">Danh sách cuốn sách đã và dang kiểm duyệt</p>
+  </div>
+
+  <!-- Filters and Controls -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <!-- Status Filter -->
+        <div class="min-w-0">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+          <select class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Tất cả</option>
+            <option value="Pending">Đang chờ</option>
+            <option value="Approved">Đã duyệt</option>
+            <option value="Rejected">Đã từ chối</option>
+          </select>
+        </div>
+
+        <!-- Search -->
+        <div class="min-w-0 flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
+          <input
+            type="text"
+            placeholder="Tên sách, tác giả..."
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
+          Tìm kiếm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Books List -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Table Header -->
+    <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+      <div class="grid grid-cols-12 gap-4 items-center text-sm font-medium text-gray-700">
+        <div class="col-span-4">Thông tin sách</div>
+        <div class="col-span-2">Tác giả</div>
+        <div class="col-span-2">Trạng thái</div>
+        <div class="col-span-2">Ngày tạo</div>
+        <div class="col-span-2 text-center">Thao tác</div>
+      </div>
+    </div>
+
+    <!-- Books Items -->
+    <div class="divide-y divide-gray-200">
+      <div *ngFor="let book of moderationForBook" class="px-6 py-4 hover:bg-gray-50 transition-colors">
+        <div class="grid grid-cols-12 gap-4 items-center">
+          <!-- Book Info -->
+          <div class="col-span-4">
+            <div class="flex items-start space-x-3">
+              <div class="w-12 h-16 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ book.bookTitle }}</p>
+                <p class="text-xs text-gray-500 mt-1">ID: {{ book.bookId }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Author -->
+          <div class="col-span-2">
+            <p class="text-sm text-gray-900">{{ book.authorName }}</p>
+          </div>
+
+          <!-- Status -->
+          <div class="col-span-2">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-800': book.status === 'Pending',
+                'bg-green-100 text-green-800': book.status === 'Approved',
+                'bg-red-100 text-red-800': book.status === 'Rejected'
+              }"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full mr-1.5"
+                [ngClass]="{
+                  'bg-yellow-400': book.status === 'Pending',
+                  'bg-green-400': book.status === 'Approved',
+                  'bg-red-400': book.status === 'Rejected'
+                }"
+              ></span>
+              {{ book.status === 'Pending' ? 'Đang chờ' : book.status === 'Approved' ? 'Đã duyệt' : 'Đã từ chối' }}
+            </span>
+          </div>
+
+          <!-- Date -->
+          <div class="col-span-2">
+            <p class="text-sm text-gray-500">--/--/----</p>
+          </div>
+
+          <!-- Actions -->
+          <div class="col-span-2">
+            <div class="flex items-center justify-center space-x-2">
+              <button
+                class="px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors font-medium"
+                (click)="viewDetails(book.bookId)"
+              >
+                Chi tiết
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="moderationForBook.length === 0" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Không có sách nào</h3>
+      <p class="mt-1 text-sm text-gray-500">Hiện tại không có sách nào cần kiểm duyệt.</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="text-sm text-gray-700">
+      Hiển thị <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span> đến
+      <span class="font-medium">{{ Math.min(currentPage * pageSize, totalCount) }}</span> của
+      <span class="font-medium">{{ totalCount }}</span> kết quả
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <!-- First Page -->
+      <button
+        *ngIf="currentPage > 3"
+        class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="goToPage(1)"
+      >
+        1
+      </button>
+
+      <!-- Dots before -->
+      <span *ngIf="currentPage > 4" class="px-2 text-gray-500">...</span>
+
+      <!-- Previous Page -->
+      <button
+        class="px-3 py-2 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!hasPreviousPage"
+        (click)="previousPage()"
+      >
+        Trước
+      </button>
+
+      <!-- Page Numbers -->
+      <div class="flex items-center space-x-1">
+        <button
+          *ngFor="let page of getPageNumbers()"
+          class="px-3 py-2 text-sm rounded-md transition-colors"
+          [ngClass]="{
+            'bg-blue-600 text-white': page === currentPage,
+            'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50': page !== currentPage
+          }"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <!-- Next Page -->
+      <button
+        class="px-3 py-2 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!hasNextPage"
+        (click)="nextPage()"
+      >
+        Sau
+      </button>
+
+      <!-- Dots after -->
+      <span *ngIf="currentPage < totalPages - 3" class="px-2 text-gray-500">...</span>
+
+      <!-- Last Page -->
+      <button
+        *ngIf="currentPage < totalPages - 2"
+        class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+        (click)="goToPage(totalPages)"
+      >
+        {{ totalPages }}
+      </button>
+    </div>
+
+    <!-- Page Size Selector -->
+    <div class="flex items-center space-x-2">
+      <label class="text-sm text-gray-700">Hiển thị:</label>
+      <select
+        class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        [(ngModel)]="pageSize"
+        (change)="onPageSizeChange()"
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+      </select>
+      <span class="text-sm text-gray-700">mục/trang</span>
+    </div>
+  </div>
+</div>

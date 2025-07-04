@@ -1,0 +1,212 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-2">
+      Danh sách chương cần kiểm duyệt
+    </h2>
+    <p class="text-gray-600">Quản lý và xem xét các chương đang chờ phê duyệt</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-blue-600"></div>
+    <span class="ml-4 text-gray-600">Đang tải dữ liệu...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      </svg>
+      <div>
+        <h3 class="font-semibold text-red-800">Có lỗi xảy ra</h3>
+        <p class="text-red-700">{{ error }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="paginationModeration && !isLoading && !error">
+    <!-- Stats -->
+    <div class="bg-white rounded-lg shadow border p-6 mb-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-blue-600">{{ paginationModeration.totalCount }}</div>
+          <div class="text-sm text-gray-500">Tổng số chương</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-600">{{ paginationModeration.totalPages }}</div>
+          <div class="text-sm text-gray-500">Tổng số trang</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-purple-600">{{ currentPage }}</div>
+          <div class="text-sm text-gray-500">Trang hiện tại</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-orange-600">{{ pageSize }}</div>
+          <div class="text-sm text-gray-500">Số item/trang</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="space-y-6">
+      <div *ngFor="let item of paginationModeration.items; let i = index"
+           class="bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+
+        <!-- Card Header -->
+        <div class="px-6 py-4 bg-gray-50 border-b">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-gray-900 mb-2">
+                {{ item.chapterTitle }}
+              </h3>
+              <div class="flex items-center space-x-4 text-sm text-gray-600">
+                <span class="bg-white px-3 py-1 rounded-full border">
+                  Chương {{ item.chapterNumber }}
+                </span>
+                <span class="bg-white px-3 py-1 rounded-full border">
+                  {{ formatDate(item.submittedAt) }}
+                </span>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+              Chờ duyệt
+            </span>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="px-6 py-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column -->
+            <div class="space-y-4">
+              <div>
+                <label class="text-sm font-semibold text-gray-700 block mb-1">Tên sách:</label>
+                <p class="text-gray-900">{{ item.bookTitle }}</p>
+              </div>
+
+              <div>
+                <label class="text-sm font-semibold text-gray-700 block mb-1">Slug chương:</label>
+                <p class="text-gray-600 font-mono text-sm bg-gray-50 px-3 py-2 rounded border">{{ item.chapterSlug }}</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-semibold text-gray-700 block mb-1">Book ID:</label>
+                  <p class="text-gray-600 text-sm font-mono">{{ item.bookId.substring(0, 8) }}...</p>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-700 block mb-1">Author ID:</label>
+                  <p class="text-gray-600 text-sm font-mono">{{ item.authorId.substring(0, 8) }}...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              <label class="text-sm font-semibold text-gray-700 block mb-2">Nội dung chương:</label>
+              <div class="bg-gray-50 border rounded p-4 max-h-48 overflow-y-auto">
+                <p class="text-gray-700 text-sm">
+                  {{ truncateContent(item.chapterContent, 300) }}
+                </p>
+              </div>
+              <div class="mt-4 flex justify-end">
+                <button (click)="viewDetailModeration(item, $event)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                  Xem chi tiết
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="px-6 py-3 bg-gray-50 border-t">
+          <div class="flex justify-between items-center text-xs text-gray-500">
+            <span>ID: {{ item.id }}</span>
+            <span>Chapter ID: {{ item.chapterId.substring(0, 12) }}...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="paginationModeration.items.length === 0" class="text-center py-12">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-1">Không có chương nào cần kiểm duyệt</h3>
+      <p class="text-gray-500">Tất cả chương đã được xử lý.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="paginationModeration.totalPages > 1" class="mt-8 bg-white rounded-lg shadow border p-4">
+      <!-- Mobile Pagination -->
+      <div class="flex justify-between sm:hidden">
+        <button
+          (click)="onPageChange(currentPage - 1)"
+          [disabled]="!paginationModeration.hasPreviousPage"
+          class="px-4 py-2 border rounded text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Trước
+        </button>
+        <button
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="!paginationModeration.hasNextPage"
+          class="px-4 py-2 border rounded text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Sau
+        </button>
+      </div>
+
+      <!-- Desktop Pagination -->
+      <div class="hidden sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-gray-700">
+            Hiển thị
+            <span class="font-semibold">{{ (currentPage - 1) * pageSize + 1 }}</span>
+            đến
+            <span class="font-semibold">{{ Math.min(currentPage * pageSize, paginationModeration.totalCount) }}</span>
+            trong tổng số
+            <span class="font-semibold">{{ paginationModeration.totalCount }}</span>
+            kết quả
+          </p>
+        </div>
+        <div>
+          <nav class="flex rounded-lg shadow-sm -space-x-px">
+            <!-- Previous -->
+            <button
+              (click)="onPageChange(currentPage - 1)"
+              [disabled]="!paginationModeration.hasPreviousPage"
+              class="px-3 py-2 rounded-l-lg border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+
+            <!-- Page Numbers -->
+            <button
+              *ngFor="let page of getPageNumbers()"
+              (click)="onPageChange(page)"
+              [class]="page === currentPage
+                ? 'px-4 py-2 border border-blue-500 bg-blue-600 text-white font-semibold'
+                : 'px-4 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'">
+              {{ page }}
+            </button>
+
+            <!-- Next -->
+            <button
+              (click)="onPageChange(currentPage + 1)"
+              [disabled]="!paginationModeration.hasNextPage"
+              class="px-3 py-2 rounded-r-lg border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

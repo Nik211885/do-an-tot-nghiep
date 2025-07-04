@@ -1,0 +1,162 @@
+<div class="flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
+    <!-- Header -->
+    <span>{{titleForUploadFile}}</span>
+
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-sm">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="flex justify-center items-center p-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+
+    <!-- Image upload section -->
+    <div *ngIf="!showCropper && !croppedImage && !isLoading"
+         class="p-6"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)">
+      <label
+        [class]="'flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer transition duration-300 ' +
+        (isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100')">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <p class="mb-2 text-sm text-gray-500">
+            <span class="font-semibold">Bấm vào để tải ảnh</span> hoặc kéo và thả
+          </p>
+          <p class="text-xs text-gray-500">PNG, JPG, GIF, WEBP (MAX. 5MB)</p>
+        </div>
+        <input type="file" class="hidden" (change)="fileChangeEvent($event)" accept="image/*">
+      </label>
+    </div>
+
+    <!-- Image cropper section -->
+    <div *ngIf="showCropper && !isLoading" class="p-4">
+      <div class="image-cropper-container mb-4 rounded-lg overflow-hidden border border-gray-200">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="maintainAspectRatio"
+          [aspectRatio]="aspectRatio"
+          [resizeToWidth]="800"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          [canvasRotation]="canvasRotation"
+          [transform]="transform"
+          [cropperMinWidth]="100"
+          [cropperMinHeight]="100"
+          [alignImage]="'center'"
+          [style.background]="'#f3f4f6'"
+        ></image-cropper>
+      </div>
+
+      <!-- Cropping tools -->
+      <div class="grid grid-cols-4 gap-2 mb-4">
+        <button type="button" (click)="rotateLeft()"
+                class="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-300">
+          Quay trái
+        </button>
+        <button type="button" (click)="rotateRight()"
+                class="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-300">
+          Quay phải
+        </button>
+        <button type="button" (click)="zoomOut()"
+                class="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-300">
+          Phóng nhỏ
+        </button>
+        <button type="button" (click)="zoomIn()"
+                class="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition duration-300">
+          Phóng to
+        </button>
+      </div>
+
+      <!-- Aspect ratio controls -->
+      <div class="flex justify-center gap-2 mb-4">
+        <button type="button" (click)="setAspectRatio(1/1)"
+                [class.bg-blue-500]="maintainAspectRatio && aspectRatio === 1/1"
+                [class.text-white]="maintainAspectRatio && aspectRatio === 1/1"
+                class="px-3 py-1 rounded text-xs font-medium transition duration-300"
+                [class.bg-gray-200]="!(maintainAspectRatio && aspectRatio === 1/1)"
+                [class.text-gray-700]="!(maintainAspectRatio && aspectRatio === 1/1)">
+          1:1
+        </button>
+        <button type="button" (click)="setAspectRatio(4/3)"
+                [class.bg-blue-500]="maintainAspectRatio && aspectRatio === 4/3"
+                [class.text-white]="maintainAspectRatio && aspectRatio === 4/3"
+                class="px-3 py-1 rounded text-xs font-medium transition duration-300"
+                [class.bg-gray-200]="!(maintainAspectRatio && aspectRatio === 4/3)"
+                [class.text-gray-700]="!(maintainAspectRatio && aspectRatio === 4/3)">
+          4:3
+        </button>
+        <button type="button" (click)="setAspectRatio(16/9)"
+                [class.bg-blue-500]="maintainAspectRatio && aspectRatio === 16/9"
+                [class.text-white]="maintainAspectRatio && aspectRatio === 16/9"
+                class="px-3 py-1 rounded text-xs font-medium transition duration-300"
+                [class.bg-gray-200]="!(maintainAspectRatio && aspectRatio === 16/9)"
+                [class.text-gray-700]="!(maintainAspectRatio && aspectRatio === 16/9)">
+          16:9
+        </button>
+        <button type="button" (click)="toggleAspectRatio()"
+                [class.bg-blue-500]="!maintainAspectRatio"
+                [class.text-white]="!maintainAspectRatio"
+                class="px-3 py-1 rounded text-xs font-medium transition duration-300"
+                [class.bg-gray-200]="maintainAspectRatio"
+                [class.text-gray-700]="maintainAspectRatio">
+          Free
+        </button>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-between mt-4">
+        <button type="button"
+          (click)="resetImage()"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">
+          Hủy
+        </button>
+        <button type="button"
+          (click)="saveCroppedImage()"
+          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+          Lưu lại
+        </button>
+      </div>
+    </div>
+
+    <div  *ngIf="(croppedImage && !showCropper && !isLoading)" class="w-full flex flex-col items-center p-6">
+
+      <!-- Container ảnh preview -->
+      <div class="relative w-full max-w-xs md:max-w-sm h-64 bg-gray-50 rounded-lg p-1 mb-4 flex justify-center items-center overflow-hidden border-2 border-dashed border-gray-200 hover:border-blue-200 transition-colors duration-300 shadow-sm">
+        <img
+          [src]="croppedImage"
+          class="max-w-[90%] max-h-[90%] object-contain transition-transform duration-300 hover:scale-105"
+          alt="Cropped preview">
+      </div>
+
+      <!-- Thông tin chi tiết -->
+      <div class="w-full max-w-xs md:max-w-sm bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4 shadow-sm">
+        <h4 class="text-sm font-medium text-blue-700 mb-2">Chi tiết ảnh</h4>
+        <div class="grid grid-cols-2 gap-3 text-sm text-blue-800">
+          <div class="truncate">
+            <p class="font-medium">Tên ảnh:</p>
+            <p class="truncate text-xs text-gray-600">{{ originalFileName }}</p>
+          </div>
+          <div>
+            <p class="font-medium">Kích thước:</p>
+            <p class="text-xs text-gray-600">{{ cropDimensions.width }} x {{ cropDimensions.height }}px</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút tải lại -->
+      <div class="w-full max-w-xs md:max-w-sm flex justify-center">
+        <button
+          type="button"
+          (click)="uploadNewImage()"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
+          Tải ảnh mới
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

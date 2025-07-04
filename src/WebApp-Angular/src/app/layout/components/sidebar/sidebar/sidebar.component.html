@@ -1,0 +1,75 @@
+<aside 
+  class="h-screen overflow-y-auto fixed left-0 top-0 z-20 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 shadow-sm"
+  [ngClass]="{
+    'w-64': expanded && visible, 
+    'w-16': !expanded && visible,
+    'w-0 -ml-2 opacity-0': !visible
+  }" 
+  [ngStyle]="{'margin-top': '4rem'}"
+>
+  <!-- Sidebar Header with Toggle Buttons -->
+  <div class="flex items-center justify-between px-4 h-14 border-b border-gray-200 dark:border-gray-700">
+    <ng-container *ngIf="expanded">
+      <div class="flex items-center">
+        <img src="https://www.svgrepo.com/show/529027/home-1.svg" class="w-6 h-6" alt="Home icon">
+      </div>
+      
+      <div class="flex space-x-1">
+        <button 
+          (click)="toggleSidebar()" 
+          class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          title="Collapse sidebar"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <button 
+          (click)="hideSidebar()" 
+          class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          title="Hide sidebar"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </ng-container>
+    
+    <ng-container *ngIf="!expanded">
+      <button 
+        (click)="toggleSidebar()" 
+        class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors w-full flex justify-center"
+        title="Expand sidebar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+        </svg>
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <nav class="mt-2 px-2">
+    <ng-container *ngFor="let item of sidebarItems; trackBy: trackById">
+      <ng-container *ngIf="item.divider; else menuItem">
+        <div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+      </ng-container>
+      <ng-template #menuItem>
+        <app-sidebar-item [item]="item" [collapsed]="!expanded"></app-sidebar-item>
+      </ng-template>
+    </ng-container>
+  </nav>
+</aside>
+
+<!-- Sidebar Toggle Button (Only visible when sidebar is hidden) -->
+<button *ngIf="!visible"
+  (click)="layoutService.setSidebarVisible(true)" 
+  class="fixed left-4 top-20 z-20 p-2 bg-white dark:bg-gray-800 rounded-md shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+  title="Show sidebar"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+</button>

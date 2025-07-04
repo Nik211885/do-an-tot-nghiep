@@ -1,0 +1,155 @@
+<div class="px-4 flex flex-col md:flex-row relative">
+  <!-- Phần viết nội dung - mở rộng hơn -->
+  <div class="flex-1 py-8 px-4 sm:px-6 w-full transition-all duration-300 ease-in-out"
+       [ngClass]="isVersionPanelClosed ? 'md:w-full' : 'md:w-3/4'">
+    <div *ngIf="book" class="mb-6">
+      <div class="flex items-center space-x-2 text-gray-500 text-sm mb-1">
+        <a routerLink="write-book/books" class="hover:text-book-primary-600">My Books</a>
+        <span>/</span>
+        <a [routerLink]="['write-book/books', book.id]" class="hover:text-book-primary-600">{{ book.title }}</a>
+        <span>/</span>
+        <span>{{ isEditing ? 'Edit Chapter' : 'New Chapter' }}</span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900">{{ isEditing ? 'Sửa chương' : 'Tạo mới chương' }}</h1>
+      <p class="mt-2 text-gray-600">{{ book.title }}</p>
+    </div>
+
+    <div *ngIf="isLoading" class="flex justify-center py-12">
+      <svg class="animate-spin h-8 w-8 text-book-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </div>
+
+    <form *ngIf="!isLoading && chapterForm" [formGroup]="chapterForm"  class="animate-fade-in">
+      <div class="bg-white shadow-sm rounded-lg p-6">
+        <div class="form-group mb-6">
+          <label for="title" class="form-label">Tiêu đề chương <span class="text-red-500">*</span></label>
+          <input
+            type="text"
+            id="title"
+            formControlName="title"
+            class="form-input"
+            placeholder="Nhập vào tiêu đề của chương"
+          >
+          <div *ngIf="chapterForm.get('title')?.invalid && chapterForm.get('title')?.touched" class="mt-1 text-sm text-red-600">
+            Tiêu đề chương bắt buộc nhập
+          </div>
+        </div>
+
+        <div class="form-group mb-6">
+          <label for="chapterNumber" class="form-label">Số chương <span class="text-red-500">*</span></label>
+          <input
+            type="number"
+            id="chapterNumber"
+            formControlName="chapterNumber"
+            class="form-input"
+            min="1"
+          >
+          <div *ngIf="chapterForm.get('chapterNumber')?.invalid && chapterForm.get('chapterNumber')?.touched" class="mt-1 text-sm text-red-600">
+            Số chương phải lớn hơn 1
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="content" id="content" class="form-label">Nội dung sách<span class="text-red-500">*</span></label>
+          <ckeditor *ngIf="Editor()"
+                [editor]="Editor()"
+                formControlName="content"
+                [config]="editorConfig"
+            ></ckeditor>
+          <div *ngIf="chapterForm.get('content')?.invalid && chapterForm.get('content')?.touched" class="mt-1 text-sm text-red-600">
+            Nội dung sách là bắt buộc nhập
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end space-x-4">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="btn btn-secondary"
+        >
+          Hủy
+        </button>
+        <button
+          type="button"
+          (click)="onSaveDraft()"
+          class="btn btn-secondary border-book-primary-300 text-book-primary-700 hover:bg-book-primary-50"
+          [disabled]="isSaving || chapterForm.invalid"
+        >
+          <span *ngIf="isSaving" class="mr-2">
+            <svg class="animate-spin h-4 w-4 text-book-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          Lưu bản nháp
+        </button>
+        <button
+          type="button"
+          (click)="submitAndReview()"
+          class="btn btn-primary"
+          [disabled]="isSaving || chapterForm.invalid"
+          [ngClass]="{'opacity-50 cursor-not-allowed': isSaving || chapterForm.invalid}"
+        >
+          <span *ngIf="isSaving" class="mr-2">
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          Xuất bản
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Phần version với icon đóng/mở và animation -->
+  <div class="version-panel md:w-1/4 bg-gray-50 p-4 border-l border-gray-200 overflow-hidden transition-all duration-300 ease-in-out"
+       [ngStyle]="{
+         'max-width': isVersionPanelClosed ? '0' : '25%',
+         'opacity': isVersionPanelClosed ? '0' : '1',
+         'padding': isVersionPanelClosed ? '0' : '1rem'
+       }">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-semibold text-gray-700">Phiên bản</h3>
+      <button (click)="toggleVersionPanel()" class="text-gray-500 hover:text-gray-700 focus:outline-none transform transition hover:scale-110">
+        <!-- Icon đóng (X) với animation -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    @for (item of chapterVersion(); track $index) {
+      <app-chapter-version
+        [chapterVersion]="item"
+        [chapterId]="chapter()?.id!"
+        (chapterVersionClickedEvent)="onChapterVersionClicked($event)"
+        (renameChapterVersionEvent)="renameChapterVersion($event)"
+        (rollBackChapterVersionEvent)="rollBackChapterVersion($event)"
+        [currentVersion]="$index === 0">
+      </app-chapter-version>
+    }
+  </div>
+
+  <!-- Button mở panel khi đã đóng với animation -->
+  <button
+    *ngIf="isVersionPanelClosed"
+    (click)="toggleVersionPanel()"
+    class="fixed right-0 top-20 bg-gray-100 p-2 rounded-l-md shadow-md border border-gray-200 text-gray-600 hover:bg-gray-200 focus:outline-none transform transition-all duration-300 hover:scale-110 animate-pulse-slow"
+  >
+    <!-- Icon mở (chevron-left) -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>+
+  </button>
+</div>
+
+<app-chapter-diff *ngIf="currentChapterDiff"
+(closeDiffContentEvent)="closeDiffContent()"
+[chapterVersion]="currentChapterDiff"
+(chapterRenameEvent)="renameChapterVersion($event)"
+(chapterRollBackEvent)="rollBackChapterVersion($event)"
+                  [chapterId]="chapter()?.id!"
+>
+</app-chapter-diff>

@@ -1,0 +1,204 @@
+  <div class="max-w-5xl mx-auto py-8 px-4 sm:px-6">
+      <div *ngIf="isLoading" class="flex justify-center py-12">
+      <svg class="animate-spin h-8 w-8 text-book-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      </div>
+
+      <div *ngIf="!isLoading && book" class="animate-fade-in">
+      <div class="flex items-center space-x-2 text-gray-500 text-sm mb-1">
+          <a routerLink="write-book/books" class="hover:text-book-primary-600">Sách của bạn</a>
+          <span>/</span>
+          <span>{{ book.title }}</span>
+      </div>
+
+      <div class="md:flex md:items-center md:justify-between">
+          <div class="flex-1 min-w-0">
+          <h1 class="text-3xl font-bold text-gray-900 truncate">{{ book.title }}</h1>
+          <div class="mt-2 flex flex-wrap items-center">
+              <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2"
+              [ngClass]="book.isPaid ? 'bg-book-accent-100 text-book-accent-800' : 'bg-emerald-100 text-emerald-800'"
+              >
+              {{ book.isPaid ? 'Trả phí' : 'Miễn phí' }}
+              </span>
+              <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              [ngClass]="book.isCompleted ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'"
+              >
+              {{ book.isCompleted ? 'Hoàn thành' : 'Đang viết' }}
+              </span>
+          </div>
+          </div>
+          <div class="mt-4 flex md:mt-0 md:ml-4">
+          <a
+              [routerLink]="['/write-book/books', book.slug, 'chapters', 'create']"
+              class="btn btn-primary"
+          >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+              Thêm chương mới
+          </a>
+          </div>
+      </div>
+
+      <div class="mt-6">
+          <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+              <h3 class="text-lg font-medium text-gray-900">Chương sách</h3>
+          </div>
+
+          <div *ngIf="chapters.length === 0" class="p-6 text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p class="mt-4 text-gray-500">Chưa có chương nào được thêm</p>
+              <p class="mt-1 text-gray-500">Bắt đầu viết chương đầu tiên cho sách của bạn</p>
+              <div class="mt-4">
+              <a [routerLink]="['/write-book/books', book.slug, 'chapters', 'create']" class="btn btn-primary inline-flex">
+                  Thêm chương mới
+              </a>
+              </div>
+          </div>
+
+          <ul *ngIf="chapters.length > 0" class="divide-y divide-gray-200">
+              <li *ngFor="let chapter of chapters" class="hover:bg-gray-50 transition-colors duration-150">
+              <div class="px-6 py-4 flex items-center">
+                  <div class="mr-4 flex-shrink-0">
+                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-book-primary-100 text-book-primary-900 text-lg font-medium">
+                      {{ chapter.chapterNumber }}
+                  </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                  <h4 class="text-lg font-medium text-gray-900 truncate">{{ chapter.title }}</h4>
+                  <p class="text-sm text-gray-500">
+                      Last updated: {{ chapter.updatedAt | date: 'medium' }}
+                  </p>
+                  </div>
+                  <div class="ml-4 flex-shrink-0 flex space-x-2">
+                  <button
+                      (click)="editChapter(chapter)"
+                      class="cursor-pointer hover:text-book-primary-900 p-2 rounded-full hover:bg-book-primary-50"
+                      title="Edit chapter"
+                  >
+                      <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#000000"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          >
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                  </button>
+                  <button
+                      (click)="deleteChapter(chapter)"
+                      class="cursor-pointer hover:text-red-900 p-2 rounded-full hover:bg-red-50"
+                      title="Delete chapter"
+                  >
+                      <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash fill-red-100" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                      </svg>
+                  </button>
+                  </div>
+              </div>
+              </li>
+          </ul>
+          </div>
+      </div>
+
+      <div class="mt-8">
+          <h3 class="text-xl font-semibold text-gray-900 mb-4">Chi tiết sách</h3>
+
+          <div class="bg-white shadow-sm rounded-lg overflow-hidden text-justify">
+          <dl class="divide-y divide-gray-200">
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Mô tả</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ book.description }}</dd>
+              </div>
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Chính sách</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ book.isPaid ? ('$' + book.price?.toFixed(2)) : 'Miễn phí' }}
+              </dd>
+              </div>
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Yêu cầu đăng kí</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ book.requiresRegistration ? 'Có' : 'Không' }}
+              </dd>
+              </div>
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Trạng thái</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ book.isCompleted ? 'Hoàn thành' : 'Đang viết' }}
+              </dd>
+              </div>
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Thể loại</dt>
+              <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                  <div class="flex flex-wrap gap-1">
+                  <span
+                      *ngFor="let genre of book.genres"
+                      class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-book-primary-100 text-book-primary-800"
+                  >
+                      {{ genre.name }}
+                  </span>
+                  </div>
+              </dd>
+              </div>
+              <div class="px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500">Thẻ</dt>
+              <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                  <div class="flex flex-wrap gap-1">
+                  <span
+                      *ngFor="let tag of book.tags"
+                      class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                  >
+                      {{ tag }}
+                  </span>
+                  </div>
+              </dd>
+              </div>
+          </dl>
+          </div>
+      </div>
+
+      <div class="mt-6 flex justify-start space-x-4">
+          <!-- Nút Quay lại -->
+          <button
+              type="button"
+              routerLink="/write-book/books"
+              class="px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
+          >
+              Quay lại
+          </button>
+
+          <!-- Nút Sửa sách -->
+          <button
+              type="button"
+                (click)="editBook(book)"
+              class="px-5 py-2.5 text-sm font-medium rounded-lg border border-book-primary-500 bg-book-primary-500 hover:bg-book-primary-600 hover:border-book-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
+          >
+              Sửa sách
+          </button>
+
+          <!-- Nút Đánh dấu -->
+          <button
+              type="button"
+              (click)="markBook()"
+              class="px-5 py-2.5 text-sm font-medium rounded-lg border {{book.isCompleted ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100' : 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'}} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-book-primary-500 transition-colors duration-200 shadow-sm"
+          >
+              {{book.isCompleted ? "Đánh dấu sách đang viết" : "Đánh dấu sách hoàn thành"}}
+          </button>
+      </div>
+    </div>
+  </div>

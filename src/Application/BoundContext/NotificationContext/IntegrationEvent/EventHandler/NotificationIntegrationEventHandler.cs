@@ -1,0 +1,3 @@
+﻿namespace Application.BoundContext.NotificationContext.IntegrationEvent.EventHandler;
+
+public class NotificationIntegrationEventHandler;

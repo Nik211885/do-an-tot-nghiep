@@ -1,0 +1,33 @@
+<div 
+    (click)="onSelectGenre()"
+    class="card-hover relative overflow-hidden rounded-3xl shadow-2xl cursor-pointer group h-80"
+    [style.background-image]="'url(' + genre.imageUrl + ')'"
+    style="background-size: cover; background-position: center;"
+>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/30 to-black/90 opacity-90 group-hover:opacity-75 transition-all duration-700 ease-out"></div>
+    
+    <div class="glass-effect absolute top-6 right-6 px-4 py-2 rounded-full text-white/90 text-sm font-medium backdrop-blur-lg bg-white/10 border border-white/20 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+    {{ genre.bookCount }} tác phẩm
+    </div>
+    
+    <div class="absolute inset-0 flex flex-col justify-end p-10 text-white transform transition-all duration-700">
+    <div class="transform translate-y-8 group-hover:translate-y-0 transition-all duration-700">
+        <h3 class="text-4xl font-bold tracking-tight mb-4 transform group-hover:scale-110 origin-left transition-transform duration-500">
+        {{ genre.name }}
+        </h3>
+        
+        <p class="text-lg text-white/90 line-clamp-2 mb-6 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+        {{ genre.description }}
+        </p>
+        
+        <div 
+        class="inline-flex items-center space-x-3 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-200"
+        >
+        <span class="text-sm font-medium uppercase tracking-wider">Xem thêm</span>
+        <div class="w-12 h-12 rounded-full flex items-center justify-center bg-white/20 backdrop-blur-lg group-hover:bg-white/30 transition-all duration-300">
+            <span class="text-2xl transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+    <h1 class="text-3xl font-bold">Tạo sách của bạn</h1>
+    <p class="mt-2">Thực hiện theo các bước dưới đây để tạo ra kiệt tác của bạn</p>
+    </div>
+
+    <div class="step-progress mb-12">
+    <div class="step" [ngClass]="{'step-completed': currentStep > FormStep.BASIC_INFO, 'step-active': currentStep === FormStep.BASIC_INFO}">
+        <div class="step-circle">1</div>
+        <p class="step-text mt-2 text-sm">Thông tin cơ bản</p>
+    </div>
+    <div class="flex-1 px-2">
+        <div class="step-line"></div>
+    </div>
+    <div class="step" [ngClass]="{'step-completed': currentStep > FormStep.PRICING_INFO, 'step-active': currentStep === FormStep.PRICING_INFO}">
+        <div class="step-circle">2</div>
+        <p class="step-text mt-2 text-sm">Chính sách</p>
+    </div>
+    <div class="flex-1 px-2">
+        <div class="step-line"></div>
+    </div>
+    <div class="step" [ngClass]="{'step-completed': currentStep > FormStep.STATUS_INFO, 'step-active': currentStep === FormStep.STATUS_INFO}">
+        <div class="step-circle">3</div>
+        <p class="step-text mt-2 text-sm">Trạng thái</p>
+    </div>
+    <div class="flex-1 px-2">
+        <div class="step-line"></div>
+    </div>
+    <div class="step" [ngClass]="{'step-completed': currentStep > FormStep.TAGS_GENRES, 'step-active': currentStep === FormStep.TAGS_GENRES}">
+        <div class="step-circle">4</div>
+        <p class="step-text mt-2 text-sm">Thẻ & Thể loại</p>
+    </div>
+    </div>
+
+    <div class="bg-white shadow-sm rounded-lg p-6 md:p-8">
+    <div class="step-content" [ngClass]="{'hidden': currentStep !== FormStep.BASIC_INFO}">
+        <app-book-basic-info
+        [book]="book"
+        (nextStep)="onBasicInfoNext($event)"
+        ></app-book-basic-info>
+    </div>
+
+    <div class="step-content" [ngClass]="{'hidden': currentStep !== FormStep.PRICING_INFO}">
+        <app-book-pricing-info
+        [book]="book"
+        (nextStep)="onPricingInfoNext($event)"
+        (previousStep)="onPreviousStep()"
+        ></app-book-pricing-info>
+    </div>
+
+    <div class="step-content" [ngClass]="{'hidden': currentStep !== FormStep.STATUS_INFO}">
+        <app-book-status-info
+        [book]="book"
+        (nextStep)="onStatusInfoNext($event)"
+        (previousStep)="onPreviousStep()"
+        ></app-book-status-info>
+    </div>
+
+    <div class="step-content" [ngClass]="{'hidden': currentStep !== FormStep.TAGS_GENRES}">
+        <app-book-tags-genres
+        [book]="book"
+        (submitBook)="onBookSubmit($event)"
+        (previousStep)="onPreviousStep()"
+        ></app-book-tags-genres>
+    </div>
+    </div>
+</div>

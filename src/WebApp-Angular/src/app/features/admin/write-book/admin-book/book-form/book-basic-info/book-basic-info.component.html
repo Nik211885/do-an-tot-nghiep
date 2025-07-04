@@ -1,0 +1,60 @@
+<form [formGroup]="basicInfoForm" (ngSubmit)="onNext()" class="animate-fade-in">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6">Thông tin sách cơ bản</h2>
+
+  <!-- Tiêu đề -->
+  <div class="form-group">
+    <label for="title" class="form-label">Tiêu đề <span class="text-red-500">*</span></label>
+    <input
+      type="text"
+      id="title"
+      formControlName="title"
+      class="form-input"
+      placeholder="Nhập tiêu đề của sách"
+    >
+    <div *ngIf="basicInfoForm.get('title')?.invalid && basicInfoForm.get('title')?.touched" class="mt-1 text-sm text-red-600">
+      Tiêu đề sách bắt buộc nhập
+    </div>
+  </div>
+
+  <!-- Mô tả -->
+  <div class="form-group">
+    <label for="description" class="form-label">Mô tả <span class="text-red-500">*</span></label>
+    <textarea
+      id="description"
+      formControlName="description"
+      class="form-input min-h-[120px]"
+      placeholder="Viết mô tả sách của bạn"
+    ></textarea>
+    <div *ngIf="basicInfoForm.get('description')?.invalid && basicInfoForm.get('description')?.touched" class="mt-1 text-sm text-red-600">
+      Mô tả của sách bắt buộc
+    </div>
+  </div>
+
+  <!-- Upload ảnh -->
+  <app-image-upload
+    (starUpload)="starUploadFile()"
+    (endUpload)="endUploadFile()"
+    (imageUpload)="getImageUpload($event)"
+    titleForUploadFile="Tải ảnh bìa sách"
+  ></app-image-upload>
+
+  <!-- Nút tiếp theo -->
+  <div class="mt-8 flex justify-end">
+    <button *ngIf="!ignore"
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="basicInfoForm.invalid || isUploading"
+      [ngClass]="{'opacity-50 cursor-not-allowed': basicInfoForm.invalid || isUploading}"
+    >
+      Tiếp theo
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+
+  <p *ngIf="isUploading" class="text-sm text-blue-500 mt-2">
+    Đang tải ảnh lên, vui lòng chờ...
+  </p>
+</form>

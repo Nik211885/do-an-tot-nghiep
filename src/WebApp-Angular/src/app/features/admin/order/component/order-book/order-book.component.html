@@ -1,0 +1,272 @@
+<div *ngIf="paginationOrder" class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 rounded-xl shadow-md p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="mr-4 p-3 bg-white/20 dark:bg-white/10 rounded-lg backdrop-blur-sm">
+              <i class="fas fa-shopping-cart text-white text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold mb-2">Đơn Hàng Của Tôi</h1>
+              <p class="text-indigo-100 dark:text-purple-100">Theo dõi và quản lý các đơn đặt mua sách của bạn</p>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="bg-white/15 dark:bg-white/10 rounded-lg p-4 border border-white/20 backdrop-blur-sm">
+              <div class="text-2xl font-bold text-white">{{paginationOrder.totalCount}}</div>
+              <div class="text-sm text-indigo-100 dark:text-purple-100">Tổng đơn hàng</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 px-8 py-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div class="flex items-center">
+            <div class="mr-4 p-3 bg-indigo-600 dark:bg-indigo-500 rounded-lg">
+              <i class="fas fa-list-alt text-white text-xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">Danh Sách Đơn Hàng</h2>
+              <p class="text-gray-300 dark:text-gray-400 text-sm">Quản lý và theo dõi trạng thái đơn hàng</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <!-- Search Input -->
+            <div class="relative">
+              <input type="text" placeholder="Tìm kiếm đơn hàng..."
+                     class="bg-gray-700 dark:bg-gray-600 text-white placeholder-gray-400 dark:placeholder-gray-300 rounded-lg px-6 py-3 pl-12 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 border border-gray-600 dark:border-gray-500">
+              <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300"></i>
+            </div>
+
+            <!-- Filter Button -->
+            <button class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+              <i class="fas fa-filter"></i>
+              <span class="hidden sm:inline">Lọc</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-hashtag text-indigo-500"></i>
+                <span>Mã Đơn</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-calendar-alt text-indigo-500"></i>
+                <span>Ngày Đặt</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-book text-indigo-500"></i>
+                <span>Sách</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center justify-center space-x-2">
+                <i class="fas fa-sort-numeric-up text-indigo-500"></i>
+                <span>SL</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-dollar-sign text-indigo-500"></i>
+                <span>Tổng Tiền</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center justify-center space-x-2">
+                <i class="fas fa-info-circle text-indigo-500"></i>
+                <span>Trạng Thái</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div class="flex items-center justify-center space-x-2">
+                <i class="fas fa-cogs text-indigo-500"></i>
+                <span>Thao Tác</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+          <tr *ngFor="let o of paginationOrder.items; let i = index"
+              class="hover:bg-blue-50 transition-colors duration-200">
+
+            <!-- Order ID -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="w-2 h-2 bg-indigo-500 rounded-full mr-3"></div>
+                <div class="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                  #{{o.id}}
+                </div>
+              </div>
+            </td>
+
+            <!-- Order Date -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="mr-3 p-2 bg-gray-100 rounded-lg">
+                  <i class="fas fa-calendar text-gray-500"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">{{ o.orderDate | date: 'dd/MM/yyyy' }}</div>
+                  <div class="text-xs text-gray-500">{{ o.orderDate | date: 'HH:mm' }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Books -->
+            <td class="px-6 py-4">
+              <div class="space-y-1 max-w-xs">
+                <button (click)="viewBookDetail(b, $event)" *ngFor="let b of o.orderItems; let j = index"
+                     class="flex items-center p-1 rounded transition-colors duration-200 cursor-pointer hover:bg-gray-100">
+                  <div class="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-3 flex-shrink-0"></div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-gray-900 truncate underline decoration-dotted underline-offset-2">
+                      {{ b.bookName }}
+                    </div>
+                  </div>
+
+                </button>
+              </div>
+            </td>
+
+            <!-- Quantity -->
+            <td class="px-6 py-4 text-center">
+              <div class="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-lg">
+                {{o.orderItems.length}}
+              </div>
+            </td>
+
+            <!-- Total Price -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="mr-2 p-2 bg-green-100 rounded-lg">
+                  <i class="fas fa-coins text-green-600"></i>
+                </div>
+                <div>
+                  <div class="text-lg font-bold text-green-600">{{totalPrice(o)}}</div>
+                  <div class="text-xs text-gray-500">VNĐ</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  {{getLabelForOrderStatus(o)}}
+                </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors duration-200">
+                  <i class="fas fa-eye"></i>
+                </button>
+               <!-- <button class="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors duration-200">
+                  <i class="fas fa-download"></i>
+                </button>-->
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination - Only show if more than 1 page -->
+      <div *ngIf="paginationOrder.totalPages > 1" class="bg-gray-50 px-8 py-6 border-t border-gray-200">
+        <nav class="flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-sm text-gray-600">
+            <span>Hiển thị</span>
+            <span class="font-semibold text-indigo-600">{{(currentPage - 1) * 10 + 1}}</span>
+            <span>-</span>
+            <span class="font-semibold text-indigo-600">{{Math.min(currentPage * 10, paginationOrder.totalCount)}}</span>
+            <span>trong tổng số</span>
+            <span class="font-semibold text-indigo-600">{{paginationOrder.totalCount}}</span>
+            <span>đơn hàng</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <!-- Previous Button -->
+            <button
+              *ngIf="currentPage > 1"
+              (click)="previousPage()"
+              class="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-indigo-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300">
+              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+              </svg>
+            </button>
+
+            <!-- Page Numbers -->
+            <ng-container *ngFor="let page of getVisiblePages()">
+              <!-- Regular Page Number -->
+              <button
+                *ngIf="isClickablePage(page)"
+                (click)="goToPage(Number(page))"
+                [class]="isCurrentPage(page)
+                    ? 'flex items-center justify-center w-10 h-10 bg-indigo-500 text-white rounded-lg font-semibold'
+                    : 'flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-indigo-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300 font-medium'">
+                {{page}}
+              </button>
+
+              <!-- Ellipsis -->
+              <span
+                *ngIf="!isClickablePage(page)"
+                class="flex items-center justify-center w-10 h-10 text-gray-400 font-medium">
+                {{page}}
+              </span>
+            </ng-container>
+
+            <!-- Next Button -->
+            <button
+              *ngIf="currentPage < (paginationOrder?.totalPages ?? 1)"
+              (click)="nextPage()"
+              class="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-indigo-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300">
+              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Simplified Loading State -->
+<div *ngIf="!paginationOrder" class="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-8 w-80 shadow-xl">
+    <!-- Loading Animation -->
+    <div class="flex items-center justify-center mb-6">
+      <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Loading Text -->
+    <div class="text-center">
+      <div class="text-gray-800 text-lg font-semibold mb-2">
+        Đang tải dữ liệu...
+      </div>
+      <div class="text-gray-600 text-sm">
+        Vui lòng chờ trong giây lát
+      </div>
+    </div>
+  </div>
+</div>

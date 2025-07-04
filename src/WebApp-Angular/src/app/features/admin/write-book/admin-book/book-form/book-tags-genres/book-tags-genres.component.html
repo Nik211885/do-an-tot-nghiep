@@ -1,0 +1,100 @@
+<form [formGroup]="tagsForm" (ngSubmit)="onSubmit()" class="animate-fade-in">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Thẻ & Thể Loại</h2>
+
+    <div class="form-group">
+    <label for="newTag" class="form-label">Thẻ <span class="text-red-500">*</span></label>
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span
+        *ngFor="let tag of tags"
+        class="inline-flex items-center bg-book-primary-100 text-book-primary-800 rounded-full px-3 py-1 text-sm"
+        >
+        {{ tag }}
+        <button
+            type="button"
+            (click)="removeTag(tag)"
+            class="ml-1.5 text-book-primary-600 hover:text-book-primary-900"
+        >
+            ×
+        </button>
+        </span>
+    </div>
+
+    <div class="relative w-full">
+        <input
+            type="text"
+            id="newTag"
+            formControlName="newTag"
+            class="form-input w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+            placeholder="Thêm một thẻ (ví dụ: thời trung cổ, rồng, tình yêu)"
+            (keydown.enter)="$event.preventDefault(); addTag()"
+        >
+        <button
+            type="button"
+            (click)="addTag()"
+            class="absolute right-0 top-0 h-full bg-primary-600 text-white px-3 rounded-r-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 border-l border-primary-700"
+        >
+            Thêm
+        </button>
+    </div>
+
+    <div *ngIf="tagsForm.get('newTag')?.invalid && tagsForm.get('newTag')?.dirty" class="mt-1 text-sm text-red-600">
+        Tag must be between 2 and 20 characters
+    </div>
+    <div *ngIf="tags.length === 0 && tagsFormSubmitted" class="mt-1 text-sm text-red-600">
+        Add at least one tag
+    </div>
+    <div class="mt-1 text-sm text-gray-500">
+        Thẻ giúp người đọc tìm thấy sách của bạn. Thêm các từ khóa đại diện cho chủ đề của sách.
+    </div>
+    </div>
+
+    <div class="form-group mt-6">
+    <label class="form-label">Thể loại <span class="text-red-500">*</span></label>
+    <div class="flex flex-wrap gap-2 mt-2">
+        <div
+        *ngFor="let genre of genres"
+        class="inline-block"
+        >
+        <button
+            type="button"
+            (click)="toggleGenre(genre)"
+            class="px-3 py-1.5 text-sm rounded-full transition-colors duration-200"
+            [ngClass]="selectedGenres.includes(genre.id) ?
+            'bg-primary-600 text-white' :
+            'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+        >
+            {{ genre.name }}
+        </button>
+        </div>
+    </div>
+    <div *ngIf="selectedGenres.length === 0 && tagsFormSubmitted" class="mt-2 text-sm text-red-600">
+        Chọn ít nhất một thể loại
+    </div>
+    <div class="mt-2 text-sm text-gray-500">
+        Chọn thể loại mô tả tốt nhất cuốn sách của bạn. Điều này giúp phân loại.
+    </div>
+    </div>
+
+      <div class="mt-8 flex justify-between" *ngIf="!ignore">
+    <button
+        type="button"
+        (click)="onPrevious()"
+        class="btn btn-secondary"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L5.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M15.707 4.293a1 1 0 010 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Quay Lại
+    </button>
+    <button
+        type="submit"
+        class="btn btn-primary"
+    >
+        Tạo sách
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    </div>
+</form>

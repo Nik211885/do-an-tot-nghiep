@@ -1,0 +1,64 @@
+<form [formGroup]="statusForm" (ngSubmit)="onNext()" class="animate-fade-in">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Trạng thái</h2>
+
+    <div class="form-group">
+    <label class="form-label">Trạng thái <span class="text-red-500">*</span></label>
+    <div class="mt-2 space-y-4">
+        <div class="flex items-center p-4 border rounded-lg" [ngClass]="statusForm.get('isCompleted')?.value ? 'bg-gray-50 border-gray-300' : 'bg-book-primary-50 border-book-primary-300'">
+        <input
+            type="radio"
+            id="inProgress"
+            [value]="false"
+            formControlName="isCompleted"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <div class="ml-3">
+            <label for="inProgress" class="font-medium text-gray-800">Đang viết / Xuất bản từng chương</label>
+            <p class="text-sm text-gray-600 mt-1">
+                Bạn sẽ thêm chương khi viết. Người đọc có thể theo dõi khi có chương mới.
+            </p>
+        </div>
+        </div>
+
+        <div class="flex items-center p-4 border rounded-lg" [ngClass]="statusForm.get('isCompleted')?.value ? 'bg-book-primary-50 border-book-primary-300' : 'bg-gray-50 border-gray-300'">
+        <input
+            type="radio"
+            id="completed"
+            [value]="true"
+            formControlName="isCompleted"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <div class="ml-3">
+            <label for="completed" class="font-medium text-gray-800">Hoàn thành</label>
+            <p class="text-sm text-gray-600 mt-1">
+                Sách của bạn đã hoàn thành. Tất cả các chương sẽ có ngay lập tức.
+            </p>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="mt-8 flex justify-between" *ngIf="!ignore">
+    <button
+        type="button"
+        (click)="onPrevious()"
+        class="btn btn-secondary"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L5.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M15.707 4.293a1 1 0 010 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Quay lại
+    </button>
+    <button
+        type="submit"
+        class="btn btn-primary"
+    >
+        Tiếp theo
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    </div>
+</form>

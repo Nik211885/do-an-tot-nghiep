@@ -1,0 +1,111 @@
+<div class="comment-container py-4">
+  <div class="flex space-x-4">
+    <!-- Enhanced Avatar -->
+    <div class="flex-shrink-0">
+      <div class="relative">
+        <div *ngIf="currentUser" class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 avatar-glow">
+          <span>{{currentUser.lastName.charAt(0)}}</span>
+        </div>
+        <!-- Online indicator -->
+        <div class="absolute -bottom-1 -right-1 w-4 h-4  border-2 border-white rounded-full shadow-sm"></div>
+      </div>
+    </div>
+
+    <!-- Enhanced Comment content -->
+    <div class="flex-grow">
+      <div class="content-card p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover-lift">
+        <div class="flex items-start justify-between">
+          <div class="flex flex-col">
+            <h4 class="font-semibold text-lg">{{ comment.user.lastName }}</h4>
+            <p class="text-xs mt-1 flex items-center">
+              <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clip-rule="evenodd"></path>
+              </svg>
+              {{ formatDate(comment.dateCreated) }}
+            </p>
+          </div>
+          <!-- Action menu -->
+ <!--         <div class="flex space-x-1">
+            <button class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+              </svg>
+            </button>
+          </div>-->
+        </div>
+
+        <div class="mt-4  leading-relaxed whitespace-pre-line">
+          {{ comment.content }}
+        </div>
+
+        <!-- Engagement stats -->
+        <div class="flex items-center space-x-4 mt-4 pt-3 border-t border-gray-100">
+          <!--<button class="flex items-center space-x-2 hover:text-red-500 transition-colors comment-transition">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm">0</span>
+          </button>-->
+          <button (click)="showMoreComment($event)" class="flex items-center space-x- hover:text-blue-500 transition-colors comment-transition">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm">{{ comment.replyCount || 0 }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Enhanced Reply button -->
+      <div class="flex mt-4">
+        <div class="ml-2">
+          <button
+            (click)="toggleReplyForm()"
+            class="text-sm font-medium px-4 py-2 rounded-lg shadow-sm comment-transition flex items-center space-x-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414L2.586 8l3.707-3.707a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span>Trả lời</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Enhanced Reply form -->
+      <div *ngIf="isReplying" class="mt-4">
+        <div class="gradient-border">
+          <div class="gradient-border-inner p-4">
+            <app-comment-input
+              [currentUser]="currentUser"
+              submitLabel="Trả lời"
+              placeholder="Viết phản hồi ..."
+              [showCancel]="true"
+              [autoFocus]="true"
+              (handleSubmit)="addReply($event)"
+              (handleCancel)="toggleReplyForm()"
+            ></app-comment-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Nested replies -->
+      <div *ngIf="!isTurnOfComment" class="mt-6 pl-6 reply-indicator">
+        <app-comment
+          *ngFor="let reply of comment.comments"
+          [comment]="reply"
+          [currentUser]="currentUser"
+          (showMoreMessageEvent)="showMoreMessageEvent.emit($event)"
+          (addNewReply)="addNewReply.emit($event)"
+          class="mb-4 last:mb-0"
+        ></app-comment>
+        <button
+          (click)="moreMessage($event)"
+          *ngIf="hasNextPage.hasNextPage"
+          class="inline-flex items-center space-x-2 mt-4 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-lg transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+          <span>Xem thêm câu trả lời</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

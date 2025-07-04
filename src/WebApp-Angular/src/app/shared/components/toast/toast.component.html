@@ -1,0 +1,18 @@
+<div class="fixed top-4 right-4 z-[1000] flex flex-col gap-3" *ngIf="toasts.length > 0">
+  <div
+    *ngFor="let toast of toasts"
+    class="flex items-center justify-between min-w-[250px] max-w-[350px] p-4 rounded-md shadow-lg text-white animate-fade-in"
+    [class.bg-green-500]="toast.type === 'success'"
+    [class.bg-red-500]="toast.type === 'error'"
+    [class.bg-yellow-500]="toast.type === 'warning'"
+    [class.bg-blue-500]="toast.type === 'info'"
+  >
+    <span class="flex-grow pr-2">{{ toast.message }}</span>
+    <button 
+      class="ml-3 text-white hover:text-gray-200 text-lg font-bold transition-colors"
+      (click)="removeToast(toast)"
+    >
+      &times;
+    </button>
+  </div>
+</div>

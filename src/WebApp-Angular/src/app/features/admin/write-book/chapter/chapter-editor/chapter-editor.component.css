@@ -1,0 +1,122 @@
+/* Animation for version panel slide */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.panel-opening .version-panel {
+  animation: slideIn 0.3s ease-in-out forwards;
+}
+
+.panel-closing .version-panel {
+  animation: slideOut 0.3s ease-in-out forwards;
+}
+
+/* Custom slow pulse animation for panel toggle button */
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s infinite ease-in-out;
+}
+
+/* Smooth transition for content resizing */
+.flex-1 {
+  transition: width 0.3s ease-in-out;
+}
+
+/* CKEditor aggressive text wrapping - highest specificity approach */
+.ck.ck-editor__editable.ck.ck-editor__editable.ck.ck-editor__editable,
+.ck.ck-editor__editable > *,
+.ck-content.ck-content.ck-content,
+.ck-content > * {
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  max-width: 100% !important;
+}
+
+/* Ensure CKEditor toolbar doesn't overflow */
+.ck.ck-toolbar {
+  flex-wrap: wrap !important;
+}
+
+/* Fix for tables in CKEditor */
+.ck.ck-editor__editable table {
+  table-layout: fixed !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.ck.ck-editor__editable td,
+.ck.ck-editor__editable th {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+  max-width: 100% !important;
+}
+
+/* Add custom class to serve as a hook for JS-applied styles */
+.word-wrap-enforced {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  max-width: 100% !important;
+}
+
+/* Global CSS hack to force text wrapping in all elements */
+* {
+  max-width: 100%;
+}
+
+/* Target the specific elements using attribute selectors for higher specificity */
+[role="textbox"],
+[contenteditable="true"],
+[data-placeholder] {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  max-width: 100% !important;
+}
+
+/* Ensure CKEditor's inner elements are properly sized */
+.ck-editor__editable {
+  min-height: 500px !important;
+}
+
+/* Handle mobile responsiveness */
+@media (max-width: 768px) {
+  .ck-editor__editable {
+    min-height: 300px !important;
+  }
+}
+

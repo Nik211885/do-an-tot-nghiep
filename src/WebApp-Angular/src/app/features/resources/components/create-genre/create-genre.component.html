@@ -1,0 +1,171 @@
+<div class="max-w-4xl mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+      <h1 class="text-4xl font-bold mb-2">{{isEditMode ? 'Cập nhật thể loại' : 'Tạo thể loại mới'}}</h1>
+      <p class="text-blue-100 text-lg">{{isEditMode ? 'Chỉnh sửa thông tin thể loại' : 'Thêm thể loại sách mới vào hệ thống'}}</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+    <form #genreForm="ngForm" (ngSubmit)="onSubmit(genreForm)">
+      <!-- Form Header -->
+      <div class="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div class="flex items-center space-x-3">
+          <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+          <h2 class="text-2xl font-bold text-gray-800">Thông tin thể loại</h2>
+        </div>
+      </div>
+
+      <!-- Form Body -->
+      <div class="p-8 space-y-8">
+
+        <!-- Name Field -->
+        <div class="space-y-2">
+          <label for="name" class="block text-sm font-bold text-gray-700 flex items-center space-x-2">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+            </svg>
+            <span>Tên thể loại</span>
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            [(ngModel)]="genre.name"
+            #nameInput="ngModel"
+            required
+            maxlength="100"
+            placeholder="Nhập tên thể loại (vd: Tiểu thuyết, Khoa học viễn tưởng...)"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 text-lg placeholder-gray-400">
+
+          <!-- Name Error Messages -->
+          <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="space-y-1">
+            <p *ngIf="nameInput.errors?.['required']" class="text-red-500 text-sm flex items-center space-x-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Tên thể loại là bắt buộc</span>
+            </p>
+          </div>
+
+          <!-- Character Count -->
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-gray-500">
+              Tên thể loại sẽ được hiển thị công khai
+            </div>
+            <div class="text-xs text-gray-500">
+              {{genre.name?.length || 0}}/100 ký tự
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Field -->
+        <div class="space-y-2">
+          <label for="description" class="block text-sm font-bold text-gray-700 flex items-center space-x-2">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>Mô tả thể loại</span>
+            <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            [(ngModel)]="genre.description"
+            #descriptionInput="ngModel"
+            required
+            maxlength="500"
+            rows="4"
+            placeholder="Mô tả chi tiết về thể loại này (vd: Thể loại văn học kể chuyện dài với cốt truyện phức tạp...)"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 text-lg placeholder-gray-400 resize-none"></textarea>
+
+          <!-- Description Error Messages -->
+          <div *ngIf="descriptionInput.invalid && (descriptionInput.dirty || descriptionInput.touched)" class="space-y-1">
+            <p *ngIf="descriptionInput.errors?.['required']" class="text-red-500 text-sm flex items-center space-x-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Mô tả thể loại là bắt buộc</span>
+            </p>
+          </div>
+
+          <!-- Character Count -->
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-gray-500">
+              Mô tả sẽ giúp người đọc hiểu rõ hơn về thể loại
+            </div>
+            <div class="text-xs text-gray-500">
+              {{genre.description?.length || 0}}/500 ký tự
+            </div>
+          </div>
+        </div>
+        <app-image-upload
+          (starUpload)="starUploadFile()"
+          (endUpload)="endUploadFile()"
+          (imageUpload)="getImageUpload($event)"
+          titleForUploadFile="Tải ảnh bìa thể loại"
+        ></app-image-upload>
+        <br/>
+      </div>
+
+      <!-- Form Footer -->
+      <div class="px-8 py-6 bg-gradient-to-r from-gray-50 to-white border-t border-gray-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-sm text-gray-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Tất cả thông tin được đánh dấu (*) là bắt buộc</span>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <button
+              type="button"
+              (click)="onCancel()"
+              class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105">
+              Hủy bỏ
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="!genreForm.valid || isSubmitting"
+              class="group px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+
+              <span *ngIf="!isSubmitting" class="flex items-center space-x-2">
+                <svg class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>{{isEditMode ? 'Cập nhật thể loại' : 'Tạo thể loại'}}</span>
+              </span>
+
+              <span *ngIf="isSubmitting" class="flex items-center space-x-2">
+                <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                <span>{{isEditMode ? 'Đang cập nhật...' : 'Đang tạo...'}}</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="showSuccessMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-2 animate-pulse">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span>{{isEditMode ? 'Cập nhật thành công!' : 'Tạo thể loại thành công!'}}</span>
+  </div>
+
+  <div *ngIf="showErrorMessage" class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-2 animate-pulse">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>{{isEditMode ? 'Cập nhật thất bại!' : 'Tạo thể loại thất bại!'}}</span>
+  </div>
+</div>

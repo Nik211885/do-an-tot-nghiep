@@ -1,0 +1,209 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <button
+            (click)="goBack()"
+            class="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Quay lại
+          </button>
+          <h1 class="text-3xl font-bold text-gray-900">Chi tiết thể loại</h1>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center space-x-3" *ngIf="genre && !isLoading">
+          <button
+            *ngIf="!isEditing"
+            (click)="toggleEdit()"
+            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Chỉnh sửa
+          </button>
+
+          <button
+            (click)="toggleActive()"
+            [class]="genre.isActive ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'"
+            class="inline-flex items-center px-4 py-2 text-white rounded-lg transition-colors duration-200">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+            </svg>
+            {{ genre.isActive ? 'Vô hiệu hóa' : 'Kích hoạt' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Error state -->
+    <div *ngIf="!isLoading && !genre" class="text-center py-12">
+      <div class="text-gray-500 text-lg">Không tìm thấy thông tin thể loại</div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="genre && !isLoading" class="bg-white rounded-xl shadow-sm overflow-hidden">
+
+      <!-- View Mode -->
+      <div *ngIf="!isEditing" class="p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          <!-- Avatar -->
+          <div class="lg:col-span-1">
+            <div class="aspect-square rounded-xl overflow-hidden bg-gray-100">
+              <img
+                *ngIf="genre.avatarUrl"
+                [src]="genre.avatarUrl"
+                [alt]="genre.name"
+                class="w-full h-full object-cover">
+              <div
+                *ngIf="!genre.avatarUrl"
+                class="w-full h-full flex items-center justify-center text-gray-400">
+                <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <div class="lg:col-span-2 space-y-6">
+
+            <!-- Name and Status -->
+            <div class="flex items-start justify-between">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ genre.name }}</h2>
+                <div class="flex items-center space-x-2">
+                  <span [class]="genre.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                        class="px-3 py-1 rounded-full text-sm font-medium">
+                    {{ genre.isActive ? 'Đang hoạt động' : 'Không hoạt động' }}
+                  </span>
+                  <span class="text-sm text-gray-500">{{ genre.slug }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">Mô tả</h3>
+              <p class="text-gray-700 leading-relaxed">{{ genre.description || 'Chưa có mô tả' }}</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="text-sm text-blue-600 font-medium">Số lượng sách</div>
+                <div class="text-2xl font-bold text-blue-900">{{ genre.coutBook ? 'Có' : 'Không' }}</div>
+              </div>
+              <div class="bg-purple-50 p-4 rounded-lg">
+                <div class="text-sm text-purple-600 font-medium">Trạng thái</div>
+                <div class="text-2xl font-bold text-purple-900">{{ genre.isActive ? 'Hoạt động' : 'Tạm dừng' }}</div>
+              </div>
+            </div>
+
+            <!-- Timestamps -->
+            <div class="border-t pt-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span class="text-gray-500">Ngày tạo:</span>
+                  <span class="ml-2 text-gray-900">{{ genre.createdDateTime | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Cập nhật lần cuối:</span>
+                  <span class="ml-2 text-gray-900">{{ genre.lastUpdatedDateTime | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div *ngIf="isEditing" class="p-8">
+        <form (ngSubmit)="saveChanges()" class="space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"> <!-- Thêm items-start -->
+
+            <!-- Avatar Preview -->
+            <div class="lg:col-span-1 h-full flex flex-col"> <!-- Thêm h-full flex flex-col -->
+              <label class="block text-sm font-medium text-gray-700 mb-3">Ảnh đại diện</label>
+              <div class="flex-1"> <!-- Thêm flex-1 để chiếm hết không gian -->
+                <app-image-upload
+                  (starUpload)="starUploadFile()"
+                  (endUpload)="endUploadFile()"
+                  [imageUrl]="editForm.avatarUrl"
+                  (imageUpload)="getImageUpload($event)"
+                ></app-image-upload>
+              </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="lg:col-span-2 space-y-6 h-full flex flex-col"> <!-- Thêm h-full flex flex-col -->
+
+              <!-- Name -->
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                  Tên thể loại <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  [(ngModel)]="editForm.name"
+                  name="name"
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  placeholder="Nhập tên thể loại">
+              </div>
+
+              <!-- Description -->
+              <div class="flex-1"> <!-- Thêm flex-1 để textarea chiếm hết không gian còn lại -->
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                  Mô tả
+                </label>
+                <textarea
+                  id="description"
+                  [(ngModel)]="editForm.description"
+                  name="description"
+                  class="w-full h-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none overflow-y-auto"
+                  placeholder="Nhập mô tả thể loại"></textarea>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center space-x-4 pt-4">
+                <!-- Buttons giữ nguyên -->
+                <button
+                  type="submit"
+                  [disabled]="isSaving"
+                  class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <svg *ngIf="isSaving" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ isSaving ? 'Đang lưu...' : 'Lưu thay đổi' }}
+                </button>
+
+                <button
+                  type="button"
+                  (click)="cancelEdit()"
+                  [disabled]="isSaving"
+                  class="inline-flex items-center px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

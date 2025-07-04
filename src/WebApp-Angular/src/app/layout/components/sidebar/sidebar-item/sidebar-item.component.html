@@ -1,0 +1,98 @@
+<div class="mb-1 relative" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <a
+    [href]="item.children && item.children.length > 0 ? 'javascript:void(0)' : item.route"
+    class="sidebar-link flex items-center px-3 py-2 rounded-md transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+    [class.sidebar-link-active]="isActive"
+    [class.justify-center]="collapsed"
+    [title]="collapsed ? item.label : ''"
+    (click)="toggleExpand($event)"
+  >
+    <span class="flex-shrink-0 text-gray-500 dark:text-gray-400" [class.mr-3]="!collapsed">
+      <!-- Use icon from item prop if available, otherwise use default -->
+      <ng-container *ngIf="item.icon; else defaultIcon">
+        <img src="{{item.icon}}"class="w-6 h-6">
+      </ng-container>
+      <ng-template #defaultIcon>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+      </ng-template>
+    </span>
+
+    <ng-container *ngIf="!collapsed">
+      <span class="truncate">{{ item.label }}</span>
+
+      <ng-container *ngIf="item.badge">
+        <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+          [ngClass]="item.badge.color">
+          {{ item.badge.text }}
+        </span>
+      </ng-container>
+
+      <ng-container *ngIf="item.children && item.children.length > 0">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="ml-auto h-4 w-4 transition-transform"
+          [class.rotate-90]="isExpanded"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </ng-container>
+    </ng-container>
+  </a>
+
+  <div *ngIf="item.children && item.children.length > 0 && isExpanded && !collapsed"
+    class="mt-1 ml-4 pl-3 border-l border-gray-200 dark:border-gray-700 space-y-1">
+    <ng-container *ngFor="let child of item.children; trackBy: trackById">
+      <a
+        [href]="child.route"
+        class="sidebar-link flex items-center px-3 py-2 rounded-md transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+        [class.sidebar-link-active]="false"
+      >
+        <span class="mr-3 flex-shrink-0 text-gray-500 dark:text-gray-400" *ngIf="child.icon">
+          <img src="{{child.icon}}"class="w-6 h-6">
+        </span>
+        <span class="truncate">{{ child.label }}</span>
+
+        <ng-container *ngIf="child.badge">
+          <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+            [ngClass]="child.badge.color">
+            {{ child.badge.text }}
+          </span>
+        </ng-container>
+      </a>
+    </ng-container>
+  </div>
+
+  <!-- Hiển thị menu con khi hover (chỉ khi sidebar thu gọn) -->
+  <div *ngIf="collapsed && item.children && item.children.length > 0"
+    class="dropdown-menu absolute left-full top-0 ml-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700"
+    [class.hidden]="!isActive && !isHovered"
+    [class.block]="isActive || isHovered">
+    <div class="px-3 py-2 font-medium border-b border-gray-200 dark:border-gray-700 mb-1">
+      {{ item.label }}
+    </div>
+    <ng-container *ngFor="let child of item.children; trackBy: trackById">
+      <a
+        [routerLink]="child.route"
+        class="sidebar-link flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+        [class.sidebar-link-active]="false"
+      >
+        <span class="mr-3 flex-shrink-0 text-gray-500 dark:text-gray-400" *ngIf="child.icon">
+          <img src="{{child.icon}}"class="w-6 h-6">
+        </span>
+        <span class="truncate">{{ child.label }}</span>
+
+        <ng-container *ngIf="child.badge">
+          <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+            [ngClass]="child.badge.color">
+            {{ child.badge.text }}
+          </span>
+        </ng-container>
+      </a>
+    </ng-container>
+  </div>
+</div>

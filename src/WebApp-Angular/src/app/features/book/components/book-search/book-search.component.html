@@ -1,0 +1,294 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="container mx-auto px-4 py-8">
+
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-800 dark:text-white mb-6">
+        <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+          📚 Tìm Kiếm Sách
+        </span>
+      </h1>
+      <p class="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+        Khám phá thế giới tri thức với hàng ngàn cuốn sách đa dạng từ khắp nơi trên thế giới
+      </p>
+    </div>
+
+    <!-- Enhanced Search Section -->
+    <div class="max-w-4xl mx-auto mb-12">
+      <div class="relative">
+        <form (ngSubmit)="onSearchSubmit()" class="relative">
+          <div class="relative group">
+            <!-- Main Search Input -->
+            <input
+              #searchInput
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="onSearchInput($event)"
+              (focus)="onInputFocus()"
+              (blur)="onInputBlur()"
+              (keydown)="onKeyDown($event)"
+              name="searchTerm"
+              placeholder="Nhập tên sách, tác giả, thể loại, ISBN..."
+              autocomplete="off"
+              class="w-full px-6 py-5 pl-16 pr-36 text-lg rounded-2xl border-2 border-gray-200 dark:border-gray-600
+                     bg-white dark:bg-gray-800 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400
+                     focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/20
+                     outline-none transition-all duration-300 shadow-lg hover:shadow-xl
+                     group-hover:border-blue-300 dark:group-hover:border-blue-500 group-hover:shadow-2xl"
+            />
+
+            <!-- Search Icon -->
+            <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-blue-500 transition-all duration-300">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-2">
+              <!-- Voice Search Button -->
+              <button
+                type="button"
+                (click)="startVoiceSearch()"
+                class="p-2.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20
+                       rounded-lg transition-all duration-200 group/voice"
+                title="Tìm kiếm bằng giọng nói"
+              >
+                <svg class="w-5 h-5 group-hover/voice:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                </svg>
+              </button>
+
+              <!-- Clear Button -->
+              <button
+                *ngIf="searchTerm"
+                type="button"
+                (click)="clearSearch()"
+                class="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20
+                       rounded-lg transition-all duration-200 group/clear"
+                title="Xóa tìm kiếm"
+              >
+                <svg class="w-5 h-5 group-hover/clear:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+
+              <!-- Search Button -->
+              <button
+                type="submit"
+                [disabled]="!searchTerm.trim() || isLoading"
+                class="px-6 py-2.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-lg
+                       hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed
+                       transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl
+                       flex items-center gap-2 font-medium"
+              >
+                <span *ngIf="!isLoading">Tìm kiếm</span>
+                <span *ngIf="isLoading">Đang tìm...</span>
+                <svg *ngIf="!isLoading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <div *ngIf="isLoading" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Search Suggestions Dropdown -->
+        <div
+          *ngIf="showSuggestions && stringSuggestions && stringSuggestions.length > 0"
+          class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl
+                 border border-gray-200 dark:border-gray-600 z-50 max-h-80 overflow-y-auto
+                 backdrop-blur-lg bg-opacity-95 dark:bg-opacity-95"
+        >
+          <div class="p-2">
+            <div class="text-xs text-gray-500 dark:text-gray-400 px-3 py-2 font-medium uppercase tracking-wide">
+              Gợi ý tìm kiếm
+            </div>
+            <div
+              *ngFor="let suggestion of stringSuggestions; let i = index"
+              (click)="selectSuggestion(suggestion)"
+              (mouseenter)="selectedSuggestionIndex = i"
+              [class.bg-blue-50]="selectedSuggestionIndex === i"
+              [class.dark:bg-blue-900]="selectedSuggestionIndex === i"
+            class="flex items-center px-3 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20
+            cursor-pointer rounded-lg transition-all duration-200 group/suggestion"
+            >
+            <svg class="w-4 h-4 text-gray-400 mr-3 group-hover/suggestion:text-blue-500 transition-colors"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <span class="text-gray-700 dark:text-gray-300 group-hover/suggestion:text-blue-600 dark:group-hover/suggestion:text-blue-400">
+                {{suggestion}}
+              </span>
+            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 ml-auto opacity-0 group-hover/suggestion:opacity-100 transition-opacity"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popular Search Tags -->
+      <!--<div class="mt-6 flex flex-wrap gap-3 justify-center">
+          <span class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-2 w-full text-center">
+            Tìm kiếm phổ biến:
+          </span>
+        <span
+          *ngFor="let tag of popularTags"
+          class="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-600
+                   text-gray-700 dark:text-gray-300 rounded-full text-sm cursor-pointer
+                   hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30
+                   hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-300
+                   transform hover:scale-105 shadow-sm hover:shadow-md"
+          (click)="searchTerm = tag; onSearchSubmit()"
+        >
+            {{tag}}
+          </span>
+      </div>-->
+    </div>
+  </div>
+
+  <!-- Advanced Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+    <div class="text-center">
+      <div class="relative mb-6">
+        <div class="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+        <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-purple-600 rounded-full animate-spin mx-auto mt-2 ml-2"></div>
+        <div class="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-pink-600 rounded-full animate-spin mx-auto mt-4 ml-4"></div>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Đang tìm kiếm sách...</h3>
+      <p class="text-gray-500 dark:text-gray-400">Vui lòng chờ trong giây lát</p>
+      <div class="mt-4 flex justify-center gap-1">
+        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+        <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+        <div class="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div *ngIf="!isLoading && hasSearched">
+    <!-- Enhanced Results Header -->
+    <div *ngIf="paginationBook && paginationBook.items && paginationBook.items.length > 0"
+         class="mb-8 text-center bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-700
+                  rounded-2xl shadow-lg p-8 border border-gray-200 dark:border-gray-600">
+      <div class="flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
+          Kết quả tìm kiếm
+        </h2>
+      </div>
+      <p class="text-lg text-gray-600 dark:text-gray-300 mb-2">
+        Từ khóa: <span class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full">"{{searchTerm}}"</span>
+      </p>
+      <p class="text-gray-500 dark:text-gray-400">
+        Tìm thấy <span class="font-bold text-2xl text-green-600 dark:text-green-400">{{paginationBook.totalCount}}</span> cuốn sách phù hợp
+      </p>
+    </div>
+
+    <!-- Enhanced Books Grid -->
+    <div *ngIf="paginationBook && paginationBook.items && paginationBook.items.length > 0"
+         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 mb-12">
+      <div *ngFor="let book of paginationBook.items; let i = index"
+           class="group transform hover:scale-105 transition-all duration-500 "
+           [style.animation-delay]="i * 100 + 'ms'"
+           style="animation: fadeInUp 0.6s ease-out forwards;">
+        <app-book-card [book]="book" class="h-full"></app-book-card>
+      </div>
+    </div>
+
+    <!-- Enhanced No Results -->
+    <div *ngIf="paginationBook && paginationBook.items && paginationBook.items.length === 0"
+         class="text-center py-20">
+      <div class="max-w-lg mx-auto">
+        <div class="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600
+                      rounded-full flex items-center justify-center animate-pulse">
+          <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          😔 Không tìm thấy kết quả
+        </h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-2 text-lg">
+          Không có sách nào phù hợp với từ khóa
+        </p>
+        <p class="font-medium text-blue-600 dark:text-blue-400 mb-8 text-xl">
+          "{{searchTerm}}"
+        </p>
+        <div class="space-y-4">
+          <p class="text-gray-500 dark:text-gray-400">
+            💡 <strong>Gợi ý:</strong> Thử tìm kiếm với từ khóa khác hoặc kiểm tra chính tả
+          </p>
+          <button
+            (click)="clearSearch()"
+            class="px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl
+                     hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transform hover:scale-105
+                     transition-all duration-300 shadow-lg hover:shadow-xl font-medium text-lg">
+            🔍 Tìm kiếm mới
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Pagination -->
+    <div *ngIf="paginationBook && paginationBook.totalCount > pageSize"
+         class="mt-20">
+      <div class="bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-700
+                    rounded-2xl shadow-lg border border-gray-200 dark:border-gray-600 p-8">
+        <app-pagination
+          (changeCurrentPage)="changeCurrentPage($event)"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pagination]="paginationBook"
+          class="flex justify-center">
+        </app-pagination>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Welcome State -->
+  <div *ngIf="!isLoading && !hasSearched" class="text-center py-20">
+    <div class="max-w-3xl mx-auto">
+      <div class="w-40 h-40 mx-auto mb-10 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100
+                    dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full
+                    flex items-center justify-center animate-bounce">
+        <svg class="w-20 h-20 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+      </div>
+      <h3 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6">
+        🚀 Bắt đầu hành trình khám phá
+      </h3>
+      <p class="text-gray-600 dark:text-gray-300 text-lg md:text-xl leading-relaxed mb-8">
+        Nhập từ khóa vào ô tìm kiếm để khám phá thư viện sách phong phú với hàng ngàn đầu sách từ mọi thể loại
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-4xl mb-4">📚</div>
+          <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Đa dạng thể loại</h4>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Văn học, khoa học, lịch sử, tâm lý...</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-4xl mb-4">🔍</div>
+          <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Tìm kiếm thông minh</h4>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Gợi ý tự động và tìm kiếm nhanh</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-4xl mb-4">⚡</div>
+          <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Cập nhật liên tục</h4>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">Thư viện được cập nhật thường xuyên</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

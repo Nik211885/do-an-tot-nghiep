@@ -1,0 +1,31 @@
+.sidebar-link {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+.sidebar-link-active {
+  @apply bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400;
+  @apply font-medium;
+}
+
+.sidebar-link:hover {
+  @apply text-gray-900 dark:text-white;
+}
+
+.dropdown-menu {
+  @apply invisible opacity-0 transition-all duration-150;
+}
+
+div:hover > .dropdown-menu,
+.dropdown-menu:hover {
+  @apply visible opacity-100;
+}
+
+/* Khắc phục cho IE11 và các trình duyệt cũ hơn */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .dropdown-menu.block {
+    display: block !important;
+  }
+  .dropdown-menu.hidden {
+    display: none !important;
+  }
+}

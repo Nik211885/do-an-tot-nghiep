@@ -1,0 +1,360 @@
+<!-- Loading Overlay -->
+<div *ngIf="isLoadContent" class="fixed inset-0 bg-gradient-to-br from-slate-900/95 via-purple-900/90 to-slate-900/95 backdrop-blur-3xl flex items-center justify-center z-50">
+  <div class="flex flex-col items-center justify-center p-16 bg-white/5 dark:bg-black/10 backdrop-blur-3xl rounded-3xl shadow-2xl border border-white/10 dark:border-white/5 max-w-md mx-6">
+    <!-- Elegant Spinner -->
+    <div class="relative mb-10">
+      <div class="w-20 h-20 border-4 border-white/20 rounded-full"></div>
+      <div class="w-20 h-20 border-4 border-t-blue-400 border-r-purple-400 border-b-transparent border-l-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
+      </div>
+    </div>
+    <!-- Loading Text -->
+    <div class="text-center mb-8">
+      <div class="text-2xl font-bold text-white mb-3 tracking-wide">Đang tải</div>
+      <div class="text-white/80 text-base font-medium">Vui lòng chờ trong giây lát</div>
+    </div>
+    <!-- Progress Bar -->
+    <div class="w-full bg-white/20 rounded-full h-2 mb-8 overflow-hidden">
+      <div class="h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full w-2/5 animate-pulse shadow-lg"></div>
+    </div>
+    <!-- Loading Dots -->
+    <div class="flex space-x-3">
+      <div class="w-3 h-3 bg-blue-400 rounded-full animate-bounce shadow-lg"></div>
+      <div class="w-3 h-3 bg-purple-400 rounded-full animate-bounce shadow-lg" style="animation-delay: 0.15s"></div>
+      <div class="w-3 h-3 bg-pink-400 rounded-full animate-bounce shadow-lg" style="animation-delay: 0.3s"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Reader Container - Đã sửa cấu trúc để sticky header hoạt động -->
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-800/50 dark:to-indigo-900/30" *ngIf="book">
+
+  <!-- Enhanced Sticky Sidebar with Fixed Position -->
+  <div class="fixed left-0 top-0 h-screen transition-all duration-700 ease-out bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl border-r border-slate-200/60 dark:border-slate-700/60 flex-shrink-0 overflow-hidden shadow-2xl z-40"
+       [class.w-[420px]]="sidebarOpen"
+       [class.w-0]="!sidebarOpen">
+
+    <!-- Sidebar Content -->
+    <div class="w-[420px] h-full flex flex-col">
+
+      <!-- Enhanced Sticky Sidebar Header -->
+      <div class="sticky top-0 p-8 border-b border-slate-200/60 dark:border-slate-700/60 bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 dark:from-slate-800/80 dark:via-indigo-900/60 dark:to-purple-900/40 backdrop-blur-sm flex-shrink-0 z-10">
+        <div class="flex items-start justify-between">
+          <div class="flex-1 min-w-0 pr-4">
+            <!-- Book Title -->
+            <div class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight mb-2 line-clamp-2">
+              {{ book.title }}
+            </div>
+            <!-- Author -->
+            <span class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-4 line-clamp-1">{{ book.author }}</span>
+            <div class="flex items-center space-x-4 text-sm mt-3">
+              <div class="flex items-center bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 px-3 py-2 rounded-xl shadow-sm">
+                <i class="fas fa-star text-yellow-500 text-sm mr-2"></i>
+                <span class="text-yellow-700 dark:text-yellow-400 font-bold">{{ book.rating }}</span>
+              </div>
+              <div class="flex items-center text-slate-600 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-700/80 px-3 py-2 rounded-xl">
+                <i class="fas fa-book-open text-sm mr-2"></i>
+                <span class="font-bold">{{ book.chapters?.length || 0 }} chương</span>
+              </div>
+            </div>
+          </div>
+          <button
+            (click)="toggleSidebar()"
+            class="p-3 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-700/80 transition-all duration-300 flex-shrink-0 group shadow-lg hover:shadow-xl">
+            <i class="fas fa-times text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Enhanced Chapter List with Sticky Current Chapter Indicator -->
+      <div class="flex-1 overflow-y-auto relative" #chapterList>
+        <!-- Sticky Current Chapter Indicator -->
+        <div *ngIf="selectedChapter" class="sticky top-0 bg-gradient-to-r from-blue-100/90 via-indigo-100/80 to-purple-100/90 dark:from-blue-900/90 dark:via-indigo-900/80 dark:to-purple-900/90 backdrop-blur-sm border-b border-blue-200/60 dark:border-blue-700/60 p-4 z-10 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-bookmark text-white text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-bold text-blue-900 dark:text-blue-100 line-clamp-1">Đang đọc:</div>
+              <div class="text-xs text-blue-700 dark:text-blue-300 line-clamp-1">{{ selectedChapter.title }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6">
+          <!-- Chapter List Title -->
+          <div class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+              <i class="fas fa-list-ul text-white text-sm"></i>
+            </div>
+            Danh sách chương
+          </div>
+
+          <div class="space-y-4" *ngIf="book.chapters && book.chapters.length > 0">
+            <div
+              *ngFor="let chapter of book.chapters; let i = index"
+              class="group cursor-pointer transition-all duration-500 rounded-2xl overflow-hidden transform hover:scale-[1.02] hover:shadow-xl"
+              (click)="selectChapter(chapter)"
+              [class.bg-gradient-to-r]="selectedChapter?.id === chapter.id"
+              [class.from-blue-100]="selectedChapter?.id === chapter.id"
+              [class.via-indigo-50]="selectedChapter?.id === chapter.id"
+              [class.to-purple-100]="selectedChapter?.id === chapter.id"
+              [class.dark:from-blue-900]="selectedChapter?.id === chapter.id"
+              [class.dark:via-indigo-900]="selectedChapter?.id === chapter.id"
+              [class.dark:to-purple-900]="selectedChapter?.id === chapter.id"
+              [class.border-2]="selectedChapter?.id === chapter.id"
+              [class.border-blue-300]="selectedChapter?.id === chapter.id"
+              [class.dark:border-blue-500]="selectedChapter?.id === chapter.id"
+              [class.shadow-xl]="selectedChapter?.id === chapter.id"
+              [class.ring-4]="selectedChapter?.id === chapter.id"
+              [class.ring-blue-100]="selectedChapter?.id === chapter.id"
+              [class.dark:ring-blue-900]="selectedChapter?.id === chapter.id">
+
+              <div class="p-5 hover:bg-gradient-to-r hover:from-slate-50/80 hover:to-blue-50/60 dark:hover:from-slate-800/80 dark:hover:to-blue-900/30 transition-all duration-300">
+                <div class="flex items-start space-x-4">
+                  <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mt-1 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-white font-bold text-sm">{{ i + 1 }}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <!-- Chapter Title -->
+                    <div class="font-medium text-slate-900 dark:text-slate-100 leading-snug text-sm line-clamp-2 mb-3">
+                      {{ chapter.title }}
+                    </div>
+                    <div class="flex items-center space-x-3 text-sm">
+                      <span class="text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg text-xs">Chương {{ i + 1 }}</span>
+                      <span *ngIf="chapter.content" class="flex items-center text-emerald-600 dark:text-emerald-400 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 px-3 py-1 rounded-xl shadow-sm">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span class="font-bold text-xs">Đã tải</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0 self-center">
+                    <i class="fas fa-chevron-right text-slate-400 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-300 text-sm transform group-hover:translate-x-1"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!book.chapters || book.chapters.length === 0" class="text-center py-16">
+            <div class="w-20 h-20 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-book-open text-slate-400 dark:text-slate-500 text-3xl"></i>
+            </div>
+            <div class="text-slate-500 dark:text-slate-400 font-semibold text-lg">Chưa có chương nào</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Enhanced Sticky Top Bar - ĐÃ SỬA: Đưa ra ngoài main content để sticky hoạt động -->
+  <div class="sticky top-0 bg-white/95 dark:bg-slate-800/95 backdrop-blur-2xl border-b border-slate-200/60 dark:border-slate-700/60 p-6 flex items-center justify-between flex-shrink-0 shadow-lg z-30 transition-all duration-700 ease-out"
+       [class.ml-[420px]]="sidebarOpen"
+       [class.ml-0]="!sidebarOpen"
+       [class.bg-white]="isScrolled"
+       [class.dark:bg-slate-800]="isScrolled"
+       [class.shadow-xl]="isScrolled"
+       [class.border-slate-300]="isScrolled"
+       [class.dark:border-slate-600]="isScrolled">
+
+    <!-- Left: Menu Toggle & Chapter Info -->
+    <div class="flex items-center space-x-6">
+      <!-- Sidebar Toggle Button - Always visible in header -->
+      <button
+        (click)="toggleSidebar()"
+        class="p-4 rounded-2xl hover:bg-slate-100/80 dark:hover:bg-slate-700/80 transition-all duration-300 group shadow-lg hover:shadow-xl transform hover:scale-105 flex-shrink-0">
+        <i class="fas fa-bars text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 text-lg"></i>
+      </button>
+
+      <!-- Sticky Chapter Info with Enhanced Design -->
+      <div *ngIf="selectedChapter" class="min-w-0 max-w-md">
+        <!-- Chapter Title with Reading Indicator -->
+        <div class="flex items-center space-x-3 mb-1">
+          <div class="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse"></div>
+          <div class="font-semibold text-slate-900 dark:text-slate-100 text-base line-clamp-1">{{ selectedChapter.title }}</div>
+        </div>
+        <!-- Book info with enhanced styling -->
+        <div class="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400">
+          <span class="font-medium line-clamp-1">{{ book.title }}</span>
+          <span class="text-slate-400 dark:text-slate-500">•</span>
+          <span class="font-medium">{{ book.author }}</span>
+        </div>
+        <!-- Reading Progress Mini Bar -->
+        <div *ngIf="book.chapters && book.chapters.length > 1" class="mt-2">
+          <div class="w-32 bg-slate-200 dark:bg-slate-700 rounded-full h-1">
+            <div
+              class="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300"
+              [style.width.%]="getReadingProgress()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Enhanced Controls -->
+    <div class="flex items-center space-x-4">
+      <!-- Font Size Controls -->
+      <div class="flex items-center space-x-1 bg-gradient-to-r from-slate-100/80 to-blue-100/60 dark:from-slate-700/80 dark:to-blue-900/60 rounded-2xl p-1 shadow-lg">
+        <button
+          (click)="decreaseFontSize()"
+          class="p-3 rounded-xl hover:bg-white/90 dark:hover:bg-slate-600/90 transition-all duration-300 group shadow-sm hover:shadow-md"
+          title="Giảm cỡ chữ">
+          <i class="fas fa-minus text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 text-sm"></i>
+        </button>
+        <span class="text-base text-slate-700 dark:text-slate-300 font-bold min-w-16 text-center px-3 py-1">{{ fontSize }}%</span>
+        <button
+          (click)="increaseFontSize()"
+          class="p-3 rounded-xl hover:bg-white/90 dark:hover:bg-slate-600/90 transition-all duration-300 group shadow-sm hover:shadow-md"
+          title="Tăng cỡ chữ">
+          <i class="fas fa-plus text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Scroll to Top Button -->
+      <button
+        *ngIf="isScrolled"
+        (click)="scrollToTop()"
+        class="p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+        title="Về đầu trang">
+        <i class="fas fa-arrow-up text-sm"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Enhanced Main Content with Dynamic Margin - ĐÃ SỬA: Bỏ sticky header ra ngoài -->
+  <div class="transition-all duration-700 ease-out"
+       [class.ml-[420px]]="sidebarOpen"
+       [class.ml-0]="!sidebarOpen">
+
+    <!-- Enhanced Content Area -->
+    <div class="bg-gradient-to-br from-slate-50/50 via-blue-50/30 to-indigo-50/40 dark:from-slate-900/50 dark:via-blue-900/20 dark:to-indigo-900/30"
+         #contentArea>
+
+      <!-- Enhanced Chapter Content -->
+      <div *ngIf="selectedChapter && selectedChapter.content" class="max-w-6xl mx-auto p-8 lg:p-12">
+        <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/80 dark:border-slate-700/60 overflow-hidden">
+
+          <!-- Enhanced Chapter Header -->
+          <div class="p-10 pb-8 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50 dark:from-blue-900/20 dark:via-indigo-900/15 dark:to-purple-900/20">
+            <!-- Chapter Title -->
+            <div class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-100 leading-tight mb-4 line-clamp-3">
+              {{ selectedChapter.title }}
+            </div>
+            <div class="flex items-center text-base text-slate-600 dark:text-slate-400 space-x-6">
+              <span class="font-bold bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-xl text-sm">{{ book.title }}</span>
+              <span class="text-slate-400 dark:text-slate-500 text-2xl">•</span>
+              <span class="font-semibold text-sm">{{ book.author }}</span>
+            </div>
+          </div>
+
+          <!-- Enhanced Chapter Content -->
+          <div class="p-10 lg:p-16">
+            <div
+              class="prose prose-lg lg:prose-xl max-w-none leading-relaxed text-slate-800 dark:text-slate-200 transition-all duration-500 dark:prose-invert"
+              [style.font-size.%]="fontSize"
+              [innerHTML]="sanitizeHtml(selectedChapter.content)"
+              style="
+                    line-height: 2.2;
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    word-spacing: 0.15em;
+                    letter-spacing: 0.025em;
+                    text-align: justify;
+                  ">
+            </div>
+          </div>
+
+          <!-- Enhanced Chapter Navigation -->
+          <div class="bg-gradient-to-r from-slate-50/90 via-blue-50/60 to-indigo-50/70 dark:from-slate-800/90 dark:via-blue-900/30 dark:to-indigo-900/40 p-4 sm:p-6 lg:p-8 border-t border-slate-100 dark:border-slate-700">
+            <!-- Navigation Buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+              <!-- Previous Chapter Button -->
+              <button
+                *ngIf="selectedChapter.version > minVersion"
+                (click)="selectChapter(getPreviousChapter()!)"
+                class="flex items-center justify-center gap-2 px-4 py-3 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium text-sm sm:text-base min-w-[100px] sm:min-w-[120px]">
+                <i class="fas fa-chevron-left text-sm sm:text-base"></i>
+                <span class="hidden sm:inline">Trước</span>
+              </button>
+
+              <!-- Spacer -->
+              <div class="flex-1 min-w-4"></div>
+
+              <!-- Next Chapter Button -->
+              <button
+                *ngIf="selectedChapter.version < maxVersion"
+                (click)="selectChapter(getNextChapter()!)"
+                class="flex items-center justify-center gap-2 px-4 py-3 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium text-sm sm:text-base min-w-[100px] sm:min-w-[120px]">
+                <span class="hidden sm:inline">Tiếp</span>
+                <i class="fas fa-chevron-right text-sm sm:text-base"></i>
+              </button>
+
+            </div>
+
+            <!-- Reading Progress -->
+            <div *ngIf="book.chapters && book.chapters.length > 1" class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-200 dark:border-slate-600">
+              <div class="flex items-center justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2 sm:mb-3">
+                <span class="font-medium">Tiến độ đọc</span>
+                <span class="font-mono bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-xs">
+        {{ getCurrentChapterIndex() + 1 }} / {{ book.chapters.length }}
+      </span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 sm:h-3 overflow-hidden shadow-inner">
+                <div
+                  class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-700 ease-out shadow-sm"
+                  [style.width.%]="getReadingProgress()">
+                </div>
+              </div>
+              <div class="flex justify-between text-xs text-slate-500 dark:text-slate-500 mt-1 sm:mt-2">
+                <span>{{ Math.round(getReadingProgress()) }}%</span>
+                <span>{{ book.chapters.length - getCurrentChapterIndex() - 1 }} chương còn lại</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Welcome Message -->
+      <div *ngIf="!selectedChapter" class="max-w-4xl mx-auto p-8 lg:p-12">
+        <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/80 dark:border-slate-700/60 p-16 text-center">
+          <div class="w-32 h-32 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+            <i class="fas fa-book-reader text-white text-5xl"></i>
+          </div>
+          <!-- Book Title -->
+          <div class="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-slate-100 mb-6 line-clamp-2">{{ book.title }}</div>
+          <div class="text-slate-600 dark:text-slate-400 mb-10 text-xl leading-relaxed line-clamp-3 max-w-2xl mx-auto" *ngIf="book.description">{{ book.description }}</div>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              *ngIf="book.chapters && book.chapters.length > 0"
+              (click)="selectChapter(book.chapters[0])"
+              class="px-12 py-5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white rounded-2xl hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105">
+              Bắt đầu đọc
+            </button>
+            <button
+              (click)="toggleSidebar()"
+              class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105">
+              Xem danh sách chương
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced No Content Message -->
+      <div *ngIf="selectedChapter && !selectedChapter.content" class="max-w-4xl mx-auto p-8 lg:p-12">
+        <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/80 dark:border-slate-700/60 p-16 text-center">
+          <div class="w-28 h-28 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+            <i class="fas fa-lock text-slate-400 dark:text-slate-500 text-4xl"></i>
+          </div>
+          <div class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Nội dung chưa có sẵn</div>
+          <div class="text-slate-600 dark:text-slate-400 text-xl max-w-md mx-auto mb-8">Chương này có thể cần thanh toán hoặc chưa được tải lên.</div>
+          <button
+            (click)="toggleSidebar()"
+            class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105">
+            Chọn chương khác
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

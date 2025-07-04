@@ -1,0 +1,27 @@
+ <div class="min-h-screen py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header class="text-center max-w-4xl mx-auto mb-20">
+        <h1 class="text-6xl md:text-7xl font-bold mb-8 leading-tight
+           text-black
+           dark:text-transparent dark:bg-clip-text 
+           dark:bg-gradient-to-r dark:from-purple-400 dark:via-indigo-500 dark:to-blue-400 
+           dark:animate-gradient-x dark:bg-[length:200%_200%]">
+            Khám phá cuộc phiêu lưu tiếp theo của bạn với danh sách các thể loại sách
+        </h1>
+        <p class="text-2xl leading-relaxed max-w-3xl mx-auto">
+            Đắm mình vào thế giới văn học được tuyển chọn cẩn thận. 
+            Mỗi thể loại là cánh cổng dẫn đến những góc nhìn mới và khả năng vô tận.
+        </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
+        @for (genre of genres; track genre.id) {
+        <app-genre-card 
+            [genre]="genre" 
+            (selectGenre)="onSelectGenre($event)"
+            class="transform transition-all duration-700 hover:z-10 opacity-0 animate-fade-in"
+        ></app-genre-card>
+        }
+    </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="flex flex-col min-h-screen">
+  <app-public-header></app-public-header>
+
+  <main class="flex-grow">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8" [ngClass]="contentClass">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <app-public-footer></app-public-footer>
+</div>

@@ -1,0 +1,20 @@
+<div class="flex flex-col min-h-screen">
+  <app-admin-header></app-admin-header>
+
+  <div class="flex flex-1">
+    <app-sidebar></app-sidebar>
+
+    <main class="flex-1 transition-all duration-300"
+      [ngClass]="{'ml-64': sidebarExpanded, 'ml-16': !sidebarExpanded}"
+    >
+      <div class="p-2">
+        <app-breadcrumb></app-breadcrumb>
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+  <div [ngClass]="{'ml-64': sidebarExpanded, 'ml-16': !sidebarExpanded}">
+    <app-admin-footer></app-admin-footer>
+  </div>
+</div>

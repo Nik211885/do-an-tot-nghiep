@@ -1,0 +1,102 @@
+<form [formGroup]="pricingForm" (ngSubmit)="onNext()" class="animate-fade-in">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Chính sách đọc sách</h2>
+
+    <div class="form-group">
+    <label class="form-label">Đây có phải là sách trả phí không? <span class="text-red-500">*</span></label>
+    <div class="mt-2 space-y-2">
+        <div class="flex items-center">
+        <input
+            type="radio"
+            id="free"
+            [value]="false"
+            formControlName="isPaid"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <label for="free" class="ml-3 text-gray-700">Miễn phí - Người đọc có thể truy cập mà không cần trả phí</label>
+        </div>
+        <div class="flex items-center">
+        <input
+            type="radio"
+            id="paid"
+            [value]="true"
+            formControlName="isPaid"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <label for="paid" class="ml-3 text-gray-700">Trả phí - Người đọc phải mua quyền truy cập, Yêu cầu đọc</label>
+        </div>
+    </div>
+    </div>
+
+    <div class="form-group" *ngIf="pricingForm.get('isPaid')?.value">
+    <label for="price" class="form-label">Giá sách <span class="text-red-500">*</span></label>
+    <div class="relative mt-1 rounded-md shadow-sm">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <span class="text-gray-500 sm:text-sm">$</span>
+        </div>
+        <input
+        type="number"
+        id="price"
+        formControlName="price"
+        class="form-input pl-7"
+        placeholder="0.00"
+        step="0.01"
+        min="0.99"
+        >
+    </div>
+    <div *ngIf="pricingForm.get('price')?.invalid && pricingForm.get('price')?.touched" class="mt-1 text-sm text-red-600">
+        Giá sách lớn hơn (1.000VND)
+    </div>
+    </div>
+
+    <div class="form-group mt-6">
+    <label class="form-label">Yêu cầu đọc * <span class="text-red-500">*</span></label>
+    <div class="mt-2 space-y-2">
+        <div class="flex items-center">
+        <input
+            type="radio"
+            id="noRegistration"
+            [value]="false"
+            formControlName="requiresRegistration"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <label for="noRegistration" class="ml-3 text-gray-700">Truy cập mở - Không cần đăng ký</label>
+        </div>
+        <div class="flex items-center">
+        <input
+            type="radio"
+            id="requiresRegistration"
+            [value]="true"
+            formControlName="requiresRegistration"
+            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        >
+        <label for="requiresRegistration" class="ml-3 text-gray-700">Yêu cầu đăng ký - Người đọc phải tạo một tài khoản và theo dõi bạn</label>
+        </div>
+    </div>
+    </div>
+
+    <div class="mt-8 flex justify-between" *ngIf="!ignore">
+    <button
+        type="button"
+        (click)="onPrevious()"
+        class="btn btn-secondary"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L5.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M15.707 4.293a1 1 0 010 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Quay lại
+    </button>
+    <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="pricingForm.invalid"
+        [ngClass]="{'opacity-50 cursor-not-allowed': pricingForm.invalid}"
+    >
+        Tiếp theo
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    </div>
+</form>

@@ -1,0 +1,226 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Quản lý thể loại</h1>
+    <p class="text-gray-600 mt-2">Danh sách tất cả thể loại sách</p>
+  </div>
+
+  <!-- Table Container -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Table Header Actions -->
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <h2 class="text-lg font-semibold text-gray-900">Danh sách thể loại</h2>
+          <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+            {{genrePagination?.totalCount || 0}} thể loại
+          </span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button (click)="goToCreateGenre()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Thêm thể loại
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Thể loại
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Mô tả
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Số lượng sách
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Trạng thái
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Ngày tạo
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Thao tác
+          </th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let genre of genrePagination?.items; let i = index"
+            class="hover:bg-gray-50 transition-colors duration-200">
+          <!-- Checkbox -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          </td>
+
+          <!-- Genre Info -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-12 w-12">
+                <img class="h-12 w-12 rounded-lg object-cover border-2 border-gray-200"
+                     [src]="genre.avatarUrl"
+                     [alt]="genre.name"
+                     onerror="this.src='https://via.placeholder.com/48x48/6B7280/FFFFFF?text=No+Image'">
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">{{genre.name}}</div>
+                <div class="text-sm text-gray-500">{{genre.slug}}</div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Description -->
+          <td class="px-6 py-4">
+            <div class="text-sm text-gray-900 max-w-xs">
+              <p class="truncate" [title]="genre.description">
+                {{genre.description}}
+              </p>
+            </div>
+          </td>
+
+          <!-- Book Count -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                  {{genre.coutBook ? '✓' : '0'}} sách
+                </span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="px-6 py-4 whitespace-nowrap">
+              <span [class]="genre.isActive
+                           ? 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full'
+                           : 'bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full'">
+                {{genre.isActive ? 'Hoạt động' : 'Tạm dừng'}}
+              </span>
+          </td>
+
+          <!-- Created Date -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{genre.createdDateTime | date:'dd/MM/yyyy'}}
+          </td>
+
+          <!-- Actions -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex items-center space-x-3">
+              <!-- Edit Button -->
+              <button (click)="editGenre(genre)" class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+              </button>
+
+              <!-- Toggle Switch -->
+              <div class="flex items-center">
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox"
+                         [checked]="genre.isActive"
+                         (change)="active(genre)"
+                         class="sr-only">
+                  <div class="relative">
+                    <!-- Toggle Background -->
+                    <div [class]="genre.isActive
+                                  ? 'bg-green-400 border-green-400'
+                                  : 'bg-gray-200 border-gray-200'"
+                         class="block w-10 h-6 rounded-full border-2 transition-colors duration-200"></div>
+                    <!-- Toggle Circle -->
+                    <div [class]="genre.isActive
+                                  ? 'translate-x-4 bg-white'
+                                  : 'translate-x-0 bg-white'"
+                         class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 shadow-sm"></div>
+                  </div>
+                  <!-- Toggle Label -->
+                  <span class="ml-2 text-xs text-gray-600">
+                    {{genre.isActive ? 'Bật' : 'Tắt'}}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!genrePagination || !genrePagination.items || genrePagination.items.length === 0">
+          <td colspan="7" class="px-6 py-12 text-center">
+            <div class="flex flex-col items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">Không có dữ liệu</h3>
+              <p class="text-gray-500">Chưa có thể loại nào được tạo.</p>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="genrePagination && genrePagination.totalPages > 1" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+      <nav class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 text-sm text-gray-600">
+          <span>Hiển thị</span>
+          <span class="font-semibold text-blue-600">{{(currentPage - 1) * pageSize + 1}}</span>
+          <span>-</span>
+          <span class="font-semibold text-blue-600">{{Math.min(currentPage * pageSize, genrePagination.totalCount)}}</span>
+          <span>trong tổng số</span>
+          <span class="font-semibold text-blue-600">{{genrePagination.totalCount}}</span>
+          <span>thể loại</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <!-- Previous Button -->
+          <button
+            *ngIf="currentPage > 1"
+            (click)="previousPage()"
+            class="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-blue-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300 shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+
+          <!-- Page Numbers -->
+          <ng-container *ngFor="let page of getVisiblePages()">
+            <!-- Regular Page Number -->
+            <button
+              *ngIf="isClickablePage(page)"
+              (click)="goToPage(Number(page))"
+              [class]="isCurrentPage(page)
+                        ? 'flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-lg font-semibold shadow-sm'
+                        : 'flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-blue-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300 font-medium shadow-sm'">
+              {{page}}
+            </button>
+
+            <!-- Ellipsis -->
+            <span
+              *ngIf="!isClickablePage(page)"
+              class="flex items-center justify-center w-10 h-10 text-gray-400 font-medium">
+              {{page}}
+            </span>
+          </ng-container>
+
+          <!-- Next Button -->
+          <button
+            *ngIf="currentPage < (genrePagination?.totalPages ?? 1)"
+            (click)="nextPage()"
+            class="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-white hover:bg-blue-500 rounded-lg transition-colors duration-200 bg-white border border-gray-300 shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,244 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+/* Base styles */
+/* Base styles */
+html, body {
+  @apply h-full antialiased;
+}
+
+body {
+  font-family: 'Roboto', sans-serif !important;
+  color: #1f2937 !important; /* text-gray-800 */
+  background-color: #f9fafb !important; /* bg-gray-50 */
+  transition-property: background-color, color !important;
+  transition-duration: 200ms !important;
+}
+
+.dark body {
+  color: #e5e7eb !important; /* text-gray-200 */
+  background-color: #111827 !important; /* bg-gray-900 */
+}
+
+
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+h1 { @apply text-3xl md:text-4xl lg:text-5xl; }
+h2 { @apply text-2xl md:text-3xl lg:text-4xl; }
+h3 { @apply text-xl md:text-2xl lg:text-3xl; }
+h4 { @apply text-lg md:text-xl lg:text-2xl; }
+h5 { @apply text-base md:text-lg lg:text-xl; }
+h6 { @apply text-sm md:text-base lg:text-lg; }
+
+/* Reading styles */
+.reader-container {
+  @apply max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 shadow-xl rounded-lg;
+}
+
+.reader-container p {
+  @apply mb-6 text-gray-700 dark:text-gray-300;
+}
+
+/* Custom components */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-primary-500/30;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 focus:ring-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 shadow-gray-500/20;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700;
+  }
+
+  .nav-link {
+    @apply px-4 py-2 text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary-500 after:transition-all hover:after:w-full;
+  }
+
+  .nav-link-active {
+    @apply text-primary-600 dark:text-primary-400 font-medium after:w-full;
+  }
+
+  .sidebar-link {
+    @apply flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 hover:translate-x-1;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400 font-medium;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+}
+
+.btn-success {
+  @apply bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2;
+}
+
+/* Toast customization */
+.toast-container {
+  @apply fixed top-4 right-4 z-50;
+}
+
+.toast {
+  @apply flex items-center p-4 mb-3 rounded-lg shadow-lg text-white transform transition-all duration-300 ease-out;
+}
+
+.toast-success {
+  @apply bg-emerald-600;
+}
+
+.toast-error {
+  @apply bg-red-600;
+}
+
+.toast-warning {
+  @apply bg-amber-500;
+}
+
+.toast-info {
+  @apply bg-blue-600;
+}
+
+/* Form styles */
+.form-group {
+  @apply mb-4;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
+}
+
+.form-select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
+}
+
+/* Editor customization */
+:root {
+  --ck-border-radius: 0.5rem;
+  --ck-color-focus-border: #6366f1;
+}
+
+.ck-editor__editable {
+  min-height: 300px;
+  max-height: 600px;
+}
+
+/* Custom animations */
+.fade-in {
+  @apply transition-opacity duration-300 ease-in-out opacity-0;
+}
+
+.fade-in.appear {
+  @apply opacity-100;
+}
+
+/* Book card styles */
+.book-card {
+  @apply relative overflow-hidden;
+}
+
+.book-card-hover {
+  @apply absolute inset-0 bg-gradient-to-b from-transparent to-indigo-900/80 opacity-0 transition-opacity duration-300 flex flex-col justify-end p-4 text-white;
+}
+
+.book-card:hover .book-card-hover {
+  @apply opacity-100;
+}
+
+/* Step progress */
+.step-progress {
+  @apply flex items-center w-full mb-8;
+}
+
+.step {
+  @apply flex-1 text-center;
+}
+
+.step-circle {
+  @apply h-8 w-8 mx-auto rounded-full flex items-center justify-center text-sm font-medium border-2;
+}
+
+.step-line {
+  @apply w-full h-1 bg-gray-300;
+}
+
+.step-active .step-circle {
+  @apply bg-indigo-600 text-white border-indigo-600;
+}
+
+.step-completed .step-circle {
+  @apply bg-emerald-600 text-white border-emerald-600;
+}
+
+.step-active .step-text, .step-completed .step-text {
+  @apply text-gray-900 font-medium;
+}
+
+/* Smooth transitions between steps */
+.step-content {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.slide-fade-enter-from {
+  @apply opacity-0 transform translate-x-4;
+}
+
+.slide-fade-enter-to {
+  @apply opacity-100 transform translate-x-0;
+}
+

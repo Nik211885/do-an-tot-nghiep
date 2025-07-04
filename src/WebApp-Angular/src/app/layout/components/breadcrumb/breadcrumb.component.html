@@ -1,0 +1,37 @@
+<!--
+<nav class="py-3 px-4 bg-white dark:bg-gray-800 shadow-sm rounded-lg">
+  <ol class="flex flex-wrap">
+    <li class="flex items-center">
+      <a href="/" class="text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+        </svg>
+        <span class="sr-only">Home</span>
+      </a>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </li>
+
+    @for (item of breadcrumbs; track $index) {
+      <li class="flex items-center">
+        @if (item.url && $index < breadcrumbs.length - 1) {
+          <a
+            [href]="item.url"
+            class="text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+          >
+            {{item.label}}
+          </a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        } @else {
+          <span class="text-gray-800 dark:text-gray-200 font-medium">
+            {{item.label}}
+          </span>
+        }
+      </li>
+    }
+  </ol>
+</nav>
+-->

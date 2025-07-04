@@ -1,0 +1,163 @@
+<div *ngIf="isOpen" class="backdrop-blur-sm bg-white/10 z-40 fixed inset-0 flex items-center justify-center z-50 bg-opacity-50"
+     (click)="onBackdropClick($event)" [@backdropAnimation]>
+  
+  <div class="shadow-2xl ring-1 ring-gray-300 max-w-md w-ful dialog-container relative {{dialogSizeClass}} w-full mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden" 
+       (click)="onDialogClick($event)" [@dialogAnimation]>
+    
+    <!-- Dialog Header -->
+    <div class="dialog-header border-b border-gray-200 dark:border-gray-700 pb-4 mb-4" *ngIf="title">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ title }}</h3>
+      <button type="button" 
+              class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none" 
+              aria-label="Close" 
+              (click)="cancel()">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Dialog Content -->
+    <div class="dialog-content">
+      <!-- Static Message -->
+      <p *ngIf="message" class="mb-4 text-gray-600 dark:text-gray-300">{{ message }}</p>
+      
+      <!-- Custom Content -->
+      <ng-container *ngIf="customContent">
+        <ng-container *ngTemplateOutlet="customContent"></ng-container>
+      </ng-container>
+      
+      <!-- Input Dialog Form -->
+      <div *ngIf="isInputDialog" class="input-dialog-form">
+        <form (ngSubmit)="confirm()" #inputForm="ngForm">
+          <div class="space-y-4">
+            <ng-container *ngFor="let field of inputFields">
+              <!-- Text, Email, Password, Number Inputs -->
+              <div class="form-field" *ngIf="['text', 'email', 'password', 'number', 'date'].includes(field.type)">
+                <label [for]="field.name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {{ field.label }}
+                  <span *ngIf="field.required" class="text-red-500">*</span>
+                </label>
+                <input [type]="field.type"
+                       [id]="field.name"
+                       [name]="field.name"
+                       [placeholder]="field.placeholder || ''"
+                       [attr.required]="field.required"
+                       [ngModel]="inputValues[field.name]"
+                       (ngModelChange)="updateInputValue(field.name, $event)"
+                       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                <div *ngIf="inputErrors[field.name]" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ inputErrors[field.name] }}
+                </div>
+              </div>
+              
+              <!-- Textarea -->
+              <div class="form-field" *ngIf="field.type === 'textarea'">
+                <label [for]="field.name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {{ field.label }}
+                  <span *ngIf="field.required" class="text-red-500">*</span>
+                </label>
+                <textarea [id]="field.name"
+                          [name]="field.name"
+                          [placeholder]="field.placeholder || ''"
+                          [attr.required]="field.required"
+                          [ngModel]="inputValues[field.name]"
+                          (ngModelChange)="updateInputValue(field.name, $event)"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"></textarea>
+                <div *ngIf="inputErrors[field.name]" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ inputErrors[field.name] }}
+                </div>
+              </div>
+              
+              <!-- Select Dropdown -->
+              <div class="form-field" *ngIf="field.type === 'select'">
+                <label [for]="field.name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {{ field.label }}
+                  <span *ngIf="field.required" class="text-red-500">*</span>
+                </label>
+                <select [id]="field.name"
+                        [name]="field.name"
+                        [attr.required]="field.required"
+                        [ngModel]="inputValues[field.name]"
+                        (ngModelChange)="updateInputValue(field.name, $event)"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                  <option value="" *ngIf="field.placeholder" disabled>{{ field.placeholder }}</option>
+                  <option *ngFor="let option of field.options" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div *ngIf="inputErrors[field.name]" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ inputErrors[field.name] }}
+                </div>
+              </div>
+              
+              <!-- Checkbox -->
+              <div class="form-field" *ngIf="field.type === 'checkbox'">
+                <div class="flex items-center">
+                  <input [type]="field.type"
+                         [id]="field.name"
+                         [name]="field.name"
+                         [attr.required]="field.required"
+                         [ngModel]="inputValues[field.name]"
+                         (ngModelChange)="updateInputValue(field.name, $event)"
+                         class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
+                  <label [for]="field.name" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                    {{ field.label }}
+                    <span *ngIf="field.required" class="text-red-500">*</span>
+                  </label>
+                </div>
+                <div *ngIf="inputErrors[field.name]" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ inputErrors[field.name] }}
+                </div>
+              </div>
+              
+              <!-- Radio Buttons -->
+              <div class="form-field" *ngIf="field.type === 'radio'">
+                <div class="mb-1">
+                  <span class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {{ field.label }}
+                    <span *ngIf="field.required" class="text-red-500">*</span>
+                  </span>
+                </div>
+                <div class="space-y-2">
+                  <div *ngFor="let option of field.options; let i = index" class="flex items-center">
+                    <input [type]="field.type"
+                           [id]="field.name + '-' + i"
+                           [name]="field.name"
+                           [value]="option.value"
+                           [checked]="inputValues[field.name] === option.value"
+                           (change)="updateInputValue(field.name, option.value)"
+                           [required]="field.required"
+                           class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                    <label [for]="field.name + '-' + i" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="inputErrors[field.name]" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ inputErrors[field.name] }}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Dialog Footer with Action Buttons -->
+    <div class="dialog-footer mt-6 flex justify-end space-x-3" *ngIf="!hideDefaultButtons">
+      <button *ngIf="options.showCancelButton" 
+              type="button" 
+              class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" 
+              (click)="cancel()">
+        {{ options.cancelButtonText || 'Hủy' }}
+      </button>
+      <button type="button" 
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" 
+              (click)="confirm()">
+        {{ options.confirmButtonText || 'Xác nhận' }}
+      </button>
+    </div>
+  </div>
+</div>

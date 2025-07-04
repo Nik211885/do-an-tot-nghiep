@@ -1,0 +1,213 @@
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
+    <div class="flex items-center space-x-4 mb-4 md:mb-0">
+      <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-xl">
+        <i class="fas fa-history text-white text-xl"></i>
+      </div>
+      <div>
+        <h3 class="text-3xl md:text-4xl font-black text-gray-800 mb-1">Lịch sử tìm kiếm</h3>
+        <p class="text-gray-600">Theo dõi các từ khóa bạn đã tìm kiếm</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center space-x-3">
+      <button (click)="cleanAllHistory()" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 hover:text-red-600 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2 border border-gray-200">
+        <i class="fas fa-trash text-sm"></i>
+        <span class="text-sm font-medium">Xóa tất cả</span>
+      </button>
+      <!--<button class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+        <i class="fas fa-download text-sm"></i>
+        <span class="text-sm font-medium">Xuất dữ liệu</span>
+      </button>-->
+    </div>
+  </div>
+
+  <!-- Search Stats -->
+<!--  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+          <i class="fas fa-search text-indigo-600"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">247</div>
+          <div class="text-sm text-gray-500">Tổng tìm kiếm</div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+          <i class="fas fa-calendar-day text-green-600"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">12</div>
+          <div class="text-sm text-gray-500">Hôm nay</div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+          <i class="fas fa-calendar-week text-blue-600"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">89</div>
+          <div class="text-sm text-gray-500">Tuần này</div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+          <i class="fas fa-fire text-purple-600"></i>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">156</div>
+          <div class="text-sm text-gray-500">Phổ biến nhất</div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Filter Bar -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50 mb-8">
+    <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-filter text-gray-600"></i>
+        <span class="text-sm font-medium text-gray-700">Lọc theo:</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="px-4 py-2 bg-indigo-500 text-white rounded-xl text-sm font-medium shadow-md">
+          Tất cả
+        </button>
+        <button class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 rounded-xl text-sm font-medium shadow-md border border-gray-200 transition-colors duration-200">
+          Hôm nay
+        </button>
+        <button class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 rounded-xl text-sm font-medium shadow-md border border-gray-200 transition-colors duration-200">
+          Tuần này
+        </button>
+        <button class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 rounded-xl text-sm font-medium shadow-md border border-gray-200 transition-colors duration-200">
+          Tháng này
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-3 ml-auto">
+        <div class="relative">
+          <input type="text" placeholder="Tìm trong lịch sử..."
+                 class="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-md">
+          <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search History List -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 px-6 py-4 border-b border-indigo-100">
+      <div class="grid grid-cols-12 gap-4 text-sm font-semibold text-gray-700">
+        <div class="col-span-1 text-center">#</div>
+        <div class="col-span-6 md:col-span-5">Từ khóa tìm kiếm</div>
+        <div class="col-span-3 md:col-span-3 text-center">Ngày tìm kiếm</div>
+        <div class="col-span-2 md:col-span-2 text-center">Kết quả</div>
+        <div class="col-span-1 text-center">Thao tác</div>
+      </div>
+    </div>
+
+    <!-- Search History Items -->
+    <div class="divide-y divide-gray-100">
+      <!-- Item 1 -->
+      <div *ngFor="let h of paginationSearchHistory.items let i = index" class="px-6 py-5 hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 group transition-all duration-300">
+        <div class="grid grid-cols-12 gap-4 items-center">
+          <div class="col-span-1 text-center">
+            <span class="inline-flex items-center justify-center w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full text-sm font-semibold">{{i+1}}</span>
+          </div>
+          <div class="col-span-6 md:col-span-5">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-search text-white text-sm"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800 group-hover:text-indigo-700 transition-colors duration-300">
+                  {{h.searchTerm}}
+                </div>
+                <!--<div class="text-sm text-gray-500 flex items-center space-x-2">
+                  <i class="fas fa-tags text-xs text-indigo-400"></i>
+                  <span>Lập trình, Python, Học tập</span>
+                </div>-->
+              </div>
+            </div>
+          </div>
+          <div class="col-span-3 md:col-span-3 text-center">
+            <div class="text-sm font-medium text-gray-700">{{ h.created | date:'dd-MM-yyyy' }}
+            </div>
+            <div class="text-xs text-gray-500">{{ h.created | date:'HH:mm' }}</div>
+          </div>
+          <div class="col-span-2 md:col-span-2 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                {{h.coutResultForSearch}} kết quả
+                            </span>
+          </div>
+          <div class="col-span-1 text-center">
+            <div class="flex items-center justify-center space-x-2">
+              <button (click)="search(h)" class="w-8 h-8 bg-indigo-100 hover:bg-indigo-200 text-indigo-600 rounded-lg transition-all duration-200 flex items-center justify-center">
+                <i class="fas fa-redo text-xs"></i>
+              </button>
+              <button (click)="deleteSearchHistory(h)" class="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-all duration-200 flex items-center justify-center">
+                <i class="fas fa-trash text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-12 flex justify-center" *ngIf="paginationSearchHistory && paginationSearchHistory.totalPages > 1">
+    <nav class="flex items-center gap-2">
+      <!-- Previous Button -->
+      <button
+        *ngIf="currentPage > 1"
+        (click)="previousPage()"
+        class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+
+      <!-- Page Numbers -->
+      <ng-container *ngFor="let page of getVisiblePages()">
+        <!-- Regular Page Number -->
+        <button
+          *ngIf="isClickablePage(page)"
+          (click)="goToPage(Number(page))"
+          [class]="isCurrentPage(page)
+              ? 'flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl shadow-lg font-bold transition-all duration-200 transform hover:scale-105'
+              : 'flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 cursor-pointer bg-white/80 backdrop-blur-sm border border-white/50 font-medium'">
+          {{page}}
+        </button>
+
+        <!-- Ellipsis -->
+        <span
+          *ngIf="!isClickablePage(page)"
+          class="flex items-center justify-center w-12 h-12 text-gray-400 font-medium">
+            {{page}}
+          </span>
+      </ng-container>
+
+      <!-- Next Button -->
+      <button
+        *ngIf="currentPage < (paginationSearchHistory?.totalPages ?? 1)"
+        (click)="nextPage()"
+        class="flex items-center justify-center w-12 h-12 text-gray-600 hover:text-indigo-600 hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-200 bg-white/80 backdrop-blur-sm border border-white/50">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </nav>
+</div>
+</div>

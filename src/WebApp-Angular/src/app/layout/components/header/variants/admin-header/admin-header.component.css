@@ -1,0 +1,82 @@
+/* AdminHeaderComponent CSS */
+
+/* Dropdown animation */
+@keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Apply animation to dropdowns */
+  .absolute[class*="mt-2"] {
+    animation: slideDown 0.2s ease-out;
+    transform-origin: top;
+  }
+  
+  /* Notification indicator pulse animation */
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
+    }
+    
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+  }
+  
+  /* Add pulse animation to notification indicator */
+  .absolute.top-1.right-1 {
+    animation: pulse 2s infinite;
+  }
+  
+  /* Custom scrollbar for notifications */
+  .max-h-72::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .max-h-72::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .max-h-72::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
+  }
+  
+  /* Dark mode scrollbar */
+  .dark .max-h-72::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5);
+  }
+  
+  /* Hover effect for buttons */
+  button:hover svg {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+  }
+  
+  /* Ensure all interactive elements have pointer cursor */
+  button, 
+  a[href], 
+  a.cursor-pointer, 
+  .hover\:bg-gray-100,
+  [role="button"] {
+    cursor: pointer;
+  }
+  
+  /* Smooth transitions */
+  .relative button,
+  .dropdown-menu {
+    transition: all 0.2s ease;
+  }

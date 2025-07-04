@@ -1,0 +1,253 @@
+<div class="container mx-auto px-4 py-6 max-w-6xl">
+  <!-- Loading State -->
+  <div *ngIf="!moderation && !error" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <p class="text-red-700">{{ error }}</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="moderation" class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ moderation.bookTitle }}</h1>
+          <h2 class="text-xl text-gray-700">Chapter {{ moderation.chapterNumber }}: {{ moderation.chapterTitle }}</h2>
+        </div>
+        <div class="flex items-center space-x-3">
+          <!-- Status Badge -->
+          <span [ngClass]="{
+            'bg-yellow-100 text-yellow-800': moderation.status === 'Pending',
+            'bg-green-100 text-green-800': moderation.status === 'Approved',
+            'bg-red-100 text-red-800': moderation.status === 'Rejected'
+          }" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium">
+            <span [ngClass]="{
+              'bg-yellow-400': moderation.status === 'Pending',
+              'bg-green-400': moderation.status === 'Approved',
+              'bg-red-400': moderation.status === 'Rejected'
+            }" class="w-2 h-2 rounded-full mr-2"></span>
+            {{ moderation.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+        <div>
+          <span class="font-medium">Ngày gửi:</span>
+          {{ moderation.submittedAt | date:'medium' }}
+        </div>
+        <div>
+          <span class="font-medium">Book ID:</span>
+          {{ moderation.bookId }}
+        </div>
+        <div>
+          <span class="font-medium">Author ID:</span>
+          {{ moderation.authorId }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold mb-4">Kiểm duyệt</h3>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <button *ngIf="moderation.status !== ApproveStatus.Approved"
+          (click)="openApprovalModal()"
+          class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Chấp nhận
+        </button>
+        <button *ngIf="moderation.status !== ApproveStatus.Rejected"
+          (click)="openRejectionModal()"
+          class="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Từ chối
+        </button>
+      </div>
+    </div>
+
+    <!-- Chapter Content -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold mb-4">Nội dung chương</h3>
+      <div class="prose max-w-none">
+        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+          <div class="text-sm text-gray-800 leading-relaxed" [innerHTML]="moderation.chapterContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright Information -->
+    <div *ngIf="moderation.copyrightChapterViewModel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold mb-4">Nội dung sao chép sau khi kiểm duyệt</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="font-medium text-gray-700">Ngày tạo bản sao</span>
+          <p class="text-gray-600">{{ moderation.copyrightChapterViewModel.dateTimeCopyright | date:'medium' }}</p>
+        </div>
+        <div>
+          <span class="font-medium text-gray-700">Chương</span>
+          <p class="text-gray-600">{{ moderation.copyrightChapterViewModel.chapterNumber }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decision History -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Lịch sử kiểm duyệt</h3>
+        <button
+          (click)="refreshDecisions()"
+          class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200">
+          <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Làm mới
+        </button>
+      </div>
+
+      <!-- Loading decisions -->
+      <div *ngIf="loadingDecisions" class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+
+      <!-- No decisions -->
+      <div *ngIf="!loadingDecisions && (!decisions || decisions.length === 0)"
+           class="text-center py-8 text-gray-500">
+        <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <p>Không có quyết định trước đó</p>
+      </div>
+
+      <!-- Decisions list -->
+      <div *ngIf="!loadingDecisions && decisions && decisions.length > 0" class="space-y-4">
+        <div *ngFor="let decision of decisions"
+             class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors duration-200">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center space-x-2">
+              <span [ngClass]="{
+                'bg-yellow-100 text-yellow-800': decision.status === 'Pending',
+                'bg-green-100 text-green-800': decision.status === 'Approved',
+                'bg-red-100 text-red-800': decision.status === 'Rejected'
+              }" class="px-2 py-1 rounded text-xs font-medium">
+                {{ decision.status }}
+              </span>
+              <span class="text-sm text-gray-600">by {{ decision.moderatorId }}</span>
+            </div>
+            <span class="text-sm text-gray-500">{{ decision.decisionDateTime | date:'medium' }}</span>
+          </div>
+          <p class="text-gray-800 text-sm">{{ decision.note }}</p>
+        </div>
+      </div>
+
+      <!-- Pagination for decisions -->
+      <div *ngIf="!loadingDecisions && decisions && decisions.length > 0"
+           class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+        <div class="text-sm text-gray-600">
+          Trang {{ currentDecisionPage }} of {{ totalDecisionPages }}
+        </div>
+        <div class="flex space-x-2">
+          <button
+            (click)="previousDecisionPage()"
+            [disabled]="currentDecisionPage <= 1"
+            class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            Trước
+          </button>
+          <button
+            (click)="nextDecisionPage()"
+            [disabled]="currentDecisionPage >= totalDecisionPages"
+            class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            Tiếp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approval Modal -->
+  <div *ngIf="showApprovalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <h3 class="text-lg font-semibold mb-4">Duyệt chương</h3>
+      <form (ngSubmit)="approveChapter()">
+        <div class="mb-4">
+          <label for="approvalNote" class="block text-sm font-medium text-gray-700 mb-2">
+           Tin nhắn
+          </label>
+          <textarea
+            id="approvalNote"
+            [(ngModel)]="approvalNote"
+            name="approvalNote"
+            rows="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            placeholder="Viết tin nhắn cho quyết định kiểm duyệt ..."></textarea>
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            (click)="closeApprovalModal()"
+            class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200">
+            Hủy
+          </button>
+          <button
+            type="submit"
+            [disabled]="submitting"
+            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50">
+            <span *ngIf="submitting" class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+            Chấp nhận
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rejection Modal -->
+  <div *ngIf="showRejectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <h3 class="text-lg font-semibold mb-4">Từ chối chương</h3>
+      <form (ngSubmit)="rejectChapter()">
+        <div class="mb-4">
+          <label for="rejectionNote" class="block text-sm font-medium text-gray-700 mb-2">
+            Lý do từ chối <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="rejectionNote"
+            [(ngModel)]="rejectionNote"
+            name="rejectionNote"
+            rows="4"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            placeholder="Viết tin nhắn cho quyết định từ chối kiểm duyệt ..."></textarea>
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            (click)="closeRejectionModal()"
+            class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200">
+            Hủy
+          </button>
+          <button
+            type="submit"
+            [disabled]="submitting || !rejectionNote?.trim()"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50">
+            <span *ngIf="submitting" class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+            Từ chối
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
