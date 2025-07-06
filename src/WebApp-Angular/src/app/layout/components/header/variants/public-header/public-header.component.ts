@@ -85,6 +85,11 @@ export class PublicHeaderComponent implements OnInit {
 
     this.authService.initialize().subscribe((intialize)=>{
       if(intialize){
+        console.log(this.authService.getToken().subscribe({
+          next: data => {
+            console.log(data);
+          }
+        }));
         this.isAuthenticated = this.authService.isAuthenticated();
         this.authService.getCurrentUser().subscribe((user)=>{
           this.userModel.set(user);

@@ -2,7 +2,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import Keycloak, { KeycloakInitOptions, KeycloakProfile } from 'keycloak-js';
 import { AuthConfig } from './auth.config';
-import { catchError, from, map, Observable, throwError } from 'rxjs';
+import {catchError, from, map, Observable, of, throwError} from 'rxjs';
+import { Role } from '../../layout/models/menu-permission.enum';
 
 @Injectable({
   providedIn: 'root'

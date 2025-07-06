@@ -12,3 +12,9 @@ export enum MenuPermission {
   VIEW_MODERATION = 'view_moderation',
   VIEW_GENRES = "view_genres",
 }
+
+export enum Role{
+  Author = "author",
+  Moderation = "moderation",
+  ManagerResources = "manager-resources",
+}

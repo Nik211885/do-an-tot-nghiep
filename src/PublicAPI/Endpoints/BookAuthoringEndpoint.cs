@@ -6,6 +6,8 @@ using Application.BoundContext.BookAuthoringContext.Query.Book;
 using Application.BoundContext.BookAuthoringContext.Query.Chapter;
 using Application.BoundContext.BookAuthoringContext.Query.Genre;
 using Application.BoundContext.BookAuthoringContext.ViewModel;
+using Application.Common;
+using Application.Common.Authorization;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
@@ -149,7 +151,7 @@ public class BookAuthoringEndpoint : IEndpoints
 
 public static class BookAuthoringService
 {
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
         CreateBook([FromBody] CreateBookCommand command, 
             [FromServices] BookAuthoringServiceWrapper service)
@@ -158,7 +160,7 @@ public static class BookAuthoringService
             .Handler<CreateBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> 
         UpdateBook([FromQuery] Guid id,
             [FromBody] UpdateBookRequest request, 
@@ -170,7 +172,7 @@ public static class BookAuthoringService
         return TypedResults.Ok(result);
     }
     
-    [Authorize]
+    [AuthorizationKey(Role.ManagerResources)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>
         CreateGenre([FromBody] CreateGenreCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -178,7 +180,7 @@ public static class BookAuthoringService
         var result = await service.FactoryHandler.Handler<CreateGenreCommand, GenreViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.ManagerResources)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         UpdateGenre([FromQuery] Guid id, [FromBody] UpdateGenreRequest request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -188,7 +190,7 @@ public static class BookAuthoringService
                 new UpdateGenreCommand(Id:id, Request:request));
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.ManagerResources)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         ChangeActiveGenre([FromQuery] Guid id,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -198,7 +200,7 @@ public static class BookAuthoringService
                 new ChangeActiveGenreCommand(Id:id));
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>
         CreateChapter([FromBody] CreateChapterCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -207,7 +209,7 @@ public static class BookAuthoringService
             .Handler<CreateChapterCommand, ChapterViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         UpdateChapter([FromQuery] Guid id, 
             [FromBody] UpdateChapterRequest request,
@@ -218,7 +220,7 @@ public static class BookAuthoringService
                 new UpdateChapterCommand(Id:id, Request: request));
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
        RollBackChapter([AsParameters] RollBackChapterCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -227,7 +229,7 @@ public static class BookAuthoringService
             .Handler<RollBackChapterCommand, ChapterViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterDiffContentViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         PreviewChangeChapter([AsParameters] GetPreviewChangeContentQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -236,7 +238,7 @@ public static class BookAuthoringService
             .Handler<GetPreviewChangeContentQuery, ChapterDiffContentViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         RenameChapterVersion([AsParameters]  RenameChapterVersionCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -245,7 +247,7 @@ public static class BookAuthoringService
             .Handler<RenameChapterVersionCommand, string>(request);
         return TypedResults.NoContent();
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         SubmitAndReview([AsParameters] SubmitAndReviewChapterCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -254,7 +256,7 @@ public static class BookAuthoringService
             .Handler<SubmitAndReviewChapterCommand, ChapterViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         ChangeReleaseTypeBook([AsParameters] ChangeBookReleaseTypeCommand request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -263,7 +265,7 @@ public static class BookAuthoringService
             .Handler<ChangeBookReleaseTypeCommand, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         ChangeBookPolicy([AsParameters] ChangePolicyBookCommand request,
             [FromServices] BookAuthoringServiceWrapper service) 
@@ -272,7 +274,7 @@ public static class BookAuthoringService
             .Handler<ChangePolicyBookCommand, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<IReadOnlyCollection<BookViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetAllMyBooks([FromServices] IIdentityProvider identityProvider,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -282,7 +284,7 @@ public static class BookAuthoringService
             .Handler<GetAllBooksByUserIdQuery, IReadOnlyCollection<BookViewModel>>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<BookViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetBookDetailBySlug([AsParameters] GetBookDetailBySlugQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -291,7 +293,7 @@ public static class BookAuthoringService
             .Handler<GetBookDetailBySlugQuery, BookViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<IReadOnlyCollection<ChapterViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetAllChapterByBookSlug([AsParameters] GetAllChapterByBookSlugQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -300,7 +302,7 @@ public static class BookAuthoringService
             .Handler<GetAllChapterByBookSlugQuery, IReadOnlyCollection<ChapterViewModel>>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetAllChapterVersionByChapterId([AsParameters] GetAllChapterVersionByChapterIdQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -309,7 +311,7 @@ public static class BookAuthoringService
             .Handler<GetAllChapterVersionByChapterIdQuery, ChapterViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetChapterBySlug([AsParameters] GetChapterBySlugQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -318,7 +320,7 @@ public static class BookAuthoringService
             .Handler<GetChapterBySlugQuery, ChapterViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<ChapterDiffContentViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetPreviewChangeContent([AsParameters] GetPreviewChangeContentQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -327,7 +329,6 @@ public static class BookAuthoringService
             .Handler<GetPreviewChangeContentQuery, ChapterDiffContentViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<IReadOnlyCollection<GenreViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetAllGenres([AsParameters] GetAllGenresQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -336,7 +337,6 @@ public static class BookAuthoringService
             .Handler<GetAllGenresQuery, IReadOnlyCollection<GenreViewModel>>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         GetGenreBySlug([AsParameters] GetGenreBySlugQuery request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -345,7 +345,7 @@ public static class BookAuthoringService
             .Handler<GetGenreBySlugQuery,GenreViewModel>(request);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         DeleteChapter([AsParameters] DeleteChapterCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -353,7 +353,7 @@ public static class BookAuthoringService
         await service.FactoryHandler.Handler<DeleteChapterCommand, string>(command);
         return TypedResults.NoContent();    
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<NoContent, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         DeleteBook([AsParameters] DeleteBookCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -361,22 +361,20 @@ public static class BookAuthoringService
         await service.FactoryHandler.Handler<DeleteBookCommand, string>(command);
         return TypedResults.NoContent();    
     }
-
-    [Authorize]
+    
     public static async Task<Ok<BookViewModel>> GetBookById([AsParameters] GetBookDetailByIdQuery query,
             [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler.Handler<GetBookDetailByIdQuery, BookViewModel?>(query);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Ok<BookViewModel>> MarkBookComplete([AsParameters] MarkCompletedBookCommand command,
         [FromServices] BookAuthoringServiceWrapper service)
     {
         var result = await service.FactoryHandler.Handler<MarkCompletedBookCommand, BookViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<PaginationItem<BookViewModel>>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         FindBookWithFilter(
             [AsParameters] PaginationRequest page,

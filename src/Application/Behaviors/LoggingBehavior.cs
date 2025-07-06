@@ -26,6 +26,7 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
     /// <returns></returns>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
+        var attribute =  typeof(TRequest).Attributes;
         _logger.LogInformation("Start logging request: {request}, userId: {userId}, userName {userName}", 
             typeof(TRequest).FullName, _identityProvider.UserIdentity(), _identityProvider.UserName());
         // In natural, you want to pass information about user and request for user

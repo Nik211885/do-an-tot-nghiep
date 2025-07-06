@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using Application.Exceptions;
 using Application.Interfaces.IdentityProvider;
 using Microsoft.AspNetCore.Http;
@@ -34,9 +35,23 @@ public class IdentityProvider(IHttpContextAccessor contextAccessor)
         => _contextAccessor.HttpContext?.User?.Claims.
             FirstOrDefault(c => c.Type == "name")?.Value ?? "Unknown";
 
-    public bool IsInRole(string role)
+    public bool IsInRole(string roleMatch)
     {
-        return _contextAccessor.HttpContext.User.IsInRole(role);
+        var roleString = _contextAccessor.HttpContext?
+            .User?.Claims.FirstOrDefault(x => x.Type == "realm_access")?.Value;
+        if (roleString != null)
+        {
+            using var jsonDocument = JsonDocument.Parse(roleString);
+            var roles = jsonDocument.RootElement.GetProperty("roles");
+            foreach (var role in roles.EnumerateArray())
+            {
+                if (role.GetString() == roleMatch)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public IEnumerable<Claim> Claims()

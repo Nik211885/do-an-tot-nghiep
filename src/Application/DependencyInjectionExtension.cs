@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using Application.Behaviors;
+using Application.Common.Authorization;
 using Application.Interfaces.CQRS;
 using Application.Exceptions;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -20,6 +22,7 @@ public static class DependencyInjectionExtension
         services.AddDomainEvents(assembly);
         services.AddHandler(assembly);
         services.AddIntegrationEventHandler(assembly);
+        services.AddSingleton<IAuthorizationHandler, CustomAuthorizeHandler>();
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjectionExtension));
         services.AddTransient<ExceptionMiddlewareHandling>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));

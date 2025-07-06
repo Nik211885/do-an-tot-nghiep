@@ -91,7 +91,6 @@ public class BookReviewEndpoint : IEndpoints
 
 public static class BookReviewEndpointService
 {
-    [Authorize]
     public static async Task<Results<Ok<BookReviewViewModel>, BadRequest, ProblemHttpResult>> 
         CreateBookReview([FromBody] CreateBookReviewCommand command, 
             [FromServices] BookReviewServiceWrapper service)
@@ -136,7 +135,6 @@ public static class BookReviewEndpointService
             .Handler<UpdateRatingCommand, RatingViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<PaginationItem<RatingViewModel>>, BadRequest, ProblemHttpResult>> 
         GetRatingViewModelWithPaginationByBook([FromQuery] Guid bookId,
             [AsParameters] PaginationRequest page,
@@ -145,7 +143,6 @@ public static class BookReviewEndpointService
         var result = await service.BookReviewQueries.GetRatingWithPaginationByBookIdAsync(bookId, page);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<PaginationItem<CommentViewModel>>, BadRequest, ProblemHttpResult>> 
         GetCommentViewModelWithPaginationByBook([FromQuery] Guid bookId,
             [AsParameters] PaginationRequest page,
@@ -190,7 +187,6 @@ public static class BookReviewEndpointService
         var result = await service.BookReviewQueries.GetAllCommentByUserIdAndBookIdAsync(service.IdentityProvider.UserIdentity(), bookId);
         return TypedResults.Ok(result);
     }
-    [Authorize]
     public static async Task<Results<Ok<PaginationItem<CommentViewModel>>, BadRequest, ProblemHttpResult>> 
         GetCommentReplyWithPagination(
             [FromQuery] Guid commentReplyId,

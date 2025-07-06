@@ -19,11 +19,11 @@ public interface IIdentityProvider
     /// <summary>
     ///  Check user has role is role name
     /// </summary>
-    /// <param name="role">role of action for endpoint</param>
+    /// <param name="roleMatch">role of action for endpoint</param>
     /// <returns>
     ///     Return true if user has role for endpoint
     /// </returns>
-    bool IsInRole(string role);
+    bool IsInRole(string roleMatch);
     /*/// <summary>
     ///     Check user has permission should endpoint need pass authorize 
     /// </summary>

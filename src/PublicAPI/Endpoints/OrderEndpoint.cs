@@ -1,6 +1,8 @@
 ﻿using Application.BoundContext.OrderContext.Command;
 using Application.BoundContext.OrderContext.Queries;
 using Application.BoundContext.OrderContext.ViewModel;
+using Application.Common;
+using Application.Common.Authorization;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
@@ -60,7 +62,7 @@ public class OrderEndpoint : IEndpoints
 
 public static class OrderEndpointServices
 {
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<OrderViewModel>, ProblemHttpResult>>
         CreateOrder(
             [FromServices] OrderServiceWrapper service
@@ -70,7 +72,7 @@ public static class OrderEndpointServices
         var result = await service.FactoryHandler.Handler<CreateOrderCommand, OrderViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<NoContent, ProblemHttpResult, NotFound>>
         DeleteOrder(
             [AsParameters] DeleteOrderCommand command,
@@ -80,7 +82,7 @@ public static class OrderEndpointServices
         await service.FactoryHandler.Handler<DeleteOrderCommand, bool>(command);
         return TypedResults.NoContent();
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<OrderViewModel>, ProblemHttpResult, NotFound>>
         CreateOrderItem(
             [FromBody] CreateOrderItemCommand command,
@@ -90,7 +92,7 @@ public static class OrderEndpointServices
         var result = await service.FactoryHandler.Handler<CreateOrderItemCommand, OrderViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<OrderViewModel>, ProblemHttpResult, NotFound>>
         RemoveOrderItem(
             [FromBody] RemoveOrderItemCommand command,
@@ -100,7 +102,7 @@ public static class OrderEndpointServices
         var result = await service.FactoryHandler.Handler<RemoveOrderItemCommand, OrderViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<PaymentResponse>, ProblemHttpResult, NotFound>>
         PaymentOrder(
             [AsParameters] PaymentCommand command,
@@ -122,7 +124,7 @@ public static class OrderEndpointServices
         var url = $"{extraUrl}?OrderId={order.Id}";
         return TypedResults.Redirect(url);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<PaginationItem<OrderViewModel>>, ProblemHttpResult, NotFound>>
         GetOrderForMyWithPagination(
             [AsParameters] PaginationRequest page,
@@ -132,7 +134,7 @@ public static class OrderEndpointServices
         var result = await service.OrderQueries.GetOrderForUserWithPaginationAsync(service.IdentityProvider.UserIdentity(), page);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<OrderViewModel>, BadRequest, NotFound>>
         CreateOrderWithOrderItem(
             [FromBody] CreateOrderWithOrderItemCommand command,
@@ -143,7 +145,7 @@ public static class OrderEndpointServices
             .Handler<CreateOrderWithOrderItemCommand, OrderViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Author)]
     public static async Task<Results<Ok<IReadOnlyCollection<OrderViewModel>>, BadRequest, NotFound>>
         GetOrderItemInIdsAndStatus(
             [FromQuery] Guid[] bookId,

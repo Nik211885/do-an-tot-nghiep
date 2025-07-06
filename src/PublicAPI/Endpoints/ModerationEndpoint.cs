@@ -1,6 +1,8 @@
 ﻿using Application.BoundContext.ModerationContext.Command;
 using Application.BoundContext.ModerationContext.Queries;
 using Application.BoundContext.ModerationContext.ViewModel;
+using Application.Common;
+using Application.Common.Authorization;
 using Application.Interfaces.CQRS;
 using Application.Models;
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
@@ -62,7 +64,8 @@ public class ModerationEndpoint : IEndpoints
 public static class ModerationEndpointServices
 {
     [Authorize]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> CreateModeration(
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
+        CreateModeration(
         [FromBody] CreateBookApprovalCommand command,
         [FromServices] ModerationServiceWrapper service
         )
@@ -70,8 +73,9 @@ public static class ModerationEndpointServices
         var result = await service.FactoryHandler.Handler<CreateBookApprovalCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> ApproveModeration(
+    [AuthorizationKey(Role.Moderation)]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
+        ApproveModeration(
         [FromBody] ApprovalBookCommand command,
         [FromServices] ModerationServiceWrapper service
     )
@@ -79,8 +83,9 @@ public static class ModerationEndpointServices
         var result = await service.FactoryHandler.Handler<ApprovalBookCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> RejectModeration(
+    [AuthorizationKey(Role.Moderation)]
+    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
+        RejectModeration(
         [FromBody] RejectBookCommand command,
         [FromServices] ModerationServiceWrapper service
     )
@@ -88,8 +93,9 @@ public static class ModerationEndpointServices
         var result = await service.FactoryHandler.Handler<RejectBookCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
-    public static async Task<Results<Ok<PaginationItem<BookApprovalViewModel>>, ProblemHttpResult>>  GetBookApprovalWithPaginationByStatusAsync
+    [AuthorizationKey(Role.Moderation)]
+    public static async Task<Results<Ok<PaginationItem<BookApprovalViewModel>>,
+            ProblemHttpResult>>  GetBookApprovalWithPaginationByStatusAsync
     (
         [AsParameters] PaginationRequest page, [FromQuery] BookApprovalStatus status,
         [FromServices] ModerationServiceWrapper service
@@ -109,7 +115,7 @@ public static class ModerationEndpointServices
         var result = await service.FactoryHandler.Handler<CreateSignatureCommand, BookApprovalViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Moderation)]
     public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>>  
         GetBookApprovalById
     (
@@ -121,7 +127,7 @@ public static class ModerationEndpointServices
             .GetBookApprovalByIdAsync(bookApprovalId);
         return TypedResults.Ok(result);
     }
-    [Authorize]
+    [AuthorizationKey(Role.Moderation)]
     public static async Task<Results<Ok<PaginationItem<ApprovalDecisionViewModel>>, ProblemHttpResult>>  
         GetBookApprovalDecisionByApprovalId
         (
@@ -158,6 +164,7 @@ public static class ModerationEndpointServices
             .ModerationQueries.GetApprovalRepositoryGroupByBookIdAsync(bookId,bookTitle,page);
         return TypedResults.Ok(result);
     }
+    [AuthorizationKey(Role.Moderation)]
     public static async Task<Results<Ok<IReadOnlyCollection<BookApprovalViewModel>>, NotFound>>
         GetBookApprovalForBookId(
             [FromQuery]Guid bookId,

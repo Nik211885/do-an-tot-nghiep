@@ -121,4 +121,7 @@ export class AuthService {
   public isAuthenticated(): boolean {
     return this.keyCloakService.isAuthenticated();
   }
+  public getRole(): string[]{
+    return this.keyCloakService.getRoles();
+  }
 }

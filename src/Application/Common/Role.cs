@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Application.Common;
 
@@ -7,13 +8,16 @@ public enum Role
     /// <summary>
     ///  role default when user has register use for system 
     /// </summary>
-    User,
+    [Description("author")]
+    Author,
     /// <summary>
     ///  Moderator create make moderation context 
     /// </summary>
-    Moderator,
+    [Description("moderation")]
+    Moderation,
     /// <summary>
     /// Management system
     /// </summary>
-    Admin   
+    [Description("manager-resources")]
+    ManagerResources   
 }

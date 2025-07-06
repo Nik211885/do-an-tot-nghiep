@@ -21,12 +21,20 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
     <PackageReference Include="minhsangdotcom.TheTemplate.SharedKernel" Version="1.0.5" />
     <PackageReference Include="Riok.Mapperly" Version="4.2.0-next.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Metadata" Version="9.0.0" />
     <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="BoundContext\OrderContext\IntegrationEvent\EventHandler\" />
     <Folder Include="BoundContext\OrderContext\IntegrationEvent\Event\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Authorization">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.AspNetCore.Authorization.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
