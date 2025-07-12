@@ -10,43 +10,30 @@ public class BookApprovalRepository(ModerationDbContext moderationDbContext)
     : Repository<BookApproval>(moderationDbContext), IBookApprovalRepository
 {
     private readonly ModerationDbContext _moderationDbContext = moderationDbContext;
-    public async Task<List<BookApproval>> FindByBookIdAsync(Guid bookId, CancellationToken cancellationToken = default)
-    {
-        var bookApproval = await _moderationDbContext
-            .BookApprovals
-            .Where(b=>b.BookId == bookId)
-            .ToListAsync(cancellationToken: cancellationToken);
-        return bookApproval;
-    }
-
-    public async Task<BookApproval?> FindByBookIdAndChapterIdAsync(Guid bookId, Guid chapterId, CancellationToken cancellationToken = default)
-    {
-        var bookApproval 
-            = await _moderationDbContext.BookApprovals
-                .Where(x=>x.BookId == bookId && x.ChapterId == chapterId)
-            .FirstOrDefaultAsync(cancellationToken);
-        return bookApproval;
-    }
-
     public async Task<BookApproval?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var bookApproval = await _moderationDbContext.BookApprovals
-            .FirstOrDefaultAsync(x=>x.Id == id, cancellationToken);
-        if (bookApproval is not null)
-        {
-            await _moderationDbContext.Entry(bookApproval)
-                .Collection(x=>x.Decision)
-                .LoadAsync(cancellationToken);
-        }
-        return bookApproval;
+        var query = _moderationDbContext
+            .BookApprovals
+            .Where(x => x.Id == id);
+        var result = await query.FirstOrDefaultAsync(cancellationToken);
+        return result;
     }
 
-    public BookApproval Create(BookApproval bookApproval, CancellationToken cancellationToken = default)
+    public async Task<BookApproval?> FindByBookIdAsync(Guid bookId, CancellationToken cancellationToken = default)
+    {
+        IQueryable<BookApproval> queryable 
+            = _moderationDbContext.BookApprovals
+                .Where(x=>x.BookId == bookId);
+        BookApproval? result = await queryable.FirstOrDefaultAsync(cancellationToken);
+        return result;
+    }
+
+    public BookApproval Create(BookApproval bookApproval)
     {
         return _moderationDbContext.BookApprovals.Add(bookApproval).Entity;
     }
 
-    public BookApproval Update(BookApproval bookApproval, CancellationToken cancellationToken = default)
+    public BookApproval Update(BookApproval bookApproval)
     {
         _moderationDbContext.Entry(bookApproval).State = EntityState.Modified;
         return bookApproval;

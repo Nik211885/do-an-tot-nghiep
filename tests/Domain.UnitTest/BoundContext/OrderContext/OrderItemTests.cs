@@ -8,7 +8,7 @@ public class OrderItemTests
     public void Create_Should_Succeed_With_Valid_Data()
     {
         var bookId = Guid.NewGuid();
-        var item = OrderItem.Create(bookId, "Book", 100);
+        var item = OrderItem.Create(bookId, "Book", 100,Guid.CreateVersion7());
         Assert.Equal(bookId, item.BookId);
         Assert.Equal("Book", item.BookName);
         Assert.Equal(100, item.Price);

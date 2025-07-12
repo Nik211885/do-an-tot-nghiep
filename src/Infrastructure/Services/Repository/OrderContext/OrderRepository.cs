@@ -24,6 +24,15 @@ public class OrderRepository(OrderDbContext orderDbContext)
         _orderDbContext.Remove(order); 
     }
 
+    public async Task<IEnumerable<Order>> GetAllOrderForBookIdPaymentFailureAsync(Guid bookId, CancellationToken cancellationToken)
+    {
+        var query = _orderDbContext.Orders
+            .Include(x=>x.OrderItems)
+            .Where(x=>x.OrderItems.Any(y=>y.BookId == bookId && x.Status != OrderStatus.Success));
+        
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<Order?> GetOrderByCodeAsync(string code, CancellationToken cancellationToken)
     {
         var query = _orderDbContext

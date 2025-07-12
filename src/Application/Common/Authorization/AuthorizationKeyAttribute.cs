@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Common.Authorization;
-
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class AuthorizationKeyAttribute
     : Attribute, IAuthorizationRequirement, IAuthorizationRequirementData
 {

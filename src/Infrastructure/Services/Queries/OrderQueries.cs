@@ -62,5 +62,26 @@ public class OrderQueries(OrderDbContext orderDbContext)
                 &&  x.BuyerId == userId);
         var result = await query.ToListAsync(cancellationToken);
         return result.Select(x=>x.ToViewModel()).ToList();
+    }   
+
+    public async Task<StatisticalPaymentViewModel> GetStatisticalPaymentAsync(Guid? userId, CancellationToken cancellationToken = default)
+    {
+        var query = _orderDbContext.OrderItems
+            .AsNoTracking()
+            .Where(x => userId == null || x.AuthorId == userId);
+        var count = await query.CountAsync(cancellationToken);
+        var totalPrices = await query.SumAsync(x => x.Price, cancellationToken);
+        return new StatisticalPaymentViewModel(count, totalPrices);
+    }
+
+    public async Task<StatisticalBookPaymentViewModel> GetStatisticalPaymentForBookAsync(Guid? userId, Guid bookId, CancellationToken cancellationToken = default)
+    {
+        var query = _orderDbContext
+            .OrderItems
+            .AsNoTracking()
+            .Where(x => userId == null || x.BookId == bookId);
+        var count = await query.CountAsync(cancellationToken);
+        var totalPrices = await query.SumAsync(x => x.Price, cancellationToken);
+        return new StatisticalBookPaymentViewModel(bookId, count, totalPrices);
     }
 }

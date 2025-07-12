@@ -8,12 +8,12 @@ namespace Application.BoundContext.BookAuthoringContext.IntegrationEvent.EventHa
 public class RejectedBookChangeStatusToRejectedForChapterIntegrationEventHandler(
     ILogger<RejectedBookChangeStatusToRejectedForChapterIntegrationEventHandler> logger,
     IChapterRepository chapterRepository)
-    : IIntegrationEventHandler<RejectBookIntegrationEvent>
+    : IIntegrationEventHandler<RejectedChapterIntegrationEvent>
 {
 
     private readonly ILogger<RejectedBookChangeStatusToRejectedForChapterIntegrationEventHandler> _logger = logger;
     private readonly IChapterRepository _chapterRepository = chapterRepository;
-    public async Task Handle(RejectBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public async Task Handle(RejectedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
         var chapter = await _chapterRepository.FindByIdAsync(@event.ChapterId, cancellationToken);
         if (chapter is null)

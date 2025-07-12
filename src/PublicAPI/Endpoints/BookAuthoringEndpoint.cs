@@ -172,7 +172,7 @@ public static class BookAuthoringService
         return TypedResults.Ok(result);
     }
     
-    [AuthorizationKey(Role.ManagerResources)]
+    [AuthorizationKey(Role.Admin)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>
         CreateGenre([FromBody] CreateGenreCommand command,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -180,7 +180,7 @@ public static class BookAuthoringService
         var result = await service.FactoryHandler.Handler<CreateGenreCommand, GenreViewModel>(command);
         return TypedResults.Ok(result);
     }
-    [AuthorizationKey(Role.ManagerResources)]
+    [AuthorizationKey(Role.Admin)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         UpdateGenre([FromQuery] Guid id, [FromBody] UpdateGenreRequest request,
             [FromServices] BookAuthoringServiceWrapper service)
@@ -190,7 +190,7 @@ public static class BookAuthoringService
                 new UpdateGenreCommand(Id:id, Request:request));
         return TypedResults.Ok(result);
     }
-    [AuthorizationKey(Role.ManagerResources)]
+    [AuthorizationKey(Role.Admin)]
     public static async Task<Results<Ok<GenreViewModel>, UnauthorizedHttpResult, BadRequest, NotFound, ProblemHttpResult>>
         ChangeActiveGenre([FromQuery] Guid id,
             [FromServices] BookAuthoringServiceWrapper service)

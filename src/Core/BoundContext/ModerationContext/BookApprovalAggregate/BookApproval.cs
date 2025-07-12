@@ -8,50 +8,50 @@ namespace Core.BoundContext.ModerationContext.BookApprovalAggregate;
 public class BookApproval : BaseEntity, IAggregateRoot
 {
     public Guid BookId { get; private set; }
-    public Guid ChapterId { get; private set; }
     public Guid AuthorId { get; private set; }
-    public DateTimeOffset SubmittedAt { get; private set; }
-    public string ChapterContent { get; private set; }
-    public string ChapterTitle {get; private set;}
-    public int ChapterNumber {get; private set;}
-    public string ChapterSlug {get; private set;}
     public string BookTitle {get; private set;}
-    public BookApprovalStatus Status { get; private set; }
-    private List<ApprovalDecision> _decision =[];
-    public IReadOnlyCollection<ApprovalDecision> Decision => _decision.AsReadOnly();
-    public int Version { get; private set; }
-    
-    public CopyrightChapter? CopyrightChapter { get; private set; }
+    public bool IsActive { get; private set; }
     protected BookApproval(){}
-    private BookApproval(Guid bookId, Guid chapterId, Guid authorId,
-        string bookTitle, string chapterTitle, int chapterNumber, string chapterSlug,
-        string chapterContent)
+    private BookApproval(Guid bookId, Guid authorId,
+        string bookTitle)
     {
         BookId = bookId;
-        ChapterNumber = chapterNumber;
-        ChapterSlug = chapterSlug;
         BookTitle = bookTitle;
-        ChapterTitle = chapterTitle;
-        ChapterContent = chapterContent;
-        ChapterId = chapterId;
-        SubmittedAt = DateTimeOffset.UtcNow;
-        Version = 0;
+        IsActive = true;
         AuthorId = authorId;
-        Status = BookApprovalStatus.Pending;
-        
-        RaiseDomainEvent(new ChapterReadyForModerationDomainEvent(this));
     }
 
-    public static BookApproval Create(Guid bookId, Guid chapterId, Guid authorId,
-        string bookTitle, string chapterTitle, int chapterNumber, string chapterSlug,
-        string chapterContent)
+    public static BookApproval Create(Guid bookId, Guid authorId, string bookTitle)
     {
-        return new BookApproval(bookId, chapterId, authorId, 
-            bookTitle, chapterTitle, chapterNumber, 
-            chapterSlug, chapterContent);
+        return new BookApproval(bookId, authorId, 
+            bookTitle);
     }
 
-    public void Reject(Guid? moderatorId, string? note,bool isAutomated)
+    public void RenameBook(string bookName)
+    {
+        BookTitle = bookName;
+    }
+
+    public void Active()
+    {
+        if (IsActive)
+        {
+            ThrowHelper.ThrowIfBadRequest("Da bat hoat dong cua cuon sach truoc do");
+        }
+        IsActive = true;
+        RaiseDomainEvent(new ActivatedBookDomainEvent((this)));
+    }
+
+    public void UnActive()
+    {
+        if (!IsActive)
+        {
+            ThrowHelper.ThrowIfBadRequest("Da tat hoat dong cua cuon sach truoc do");
+        }
+        IsActive = false;
+        RaiseDomainEvent(new UnActivatedBookDomainEvent(this));
+    }
+    /*public void Reject(Guid? moderatorId, string? note,bool isAutomated)
     {
         var decision = ApprovalDecision.Create(moderatorId, note, isAutomated, BookApprovalStatus.Rejected);
         _decision.Add(decision);
@@ -91,5 +91,5 @@ public class BookApproval : BaseEntity, IAggregateRoot
     public void DeletedApproved()
     {
         RaiseDomainEvent(new DeletedApproveDomainEvent(this));
-    }
+    }*/
 }

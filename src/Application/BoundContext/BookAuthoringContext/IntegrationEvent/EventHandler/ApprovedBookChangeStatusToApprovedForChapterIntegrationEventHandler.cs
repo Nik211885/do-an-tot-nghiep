@@ -8,11 +8,11 @@ namespace Application.BoundContext.BookAuthoringContext.IntegrationEvent.EventHa
 public class ApprovedBookChangeStatusToApprovedForChapterIntegrationEventHandler(
     ILogger<ApprovedBookChangeStatusToApprovedForChapterIntegrationEventHandler> logger,
     IChapterRepository chapterRepository)
-    : IIntegrationEventHandler<ApprovalBookIntegrationEvent>
+    : IIntegrationEventHandler<ApprovedChapterIntegrationEvent>
 {
     private readonly ILogger<ApprovedBookChangeStatusToApprovedForChapterIntegrationEventHandler> _logger = logger;
     private readonly IChapterRepository _chapterRepository = chapterRepository;
-    public async Task Handle(ApprovalBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public async Task Handle(ApprovedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
         var chapter = await _chapterRepository.FindByIdAsync(@event.ChapterId, cancellationToken);
         if (chapter is null)

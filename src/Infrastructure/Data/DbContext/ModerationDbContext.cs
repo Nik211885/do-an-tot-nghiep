@@ -13,10 +13,12 @@ public class ModerationDbContext(DbContextOptions<ModerationDbContext> options,
     : BaseDbContext(options, dbConnectionStringSelector, interceptors)
 {
     public DbSet<BookApproval> BookApprovals { get; set; }
+    public DbSet<ChapterApproval> ChapterApprovals { get; set; }
     public DbSet<ApprovalDecision>  ApprovalDecisions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ApprovalDecisionConfiguration())
-            .ApplyConfiguration(new BookApprovalConfiguration());
+            .ApplyConfiguration(new BookApprovalConfiguration())
+            .ApplyConfiguration(new ChapterApprovalConfiguration());
     }
 }

@@ -1,4 +1,4 @@
-## Strategy load with Ef Core
+z`## Strategy load with Ef Core
 
 
 ## Eager Loading

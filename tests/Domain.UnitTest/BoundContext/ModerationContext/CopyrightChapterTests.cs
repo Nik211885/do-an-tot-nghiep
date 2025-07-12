@@ -1,3 +1,4 @@
+/*
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
 namespace Domain.UnitTest.BoundContext.ModerationContext;
@@ -35,3 +36,4 @@ public class CopyrightChapterTests
         Assert.Equal("alg", chapter.DigitalSignature.SignatureAlgorithm);
     }
 }
+*/

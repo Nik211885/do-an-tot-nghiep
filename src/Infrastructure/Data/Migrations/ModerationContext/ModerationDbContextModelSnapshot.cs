@@ -28,17 +28,11 @@ namespace Infrastructure.Data.Migrations.ModerationContext
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BookApprovalId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BookApprovalsId")
+                    b.Property<Guid>("ChapterApprovalId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("DecisionDateTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsAutomated")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("ModeratorId")
                         .HasColumnType("uuid");
@@ -55,7 +49,7 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookApprovalId");
+                    b.HasIndex("ChapterApprovalId");
 
                     b.ToTable("ApprovalDecisions", "Moderation");
                 });
@@ -74,7 +68,25 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
                     b.Property<string>("BookTitle")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BookApprovals", "Moderation");
+                });
+
+            modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.ChapterApproval", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookApprovalId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ChapterContent")
                         .IsRequired()
@@ -88,16 +100,18 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
                     b.Property<string>("ChapterSlug")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ChapterTitle")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTimeOffset>("SubmittedAt")
                         .HasColumnType("timestamp with time zone");
@@ -107,27 +121,32 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookApprovals", "Moderation");
+                    b.HasIndex("BookApprovalId");
+
+                    b.ToTable("ChapterApproval", "Moderation");
                 });
 
             modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.ApprovalDecision", b =>
                 {
-                    b.HasOne("Core.BoundContext.ModerationContext.BookApprovalAggregate.BookApproval", null)
+                    b.HasOne("Core.BoundContext.ModerationContext.BookApprovalAggregate.ChapterApproval", null)
                         .WithMany("Decision")
-                        .HasForeignKey("BookApprovalId");
+                        .HasForeignKey("ChapterApprovalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.BookApproval", b =>
+            modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.ChapterApproval", b =>
                 {
+                    b.HasOne("Core.BoundContext.ModerationContext.BookApprovalAggregate.BookApproval", null)
+                        .WithMany()
+                        .HasForeignKey("BookApprovalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Core.BoundContext.ModerationContext.BookApprovalAggregate.CopyrightChapter", "CopyrightChapter", b1 =>
                         {
-                            b1.Property<Guid>("BookApprovalId")
+                            b1.Property<Guid>("ChapterApprovalId")
                                 .HasColumnType("uuid");
-
-                            b1.Property<string>("BookTitle")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("character varying(200)");
 
                             b1.Property<string>("ChapterContent")
                                 .IsRequired()
@@ -138,55 +157,29 @@ namespace Infrastructure.Data.Migrations.ModerationContext
 
                             b1.Property<string>("ChapterSlug")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)");
 
                             b1.Property<string>("ChapterTitle")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)");
 
                             b1.Property<DateTimeOffset>("DateTimeCopyright")
                                 .HasColumnType("timestamp with time zone");
 
-                            b1.HasKey("BookApprovalId");
+                            b1.HasKey("ChapterApprovalId");
 
-                            b1.ToTable("BookApprovals", "Moderation");
+                            b1.ToTable("ChapterApproval", "Moderation");
 
                             b1.WithOwner()
-                                .HasForeignKey("BookApprovalId");
-
-                            b1.OwnsOne("Core.BoundContext.ModerationContext.BookApprovalAggregate.DigitalSignature", "DigitalSignature", b2 =>
-                                {
-                                    b2.Property<Guid>("CopyrightChapterBookApprovalId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<string>("SignatureAlgorithm")
-                                        .IsRequired()
-                                        .HasMaxLength(500)
-                                        .HasColumnType("character varying(500)");
-
-                                    b2.Property<string>("SignatureValue")
-                                        .IsRequired()
-                                        .HasMaxLength(500)
-                                        .HasColumnType("character varying(500)");
-
-                                    b2.Property<DateTimeOffset>("SigningDateTime")
-                                        .HasColumnType("timestamp with time zone");
-
-                                    b2.HasKey("CopyrightChapterBookApprovalId");
-
-                                    b2.ToTable("BookApprovals", "Moderation");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("CopyrightChapterBookApprovalId");
-                                });
-
-                            b1.Navigation("DigitalSignature");
+                                .HasForeignKey("ChapterApprovalId");
                         });
 
                     b.Navigation("CopyrightChapter");
                 });
 
-            modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.BookApproval", b =>
+            modelBuilder.Entity("Core.BoundContext.ModerationContext.BookApprovalAggregate.ChapterApproval", b =>
                 {
                     b.Navigation("Decision");
                 });

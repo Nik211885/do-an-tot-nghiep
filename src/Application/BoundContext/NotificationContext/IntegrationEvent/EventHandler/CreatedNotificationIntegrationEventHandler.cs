@@ -1,4 +1,4 @@
-﻿using Application.BoundContext.ModerationContext.IntegrationEvent.Event;
+﻿/*
 using Application.BoundContext.NotificationContext.Command;
 using Application.BoundContext.NotificationContext.ViewModel;
 using Application.Interfaces.CQRS;
@@ -41,3 +41,4 @@ public class CreatedNotificationIntegrationEventHandler(IFactoryHandler factoryH
         await _factoryHandler.Handler<CreateNotificationCommand, NotificationViewModel>(notificationCreate, cancellationToken);
     }
 }
+*/

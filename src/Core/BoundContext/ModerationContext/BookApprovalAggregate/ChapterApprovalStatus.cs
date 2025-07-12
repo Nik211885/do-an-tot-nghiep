@@ -2,7 +2,7 @@
 
 namespace Core.BoundContext.ModerationContext.BookApprovalAggregate;
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum BookApprovalStatus
+public enum ChapterApprovalStatus
 {
     Pending,
     Rejected,

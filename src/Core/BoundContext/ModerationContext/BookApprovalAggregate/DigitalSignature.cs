@@ -1,4 +1,5 @@
-﻿using Core.ValueObjects;
+﻿/*
+using Core.ValueObjects;
 
 namespace Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
@@ -26,3 +27,4 @@ public class DigitalSignature : ValueObject
         yield return SigningDateTime;
     }
 }
+*/

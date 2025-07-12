@@ -48,7 +48,7 @@ public class CreateOrderWithOrderItemCommandHandler(IOrderRepository orderReposi
             return orderExits;
         }
         var order = Order.Create(_identityProvider.UserIdentity());
-        order.AddOrderItem(bookInAuthoring.Id, bookInAuthoring.Title, bookInAuthoring.PolicyReadBook.Price ?? 0);
+        order.AddOrderItem(bookInAuthoring.Id, bookInAuthoring.Title, bookInAuthoring.PolicyReadBook.Price ?? 0, bookInAuthoring.CreatedUerId);
         _orderRepository.Create(order);
         await _orderRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         return order.ToViewModel();

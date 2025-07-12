@@ -9,7 +9,6 @@ public class ApprovalDecisionConfiguration : IEntityTypeConfiguration<ApprovalDe
     public void Configure(EntityTypeBuilder<ApprovalDecision> builder)
     {
         builder.ToTable("ApprovalDecisions", DbSchema.Moderation);
-        builder.Property<Guid>("BookApprovalsId").IsRequired();
         builder.Property(b=>b.Note)
             .HasMaxLength(500)
             .IsRequired();

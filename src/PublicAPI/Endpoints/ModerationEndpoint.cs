@@ -1,12 +1,12 @@
-﻿using Application.BoundContext.ModerationContext.Command;
+﻿using Application.BoundContext.BookReviewContext.ViewModel;
+using Application.BoundContext.ModerationContext.Command;
 using Application.BoundContext.ModerationContext.Queries;
 using Application.BoundContext.ModerationContext.ViewModel;
 using Application.Common;
 using Application.Common.Authorization;
 using Application.Interfaces.CQRS;
-using Application.Models;
+using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PublicAPI.Services.Endpoint;
@@ -18,171 +18,118 @@ public class ModerationEndpoint : IEndpoints
     public void Map(IEndpointRouteBuilder endpoint)
     {
         var apis = endpoint.MapGroup("moderation");
-        apis.MapPost("create/chapter", ModerationEndpointServices.CreateModeration)
-            .WithTags("ModerationChapter")
-            .WithName("CreatModerationChapter")
-            .WithDescription("Create moderation chapter");
-        apis.MapPost("approval/chapter", ModerationEndpointServices.ApproveModeration)
-            .WithTags("ModerationChapter")
-            .WithName("ApproveModerationChapter")
-            .WithDescription("Approve moderation chapter");
-        apis.MapPost("reject/chapter", ModerationEndpointServices.RejectModeration)
-            .WithTags("ModerationChapter")
-            .WithName("RejectModerationChapter")
-            .WithDescription("Reject moderation chapter");
-        apis.MapGet("approval", ModerationEndpointServices.GetBookApprovalWithPaginationByStatusAsync)
-            .WithTags("ModerationChapter")
-            .WithName("GetBookApprovalWithPaginationByStatus")
-            .WithDescription("Get book approval with pagination by status");
-        apis.MapGet("approval/id", ModerationEndpointServices.GetBookApprovalById)
-            .WithTags("ModerationChapter")
-            .WithName("GetBookApprovalById")
-            .WithDescription("Get book approval with ID");
-        apis.MapGet("decision/pagination", ModerationEndpointServices.GetBookApprovalDecisionByApprovalId)
-            .WithTags("ModerationChapter")
-            .WithName("GetDecisionWithPaginationByApprovalId")
-            .WithDescription("Get book approval with pagination ID");
-        apis.MapPost("add-signature", ModerationEndpointServices.AddSignature)
-            .WithTags("ModerationChapter")
-            .WithName("AddSignature")
-            .WithDescription("Add signature");
-        apis.MapGet("chapter-approval", ModerationEndpointServices.GetChapterForBook)
-            .WithTags("ModerationChapter")
-            .WithName("GetChapterApprovalInModeration")
-            .WithDescription("Get chapter approval in moderation");
-        apis.MapGet("repository", ModerationEndpointServices.GetBookApprovalRepositoryGroupByBookId)
-            .WithTags("ModerationChapter")
-            .WithName("GetBookApprovalForRepositoryGroupByBookId")
-            .WithDescription("Get book approval for repository group by book ID");
-        apis.MapGet("approval-for-book", ModerationEndpointServices.GetBookApprovalForBookId)
-            .WithTags("ModerationChapter")
-            .WithName("GetBookApprovalForBookId")
-            .WithDescription("Get book approval for book ID");
+        apis.MapPut("active", ModerationEndpointService.ActiveBook)
+            .WithTags("Moderation")
+            .WithName("ActiveBook")
+            .WithDescription("Active for book approval");
+        apis.MapPut("unactive", ModerationEndpointService.UnActiveBook)
+            .WithTags("Moderation")
+            .WithName("UnActiveBook")
+            .WithDescription("Unactive for book approval");
+        apis.MapGet("chapter/approval", ModerationEndpointService.ApprovalChapter)
+            .WithTags("Moderation")
+            .WithName("ChapterApproval")
+            .WithDescription("Chapter approval");
+        apis.MapPost("book/create", ModerationEndpointService.CreateBookApproval)
+            .WithTags("Moderation")
+            .WithName("CreateBookApproval")
+            .WithDescription("Create book approval");
+        apis.MapPost("chapter/create", ModerationEndpointService.CreateChapterApproval)
+            .WithTags("Moderation")
+            .WithName("CreateChapterApproval")
+            .WithDescription("Create chapter approval");
+        apis.MapPut("chapter/rejecte", ModerationEndpointService
+                .RejectChapter)
+            .WithTags("Moderation")
+            .WithName("RejectChapter")
+            .WithDescription("Reject chapter for book");
     }
 }
 
-public static class ModerationEndpointServices
+
+public static class ModerationEndpointService
 {
-    [Authorize]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
-        CreateModeration(
-        [FromBody] CreateBookApprovalCommand command,
-        [FromServices] ModerationServiceWrapper service
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<BookApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        ActiveBook(
+            [FromServices] ModerationServiceWrapper services,
+            [FromQuery] Guid bookId)
+    {
+        var activeCommand = new ActiveBookApprovalCommand(bookId);
+        BookApprovalViewModel bookApprovalViewModel = await services
+            .FactoryHandler.Handler<ActiveBookApprovalCommand,
+                BookApprovalViewModel>(activeCommand);
+        return TypedResults.Ok(bookApprovalViewModel);
+    }
+
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<BookApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        UnActiveBook(
+            [FromServices] ModerationServiceWrapper services,
+            [FromQuery] Guid bookId
         )
     {
-        var result = await service.FactoryHandler.Handler<CreateBookApprovalCommand, BookApprovalViewModel>(command);
-        return TypedResults.Ok(result);
+        var unActive = new UnActiveBookApprovalCommand(bookId);
+        BookApprovalViewModel bookApprovalViewModel = await services
+            .FactoryHandler.Handler<UnActiveBookApprovalCommand,
+            BookApprovalViewModel>(unActive);
+        return TypedResults.Ok(bookApprovalViewModel);
     }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
-        ApproveModeration(
-        [FromBody] ApprovalBookCommand command,
-        [FromServices] ModerationServiceWrapper service
-    )
-    {
-        var result = await service.FactoryHandler.Handler<ApprovalBookCommand, BookApprovalViewModel>(command);
-        return TypedResults.Ok(result);
-    }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>> 
-        RejectModeration(
-        [FromBody] RejectBookCommand command,
-        [FromServices] ModerationServiceWrapper service
-    )
-    {
-        var result = await service.FactoryHandler.Handler<RejectBookCommand, BookApprovalViewModel>(command);
-        return TypedResults.Ok(result);
-    }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<PaginationItem<BookApprovalViewModel>>,
-            ProblemHttpResult>>  GetBookApprovalWithPaginationByStatusAsync
-    (
-        [AsParameters] PaginationRequest page, [FromQuery] BookApprovalStatus status,
-        [FromServices] ModerationServiceWrapper service
-    )
-    {
-        var result =  await service.ModerationQueries.GetBookApprovalWithPaginationByStatusAsync(status, page);
-        return TypedResults.Ok(result);
-    }
-    [Authorize]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>>  
-        AddSignature
-    (
-         [FromBody] CreateSignatureCommand command,
-        [FromServices] ModerationServiceWrapper service
-    )
-    {
-        var result = await service.FactoryHandler.Handler<CreateSignatureCommand, BookApprovalViewModel>(command);
-        return TypedResults.Ok(result);
-    }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<BookApprovalViewModel>, ProblemHttpResult>>  
-        GetBookApprovalById
-    (
-        [FromQuery] Guid bookApprovalId,
-        [FromServices] ModerationServiceWrapper service
-    )
-    {
-        var result =  await service.ModerationQueries
-            .GetBookApprovalByIdAsync(bookApprovalId);
-        return TypedResults.Ok(result);
-    }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<PaginationItem<ApprovalDecisionViewModel>>, ProblemHttpResult>>  
-        GetBookApprovalDecisionByApprovalId
-        (
-            [FromQuery] Guid bookApprovalId,
-            [AsParameters] PaginationRequest page,
-            [FromServices] ModerationServiceWrapper service
+
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<ChapterApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        ApprovalChapter(
+            [FromServices] ModerationServiceWrapper services,
+            [AsParameters] ApprovalChapterCommand request
         )
     {
-        var result =  await service.ModerationQueries
-            .GetDecisionWithPaginationByApprovalIdAsync(bookApprovalId, page);
+        ChapterApprovalViewModel chapterApprovalViewModel = await services
+            .FactoryHandler.Handler<ApprovalChapterCommand, ChapterApprovalViewModel>(request);
+        return TypedResults.Ok(chapterApprovalViewModel);
+    }
+
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<BookApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        CreateBookApproval(
+            [FromServices] ModerationServiceWrapper services,
+            [AsParameters] CreateBookApprovalCommand request)
+    {
+        var result = await services.FactoryHandler
+            .Handler<CreateBookApprovalCommand, BookApprovalViewModel>(request);
         return TypedResults.Ok(result);
     }
 
-    public static async Task<Results<Ok<IReadOnlyCollection<ChapterStoreViewModel>>, NotFound>>
-        GetChapterForBook(
-            [FromQuery] Guid bookId,
-            [FromServices] ModerationServiceWrapper service
-        )
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<ChapterApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        CreateChapterApproval(
+            [FromServices] ModerationServiceWrapper services,
+                [AsParameters] CreateChapterApprovalCommand request)
     {
-        // Check book has exits if don't has exits just return 404
-        // Or when user has buyer success just return 403
-        var result = await service.ModerationQueries.GetAllChapterSuccessForBookIdAsync(bookId);
+        var result = await services.FactoryHandler
+            .Handler<CreateChapterApprovalCommand, ChapterApprovalViewModel>(request);
         return TypedResults.Ok(result);
     }
-    public static async Task<Results<Ok<PaginationItem<ApprovalRepositoryViewModel>>, NotFound>>
-        GetBookApprovalRepositoryGroupByBookId(
-            [FromQuery]Guid? bookId,
-            string? bookTitle,
-            [AsParameters] PaginationRequest page,
-            [FromServices] ModerationServiceWrapper service
+
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<ChapterApprovalViewModel>, NotFound, UnauthorizedHttpResult>>
+        RejectChapter(
+            [FromServices] ModerationServiceWrapper services,
+            [AsParameters] RejectChapterCommand request
         )
     {
-        var result = await service
-            .ModerationQueries.GetApprovalRepositoryGroupByBookIdAsync(bookId,bookTitle,page);
-        return TypedResults.Ok(result);
-    }
-    [AuthorizationKey(Role.Moderation)]
-    public static async Task<Results<Ok<IReadOnlyCollection<BookApprovalViewModel>>, NotFound>>
-        GetBookApprovalForBookId(
-            [FromQuery]Guid bookId,
-            [FromServices] ModerationServiceWrapper service
-        )
-    {
-        var result = await service
-            .ModerationQueries.GetAllBookApprovalsByBookIdAsync(bookId);
-        return TypedResults.Ok(result);
+        ChapterApprovalViewModel chapterApprovalViewModel = await services
+            .FactoryHandler.Handler<RejectChapterCommand, ChapterApprovalViewModel>(request);
+        return TypedResults.Ok(chapterApprovalViewModel);
     }
 }
 
-
-public class ModerationServiceWrapper(IFactoryHandler factoryHandler,
-    ILogger<BookAuthoringServiceWrapper> logger,
+public class ModerationServiceWrapper(ILogger<ModerationServiceWrapper> logger,
+    IIdentityProvider identityProvider,
+    IFactoryHandler factoryHandler,
     IModerationQueries moderationQueries)
 {
     public IModerationQueries ModerationQueries { get; } = moderationQueries;
-    public IFactoryHandler FactoryHandler { get;} = factoryHandler;
-    public ILogger<BookAuthoringServiceWrapper> Logger { get;} = logger;
+    public ILogger<ModerationServiceWrapper> Logger { get; } = logger;
+    public IIdentityProvider IdentityProvider { get; } = identityProvider;
+    public IFactoryHandler FactoryHandler { get; } = factoryHandler;
 }

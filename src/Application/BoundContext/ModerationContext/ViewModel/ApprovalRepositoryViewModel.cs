@@ -7,19 +7,17 @@ public class ApprovalRepositoryViewModel
     public Guid BookId {get;}
     public string BookTitle {get;}
     public Guid AuthorId {get;}
-    public BookApprovalStatus Status { get; }
     public IReadOnlyCollection<CopyrightChapterRepositoryViewModel>? CopyrightChapters {get;}
     public IReadOnlyCollection<ApprovalDecisionViewModel>? ApprovalDecisions {get;}
 
     public ApprovalRepositoryViewModel(Guid bookId, string bookTitle,
-        Guid authorId, BookApprovalStatus status, 
+        Guid authorId,
         IReadOnlyCollection<CopyrightChapterRepositoryViewModel>? copyrightChapters, 
         IReadOnlyCollection<ApprovalDecisionViewModel>? approvalDecisions)
     {
         BookId = bookId;
         BookTitle = bookTitle;
         AuthorId = authorId;
-        Status = status;
         CopyrightChapters = copyrightChapters;
         ApprovalDecisions = approvalDecisions;
     }
@@ -33,15 +31,13 @@ public class CopyrightChapterRepositoryViewModel
     public int ChapterNumber {get;}
     public string ChapterContent {get;}
     public DateTimeOffset DateTimeCopyright {get;}
-    public DigitalSignature? DigitalSignature { get; }
 
-    public CopyrightChapterRepositoryViewModel(DateTimeOffset submitAt, string chapterTitle, string chapterSlug, int chapterNumber, string chapterContent, DateTimeOffset dateTimeCopyright, DigitalSignature? digitalSignature)
+    public CopyrightChapterRepositoryViewModel(DateTimeOffset submitAt, string chapterTitle, string chapterSlug, int chapterNumber, string chapterContent, DateTimeOffset dateTimeCopyright)
     {
         ChapterTitle = chapterTitle;
         ChapterSlug = chapterSlug;
         ChapterNumber = chapterNumber;
         ChapterContent = chapterContent;
         DateTimeCopyright = dateTimeCopyright;
-        DigitalSignature = digitalSignature;
     }
 }

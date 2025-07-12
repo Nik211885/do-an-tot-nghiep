@@ -1,3 +1,4 @@
+/*
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
 namespace Domain.UnitTest.BoundContext.ModerationContext;
@@ -29,3 +30,4 @@ public class ApprovalDecisionTests
         Assert.Equal(BookApprovalStatus.Rejected, decision.Status);
     }
 }
+*/

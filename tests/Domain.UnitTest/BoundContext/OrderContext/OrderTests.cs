@@ -19,7 +19,7 @@ public class OrderTests
     {
         var order = Order.Create(Guid.NewGuid());
         var bookId = Guid.NewGuid();
-        order.AddOrderItem(bookId, "Book", 100);
+        order.AddOrderItem(bookId, "Book", 100,Guid.CreateVersion7());
         Assert.Single(order.OrderItems);
         Assert.Equal(bookId, order.OrderItems.First().BookId);
     }
@@ -29,8 +29,8 @@ public class OrderTests
     {
         var order = Order.Create(Guid.NewGuid());
         var bookId = Guid.NewGuid();
-        order.AddOrderItem(bookId, "Book", 100);
-        var ex = Assert.Throws<Core.Exception.BadRequestException>(() => order.AddOrderItem(bookId, "Book", 100));
+        order.AddOrderItem(bookId, "Book", 100,Guid.CreateVersion7());
+        var ex = Assert.Throws<Core.Exception.BadRequestException>(() => order.AddOrderItem(bookId, "Book", 100,Guid.CreateVersion7()));
         Assert.Contains("OrderHasInCart", ex.Message);
     }
 
@@ -39,7 +39,7 @@ public class OrderTests
     {
         var order = Order.Create(Guid.NewGuid());
         var bookId = Guid.NewGuid();
-        order.AddOrderItem(bookId, "Book", 100);
+        order.AddOrderItem(bookId, "Book", 100, Guid.CreateVersion7());
         order.RemoveOrderItem(bookId);
         Assert.Empty(order.OrderItems);
     }
@@ -56,8 +56,8 @@ public class OrderTests
     public void CalculatePrice_Should_Return_Sum()
     {
         var order = Order.Create(Guid.NewGuid());
-        order.AddOrderItem(Guid.NewGuid(), "Book1", 100);
-        order.AddOrderItem(Guid.NewGuid(), "Book2", 200);
+        order.AddOrderItem(Guid.NewGuid(), "Book1", 100,Guid.CreateVersion7());
+        order.AddOrderItem(Guid.NewGuid(), "Book2", 200,Guid.CreateVersion7());
         Assert.Equal(300, order.CalculatePrice());
     }
 

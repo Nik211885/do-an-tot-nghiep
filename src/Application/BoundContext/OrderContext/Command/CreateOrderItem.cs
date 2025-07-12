@@ -49,7 +49,7 @@ public class CreateOrderItemCommandHandler(
         }
         var order = await _orderRepository.GetByIdAsync(request.OrderId, cancellationToken);
         ThrowHelper.ThrowNotFoundWhenItemIsNull(order, "Don dat");
-        order.AddOrderItem(book.Id, book.Title, book.PolicyReadBook.Price ?? 0);
+        order.AddOrderItem(book.Id, book.Title, book.PolicyReadBook.Price ?? 0, book.AuthorId);
         _orderRepository.Update(order);
         await _orderRepository.UnitOfWork.SaveChangeAsync(cancellationToken);
         return order.ToViewModel();

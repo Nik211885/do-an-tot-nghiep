@@ -13,11 +13,6 @@ public enum Role
     /// <summary>
     ///  Moderator create make moderation context 
     /// </summary>
-    [Description("moderation")]
-    Moderation,
-    /// <summary>
-    /// Management system
-    /// </summary>
-    [Description("manager-resources")]
-    ManagerResources   
+    [Description("admin")]
+    Admin,
 }

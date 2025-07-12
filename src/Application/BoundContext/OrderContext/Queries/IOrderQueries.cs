@@ -15,4 +15,8 @@ public interface IOrderQueries : IApplicationQueryServicesExtension
         Guid userId,
         OrderStatus? status,
         CancellationToken cancellationToken = default);
+    
+    // Queries for statistical payment in system
+    Task<StatisticalPaymentViewModel> GetStatisticalPaymentAsync(Guid? userId, CancellationToken cancellationToken = default);
+    Task<StatisticalBookPaymentViewModel> GetStatisticalPaymentForBookAsync(Guid? userId, Guid bookId, CancellationToken cancellationToken = default);
 }

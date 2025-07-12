@@ -1,6 +1,6 @@
-﻿using Application.BoundContext.BookReviewContext.Command.BookReview;
+﻿/*
+using Application.BoundContext.BookReviewContext.Command.BookReview;
 using Application.BoundContext.BookReviewContext.ViewModel;
-using Application.BoundContext.ModerationContext.IntegrationEvent.Event;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.EventBus;
 using Microsoft.Extensions.Logging;
@@ -20,3 +20,4 @@ public class CreatedBookReviewWhenApprovedBookIntegrationEventHandler(
         await _factoryHandler.Handler<CreateBookReviewCommand, BookReviewViewModel>(command, cancellationToken);
     }
 }
+*/

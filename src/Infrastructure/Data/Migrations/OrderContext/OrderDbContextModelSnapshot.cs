@@ -55,6 +55,9 @@ namespace Infrastructure.Data.Migrations.OrderContext
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("BookId")
                         .HasColumnType("uuid");
 

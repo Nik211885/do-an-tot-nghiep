@@ -30,11 +30,11 @@ public class Order : BaseEntity, IAggregateRoot
         return new Order(buyerId);
     }
 
-    public void AddOrderItem(Guid bookId, string bookName, decimal price)
+    public void AddOrderItem(Guid bookId, string bookName, decimal price, Guid authorId)
     {
         var existingBookInOrders = _orderItems.FirstOrDefault(o => o.BookId == bookId);
         ThrowHelper.ThrowBadRequestWhenArgumentNotNull(existingBookInOrders, OrderContextMessage.OrderHasInCart);
-        var orderItems = OrderItem.Create(bookId, bookName, price);
+        var orderItems = OrderItem.Create(bookId, bookName, price, authorId);
         _orderItems.Add(orderItems);
     }
 
@@ -54,6 +54,13 @@ public class Order : BaseEntity, IAggregateRoot
     {
         Status = OrderStatus.Success;
         RaiseDomainEvent(new OrderSucceededDomainEvent(this));
+    }
+
+    public void ChangPriceForOrderItem(Guid bookId, decimal newPrice)
+    {
+        var orderItem = _orderItems.FirstOrDefault(o=>o.BookId == bookId);
+        ThrowHelper.ThrowBadRequestWhenArgumentIsNull(orderItem, "Don dat");
+        orderItem.ChangePrice(newPrice);
     }
 
     public void OrderFailed()

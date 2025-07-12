@@ -1,8 +1,10 @@
-﻿using Application.BoundContext.OrderContext.Command;
+﻿using Application.BoundContext.BookAuthoringContext.Queries;
+using Application.BoundContext.OrderContext.Command;
 using Application.BoundContext.OrderContext.Queries;
 using Application.BoundContext.OrderContext.ViewModel;
 using Application.Common;
 using Application.Common.Authorization;
+using Application.Helper;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.IdentityProvider;
 using Application.Models;
@@ -56,6 +58,14 @@ public class OrderEndpoint : IEndpoints
             .WithTags("Order")
             .WithName("GetMyOrderItemInIdsAndStatus")
             .WithDescription("Get my order item In Ids and Status");
+        api.MapGet("statistical-total", OrderEndpointServices.GetStatisticalPayment)
+            .WithTags("Order")
+            .WithName("GetStatisticalPayment")
+            .WithDescription("Get statistical payment");
+        api.MapGet("statistical-payment/for-book", OrderEndpointServices.GetStatisticalPaymentForBook)
+            .WithTags("Order")
+            .WithName("GetStatisticalPaymentForBook")
+            .WithDescription("Get statistical payment for book");
     }
 }
 
@@ -160,6 +170,28 @@ public static class OrderEndpointServices
                 status);
         return TypedResults.Ok(result);
     }
+
+    [AuthorizationKey(Role.Author)]
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<StatisticalPaymentViewModel>, ProblemHttpResult, NotFound>>
+        GetStatisticalPayment(
+            [FromServices] OrderServiceWrapper service)
+    {
+        var result = await service.OrderQueries.GetStatisticalPaymentAsync(service.IdentityProvider.IsInRole(Role.Admin.GetDescriptionAttribute()) ? null : service.IdentityProvider.UserIdentity());
+        return TypedResults.Ok(result);
+    }
+
+    [AuthorizationKey(Role.Author)]
+    [AuthorizationKey(Role.Admin)]
+    public static async Task<Results<Ok<StatisticalBookPaymentViewModel>, ProblemHttpResult, NotFound>>
+        GetStatisticalPaymentForBook(
+            [FromQuery] Guid bookId,
+            [FromServices] OrderServiceWrapper service)
+    {
+        var result = await service.OrderQueries.GetStatisticalPaymentForBookAsync(service.IdentityProvider.IsInRole(Role.Admin.GetDescriptionAttribute()) ? null : service.IdentityProvider.UserIdentity(), bookId);
+        return TypedResults.Ok(result);
+    }
+    
 }
 
 

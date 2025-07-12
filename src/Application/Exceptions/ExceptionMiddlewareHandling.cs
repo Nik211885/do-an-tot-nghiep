@@ -8,9 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Exceptions;
 
-/// <summary>
-/// Middleware xử lý exception với logging và error handling được cải thiện.
-/// </summary>
 public class ExceptionMiddlewareHandling(ILogger<ExceptionMiddlewareHandling> logger) : IMiddleware
 {
     private readonly ILogger<ExceptionMiddlewareHandling> _logger = logger;
