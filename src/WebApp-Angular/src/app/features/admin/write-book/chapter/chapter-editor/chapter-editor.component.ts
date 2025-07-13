@@ -209,20 +209,11 @@ OnDestroy, AfterViewInit {
 
   submitAndReview() : void{
     const chapter = this.chapter();
-    if(chapter){
-      this.bookService.updateChapter(chapter).subscribe({
+    if(chapter && chapter.id){
+      this.bookService.submitAndReview(chapter.id).subscribe({
         next: (chapter) => {
-          if(chapter.id){
-            this.bookService.submitAndReview(chapter.id).subscribe({
-              next: (chapter) => {
-                this.chapter.set(chapter);
-                this.toastService.success("Gửi chương để xuất bản sách thành công");
-              }
-            })
-          }
-        },
-        error: err => {
-          console.log(err);
+          this.chapter.set(chapter);
+          this.toastService.success("Gửi chương để xuất bản sách thành công");
         }
       })
     }

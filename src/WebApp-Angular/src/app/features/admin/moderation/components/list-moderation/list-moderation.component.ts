@@ -29,11 +29,12 @@ export class ListModerationComponent implements OnInit{
     this.isLoading = true;
     this.error = null;
 
-    this.moderationService.getApprovalChapter(this.currentPage, this.pageSize, ApproveStatus.Pending)
+    this.moderationService.getApprovalChapter(this.currentPage, this.pageSize)
       .subscribe({
         next: data => {
           if(data){
             this.paginationModeration = data;
+            this.moderationService.getBookApprovalByIds(this.paginationModeration.items);
             console.log(this.paginationModeration);
           }
           this.isLoading = false;
@@ -93,4 +94,6 @@ export class ListModerationComponent implements OnInit{
     event.stopPropagation();
     this.router.navigate(['/moderation/detail', item.id]);
   }
+
+  protected readonly Date = Date;
 }

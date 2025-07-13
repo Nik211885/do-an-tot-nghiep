@@ -13,7 +13,13 @@ import {resourcesRoutes} from './features/resources/resources.routes';
 export const routes: Routes = [
   {
     path:"admin",
-    component: AdminLayoutComponent
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadComponent: ()=> import("./features/admin/dashboard/dashboard.component").then(m => m.DashboardComponent),
+      }
+    ]
   },
   {
     path: 'reader',

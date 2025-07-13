@@ -100,10 +100,10 @@ public class Chapter
     
     public void SubmitAndReview()
     {
-        if (Status == ChapterStatus.Submitted)
+        /*if (Status == ChapterStatus.Submitted)
         {
             ThrowHelper.ThrowIfBadRequest(BookAuthoringContextMessage.YouHasSubmitChapter);
-        }
+        }*/
         Status = ChapterStatus.Submitted;
         Locked();
         RaiseDomainEvent(new SubmittedAndReviewedChapterVersionDomainEvent(this));

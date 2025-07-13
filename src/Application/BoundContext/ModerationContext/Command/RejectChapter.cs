@@ -22,7 +22,7 @@ public class RejectChapterCommandHandler(
     private readonly IIdentityProvider _identityProvider = identityProvider;
     public async Task<ChapterApprovalViewModel> Handle(RejectChapterCommand request, CancellationToken cancellationToken)
     {
-        var chapterApproval = await _chapterApprovalRepository.FindByChapterIdAsync(request.ChapterApprovalId);
+        var chapterApproval = await _chapterApprovalRepository.FindByIdAsync(request.ChapterApprovalId);
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(chapterApproval, "Chuong");
         chapterApproval.Rejected(_identityProvider.UserIdentity(), request.Note);
         _logger.LogInformation("Rejected approval has id {Id}", request.ChapterApprovalId);

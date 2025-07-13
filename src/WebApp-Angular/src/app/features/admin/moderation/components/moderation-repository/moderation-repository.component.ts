@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {CommentBookService} from '../../../../book/services/comment-book.service';
 import {UserModel} from '../../../../../core/models/user.model';
 import {Router} from '@angular/router';
+import {GenreViewModel} from '../../../../resources/models/genres.model';
 
 @Component({
   selector: 'app-moderation-repository',
@@ -19,6 +20,7 @@ export class ModerationRepositoryComponent implements OnInit{
   pageSize: number = 1;
   totalPages: number = 0;
   totalCount: number = 0;
+  search: string = '';
   hasPreviousPage: boolean = false;
   hasNextPage: boolean = false;
 
@@ -32,7 +34,7 @@ export class ModerationRepositoryComponent implements OnInit{
   }
 
   loadModerationData(): void {
-    this.moderationService.getModerationForBookGroup(this.currentPage, this.pageSize)
+    this.moderationService.getModerationForBookGroup(this.currentPage, this.pageSize, this.search)
       .subscribe({
         next: (result: PaginationModerationForBookGroup) => {
           if(result) {
@@ -115,4 +117,52 @@ export class ModerationRepositoryComponent implements OnInit{
 
   // Expose Math to template
   Math = Math;
+
+  searchBook() {
+    console.log(this.search);
+    if(this.search) {
+      this.currentPage = 1;
+      this.loadModerationData();
+    }
+  }
+
+  active(book: ModerationForBookGroup) {
+    book.isActive = !book.isActive;
+    if(book.isActive){
+      this.moderationService.activeForBook(book.bookId)
+        .subscribe({
+          next: data => {
+            if(data){
+              return;
+            }
+            else{
+              book.isActive = !book.isActive;
+              return;
+            }
+          },
+          error: err => {
+            book.isActive = ! book.isActive;
+            return;
+          }
+        })
+    }
+    else{
+      this.moderationService.unActiveForBook(book.bookId)
+        .subscribe({
+          next: data => {
+            if(data){
+              return;
+            }
+            else{
+              book.isActive = ! book.isActive;
+              return;
+            }
+          },
+          error: err => {
+            book.isActive = ! book.isActive;
+            return;
+          }
+        })
+    }
+  }
 }

@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.ModerationContext.BookApprovalAggregate;
+﻿using System.Linq.Expressions;
+using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
 namespace Application.BoundContext.ModerationContext.ViewModel;
 
@@ -52,6 +53,20 @@ public static class ChapterApprovalMappingExtension
             copyrightChapter: chapterApproval.CopyrightChapter?.ToViewModel(),
             decision: chapterApproval.Decision.ToViewModel()
             );
+    }
+
+    public static IReadOnlyCollection<ChapterApprovalViewModel> ToViewModel(this IEnumerable<ChapterApproval> chapterApprovals)
+    {
+        return chapterApprovals.Select(ToViewModel).ToList();
+    }
+
+    public static Expression<Func<ChapterApproval, ChapterApprovalViewModel>> ToViewModel()
+    {
+        return ca => ca.ToViewModel();
+    }
+    public static Expression<Func<IEnumerable<ChapterApproval>, IReadOnlyCollection<ChapterApprovalViewModel>>> ToViewModelCollection()
+    {
+        return ca => ca.ToViewModel();
     }
 } 
 

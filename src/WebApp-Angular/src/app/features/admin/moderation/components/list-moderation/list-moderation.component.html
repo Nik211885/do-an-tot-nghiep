@@ -66,8 +66,8 @@
                 <span class="bg-white px-3 py-1 rounded-full border">
                   Chương {{ item.chapterNumber }}
                 </span>
-                <span class="bg-white px-3 py-1 rounded-full border">
-                  {{ formatDate(item.submittedAt) }}
+                <span *ngIf="item.submittedAt" class="bg-white px-3 py-1 rounded-full border">
+                  {{ formatDate(item.submittedAt)}}
                 </span>
               </div>
             </div>

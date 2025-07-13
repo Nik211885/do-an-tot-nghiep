@@ -1,0 +1,160 @@
+<div class="min-h-screen bg-gray-50 p-4 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <div class="mb-4 lg:mb-0">
+          <h1 class="text-3xl font-bold text-gray-900">Trang chủ</h1>
+          <p class="text-gray-600 mt-1">{{ getGreeting() }}, {{ userModel?.getFullName() || 'Người dùng' }}</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-sm text-gray-500">{{ currentTime | date:'EEEE, dd/MM/yyyy' }}</p>
+            <p class="text-lg font-semibold text-gray-900">{{ currentTime | date:'HH:mm:ss' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- User Profile Card -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-indigo-500 to-blue-600 px-6 py-8">
+            <div class="flex items-center space-x-4">
+              <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="text-2xl font-bold text-white">
+                  {{ getUserInitials() }}
+                </span>
+              </div>
+              <div class="text-white">
+                <h2 class="text-xl font-bold">{{ userModel?.getFullName() }}</h2>
+                <p class="text-indigo-100">{{ userModel?.email }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                  <span class="text-sm font-medium text-gray-700">Tên đăng nhập</span>
+                </div>
+                <p class="text-gray-900 font-semibold">{{ userModel?.username }}</p>
+              </div>
+
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v-2H7v-2H4a1 1 0 01-1-1v-4c0-2.761 2.239-5 5-5h10a2 2 0 012 2v2z"/>
+                  </svg>
+                  <span class="text-sm font-medium text-gray-700">ID</span>
+                </div>
+                <p class="text-gray-900 font-semibold text-sm">{{ userModel?.id }}</p>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4" *ngIf="userModel?.roles && userModel.roles.length > 0">
+              <div class="flex items-center space-x-2 mb-3">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">Vai trò</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  *ngFor="let role of userModel?.roles"
+                  class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
+                  {{ role }}
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="hasUserAttributes()" class="bg-gray-50 rounded-lg p-4">
+              <div class="flex items-center space-x-2 mb-3">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">Thông tin bổ sung</span>
+              </div>
+             <!-- <div class="space-y-2">
+                <div *ngFor="let attr of getUserAttributesArray()" class="flex justify-between">
+                  <span class="text-sm text-gray-600">{{ attr.key }}:</span>
+                  <span class="text-sm text-gray-900 font-medium">{{ attr.value }}</span>
+                </div>
+              </div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Widget -->
+      <div class="space-y-6">
+        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <h3 class="text-lg font-semibold">Thời tiết</h3>
+            </div>
+            <button
+              (click)="refreshWeather()"
+              class="p-2 hover:bg-white/20 rounded-full transition-colors duration-200"
+              [disabled]="isWeatherLoading">
+              <svg class="w-5 h-5" [class.animate-spin]="isWeatherLoading" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </button>
+          </div>
+
+          <div *ngIf="!isWeatherLoading && weatherData" class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm opacity-90">{{ weatherData.location }}, {{ weatherData.country }}</p>
+                <p class="text-3xl font-bold">{{ weatherData.temperature }}°C</p>
+                <p class="text-sm opacity-90 capitalize">{{ weatherData.description }}</p>
+              </div>
+              <div class="text-right">
+                <img
+                  [src]="'https://openweathermap.org/img/wn/' + weatherData.icon + '@2x.png'"
+                  [alt]="weatherData.description"
+                  class="w-16 h-16">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/20">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.4 4.4 0 003 15z"/>
+                </svg>
+                <span class="text-sm">{{ weatherData.humidity }}%</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"/>
+                </svg>
+                <span class="text-sm">{{ weatherData.windSpeed }} m/s</span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="isWeatherLoading" class="flex items-center justify-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+        <!-- Quick Actions -->
+      </div>
+    </div>
+  </div>
+</div>

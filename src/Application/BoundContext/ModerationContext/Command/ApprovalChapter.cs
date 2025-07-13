@@ -22,7 +22,7 @@ public class ApprovalChapterCommandHandler(
     private readonly IChapterApprovalRepository _chapterApprovalRepository = chapterApprovalRepository;
     public async Task<ChapterApprovalViewModel> Handle(ApprovalChapterCommand request, CancellationToken cancellationToken)
     {
-        ChapterApproval? chapterApproval =  await _chapterApprovalRepository.FindByChapterIdAsync(request.ChapterApprovalId);
+        ChapterApproval? chapterApproval =  await _chapterApprovalRepository.FindByIdAsync(request.ChapterApprovalId);
         ThrowHelper.ThrowBadRequestWhenArgumentIsNull(chapterApproval, "Chuong");
         chapterApproval.Approved(_identityProvider.UserIdentity(), request.Note);
         _logger.LogInformation("Approval chapter for id {id}", request.ChapterApprovalId);

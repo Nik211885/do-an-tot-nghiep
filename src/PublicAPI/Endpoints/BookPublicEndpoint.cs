@@ -76,7 +76,7 @@ public static class BookPublicEndpointServices
         };
 
     public static Action<QueryDescriptor<BookElasticModel>> BookActive
-        => q => q.Exists(e => e.Field(s => s.IsActive));
+        => q => q.Bool(b=>b.Must(m=>m.Term(t=>t.Field("isActive").Value(true))));
         
     public static async Task<Results<Ok<PaginationItem<BookElasticModel>>,NotFound, ProblemHttpResult>>
         GetWithPaginationBookByGenre(

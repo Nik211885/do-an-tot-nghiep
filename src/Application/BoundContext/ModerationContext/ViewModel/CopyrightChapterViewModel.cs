@@ -25,11 +25,11 @@ public class CopyrightChapterViewModel
 
 public static class CopyrightChapterMappingExtension
 {
-    public static CopyrightChapterViewModel ToViewModel(this CopyrightChapter copyrightChapter)
+    public static CopyrightChapterViewModel ToViewModel(this CopyrightChapter copyrightChapter, bool ignoreContent = true)
     {
         return new CopyrightChapterViewModel(
             chapterTitle: copyrightChapter.ChapterTitle,
-            chapterContent: copyrightChapter.ChapterContent,
+            chapterContent: ignoreContent ? string.Empty : copyrightChapter.ChapterContent,
             dateTimeCopyright: copyrightChapter.DateTimeCopyright,
             chapterSlug:  copyrightChapter.ChapterSlug,
             chapterNumber: copyrightChapter.ChapterNumber

@@ -1,9 +1,10 @@
-import {Component, OnInit, Sanitizer} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModerationService} from '../../services/moderation.service';
-import {ModerationViewModel} from '../../models/moderation.model';
-import {DatePipe, NgClass, NgForOf, NgIf, SlicePipe} from '@angular/common';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {ApproveStatus, ModerationViewModel} from '../../models/moderation.model';
+import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DomSanitizer} from '@angular/platform-browser';
+import {CommentBookService} from '../../../../book/services/comment-book.service';
 
 @Component({
   selector: 'app-all-chapter-in-book',
@@ -18,6 +19,7 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 })
 export class AllChapterInBookComponent implements OnInit{
   bookId: string | null = null;
+  bookApproval: ModerationViewModel | null = null;
   moderation: ModerationViewModel[] = [];
   constructor(private activatedRoute: ActivatedRoute,
               private sanitizer: DomSanitizer,
@@ -31,12 +33,28 @@ export class AllChapterInBookComponent implements OnInit{
           next: data => {
             if(data){
               this.moderation = data;
-              console.log(this.moderation);
-              console.log(this.moderation.length);
             }
           }
         }
       )
+      this.bookApproval = {
+        id: "",
+        bookId: "",
+        chapterId: "",
+        authorId: "",
+        submittedAt: null,
+        chapterContent: "",
+        chapterTitle: "",
+        chapterNumber: "",
+        chapterSlug: "",
+        bookTitle: "",
+        status: ApproveStatus.Rejected,
+        decision: [],
+        copyrightChapter: null,
+        isBookActive: true,
+        bookApprovalId: this.bookId ?? ""
+      };
+      this.moderationService.getBookApprovalByIds([this.bookApproval]);
     }
   }
   getPendingCount(): number {

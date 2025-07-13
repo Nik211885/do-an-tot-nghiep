@@ -1,4 +1,5 @@
-﻿namespace Application.BoundContext.ModerationContext.IntegrationEvent.Event;
+﻿/*
+namespace Application.BoundContext.ModerationContext.IntegrationEvent.Event;
 
 public class OpenedApprovalChapterIntegrationEvent
     : Models.EventBus.IntegrationEvent
@@ -12,3 +13,4 @@ public class OpenedApprovalChapterIntegrationEvent
         ChapterId = chapterId;
     }
 }
+*/

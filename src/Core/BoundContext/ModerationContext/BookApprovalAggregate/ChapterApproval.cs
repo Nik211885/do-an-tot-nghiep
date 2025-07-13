@@ -18,6 +18,7 @@ public class ChapterApproval : BaseEntity, IAggregateRoot
     private List<ApprovalDecision> _decision =[];
     public IReadOnlyCollection<ApprovalDecision> Decision => _decision.AsReadOnly();
     public int Version { get; private set; }
+    protected ChapterApproval(){}
     public CopyrightChapter? CopyrightChapter { get; private set; }
 
     private ChapterApproval(Guid bookApprovalId, Guid chapterId,string chapterContent, string chapterTitle, int chapterNumber, string chapterSlug)
@@ -31,12 +32,14 @@ public class ChapterApproval : BaseEntity, IAggregateRoot
         ChapterSlug = chapterSlug;
         Status = ChapterApprovalStatus.Pending;
         Version = 0;
+        RaiseDomainEvent(new CreatedChapterApprovalDomainEvent(this));
     }
 
     public static ChapterApproval Create(Guid bookApprovalId, Guid chapterId, string chapterContent, string chapterTitle,
         int chapterNumber, string chapterSlug)
     {
-        return new ChapterApproval(bookApprovalId, chapterId, chapterContent, chapterTitle, chapterNumber, chapterSlug);
+        var chapterApproval = new ChapterApproval(bookApprovalId, chapterId, chapterContent, chapterTitle, chapterNumber, chapterSlug);
+        return chapterApproval;
     }
     
 

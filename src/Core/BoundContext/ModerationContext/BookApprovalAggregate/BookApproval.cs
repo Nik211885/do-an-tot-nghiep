@@ -11,6 +11,8 @@ public class BookApproval : BaseEntity, IAggregateRoot
     public Guid AuthorId { get; private set; }
     public string BookTitle {get; private set;}
     public bool IsActive { get; private set; }
+    public int ChapterCount { get; private set; }
+    public DateTimeOffset SubmittedOn { get; private set; }
     protected BookApproval(){}
     private BookApproval(Guid bookId, Guid authorId,
         string bookTitle)
@@ -32,6 +34,10 @@ public class BookApproval : BaseEntity, IAggregateRoot
         BookTitle = bookName;
     }
 
+    public void ChangeTimeToApproval()
+    {
+        SubmittedOn = DateTimeOffset.UtcNow;
+    }
     public void Active()
     {
         if (IsActive)
@@ -42,6 +48,10 @@ public class BookApproval : BaseEntity, IAggregateRoot
         RaiseDomainEvent(new ActivatedBookDomainEvent((this)));
     }
 
+    public void IncrementChapterCount()
+    {
+        ChapterCount += 1;
+    }
     public void UnActive()
     {
         if (!IsActive)

@@ -15,6 +15,5 @@ export enum MenuPermission {
 
 export enum Role{
   Author = "author",
-  Moderation = "moderation",
-  ManagerResources = "manager-resources",
+  Admin = "admin"
 }

@@ -47,11 +47,11 @@
           {{ moderation.submittedAt | date:'medium' }}
         </div>
         <div>
-          <span class="font-medium">Book ID:</span>
+          <span class="font-medium">Mã sách:</span>
           {{ moderation.bookId }}
         </div>
         <div>
-          <span class="font-medium">Author ID:</span>
+          <span class="font-medium">Mã tác giả:</span>
           {{ moderation.authorId }}
         </div>
       </div>
@@ -91,16 +91,16 @@
     </div>
 
     <!-- Copyright Information -->
-    <div *ngIf="moderation.copyrightChapterViewModel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div *ngIf="moderation.copyrightChapter" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-lg font-semibold mb-4">Nội dung sao chép sau khi kiểm duyệt</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
         <div>
           <span class="font-medium text-gray-700">Ngày tạo bản sao</span>
-          <p class="text-gray-600">{{ moderation.copyrightChapterViewModel.dateTimeCopyright | date:'medium' }}</p>
+          <p class="text-gray-600">{{ moderation.copyrightChapter.dateTimeCopyright | date:'medium' }}</p>
         </div>
         <div>
           <span class="font-medium text-gray-700">Chương</span>
-          <p class="text-gray-600">{{ moderation.copyrightChapterViewModel.chapterNumber }}</p>
+          <p class="text-gray-600">{{ moderation.copyrightChapter.chapterNumber }}</p>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 ﻿using Application.BoundContext.BookAuthoringContext.Queries;
 using Application.BoundContext.BookReviewContext.IntegrationEvent.Event;
+using Application.BoundContext.ModerationContext.Queries;
 using Application.BoundContext.ModerationContext.ViewModel;
 using Application.BoundContext.OrderContext.Queries;
 using Application.BoundContext.OrderContext.ViewModel;
@@ -17,7 +18,7 @@ using PublicAPI.Services.Endpoint;
 
 namespace PublicAPI.Endpoints;
 
-/*public class ReaderEndpoint : IEndpoints
+public class ReaderEndpoint : IEndpoints
 {
     public void Map(IEndpointRouteBuilder endpoint)
     {
@@ -91,7 +92,7 @@ public static class ReaderEndpointService
             }
         }
     }
-}*/
+}
 
 public class ReaderServiceWrapper(
     IIdentityProvider identityProvider,
@@ -100,11 +101,13 @@ public class ReaderServiceWrapper(
     IBookAuthoringQueries bookAuthoringQueries,
     IOrderQueries orderQueries,
     IValidationServices<BookApproval> bookApprovalValidationService,
-    IEventBus<ReadeBookIntegrationEvent> eventBus)
+    IEventBus<ReadeBookIntegrationEvent> eventBus,
+    IModerationQueries moderationQueries)
 {
     public IValidationServices<BookApproval> BookApprovalValidationService { get; } = bookApprovalValidationService;
     public IBookAuthoringQueries BookAuthoringQueries { get; } = bookAuthoringQueries;
     public IEventBus<ReadeBookIntegrationEvent> EventBus { get; } = eventBus;
+    public IModerationQueries ModerationQueries { get; } = moderationQueries;
     public IIdentityProvider IdentityProvider { get; } = identityProvider;
     public IFactoryHandler FactoryHandler { get; } = factoryHandler;
     public ILogger<ReaderServiceWrapper> Logger { get; } = logger;

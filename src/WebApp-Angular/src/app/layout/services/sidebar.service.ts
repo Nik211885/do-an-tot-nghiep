@@ -102,19 +102,19 @@ export class SidebarService {
       {
         id: 'moderation',
         label: 'Kiểm duyệt',
-        permissions: [Role.Moderation],
+        permissions: [Role.Admin],
         icon: 'https://www.svgrepo.com/show/307792/exam-article-examination-test.svg',
         children:[
           {
             id: 'view-moderation',
             label: 'Cần kiểm duyệt',
-            permissions: [Role.Moderation],
+            permissions: [Role.Admin],
             route: '/moderation/view-moderation',
           },
           {
             id: 'view-moderation-pass',
             label: 'Đã kiểm duyệt',
-            permissions: [Role.Moderation],
+            permissions: [Role.Admin],
             route: '/moderation/repository',
           }
         ]
@@ -122,13 +122,13 @@ export class SidebarService {
       {
         id:'resources_system',
         label: "Hệ thống",
-        permissions: [Role.ManagerResources],
+        permissions: [Role.Admin],
         icon: "https://www.svgrepo.com/show/486224/system-settings-backup.svg",
         children:[
           {
             id: 'genres',
             label: "Quản lý thể loại sách",
-            permissions: [Role.ManagerResources],
+            permissions: [Role.Admin],
             route: 'resources/genres',
           }
         ]

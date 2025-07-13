@@ -1,4 +1,5 @@
-﻿namespace Application.BoundContext.ModerationContext.IntegrationEvent.Event;
+﻿/*
+namespace Application.BoundContext.ModerationContext.IntegrationEvent.Event;
 
 public class UnactivatedBookIntegrationEvent
     : Models.EventBus.IntegrationEvent
@@ -10,3 +11,4 @@ public class UnactivatedBookIntegrationEvent
         BookId = bookId;
     }
 }
+*/

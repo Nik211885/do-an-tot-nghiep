@@ -3,7 +3,7 @@ using Core.Exception;
 
 namespace Application.Exceptions;
 
-internal static class ThrowHelper
+public static class ThrowHelper
 {
     public static void ThrowIfNotOwner()
     {

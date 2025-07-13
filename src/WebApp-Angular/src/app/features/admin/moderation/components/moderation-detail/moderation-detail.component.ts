@@ -50,6 +50,7 @@ export class ModerationDetailComponent implements OnInit {
           next: (data) => {
             if (data) {
               this.moderation = data;
+              this.moderationService.getBookApprovalByIds([this.moderation]);
               this.error = null;
             } else {
               this.error = 'Moderation not found';
@@ -133,7 +134,7 @@ export class ModerationDetailComponent implements OnInit {
     if (!this.moderationId) return;
 
     this.submitting = true;
-    this.moderationService.approvalChapter(this.moderationId, this.approvalNote || 'Approved')
+    this.moderationService.approvalChapter(this.moderationId, this.approvalNote || 'Thông qua')
       .subscribe({
         next: () => {
           this.submitting = false;

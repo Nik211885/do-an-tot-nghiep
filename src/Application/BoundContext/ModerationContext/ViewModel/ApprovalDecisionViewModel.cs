@@ -1,4 +1,5 @@
-﻿using Core.BoundContext.ModerationContext.BookApprovalAggregate;
+﻿using System.Linq.Expressions;
+using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 
 namespace Application.BoundContext.ModerationContext.ViewModel;
 
@@ -31,6 +32,11 @@ public static class ApprovalDecisionMappingExtension
             note: approvalDecision.Note,
             status: approvalDecision.Status
         );
+    }
+
+    public static Expression<Func<ApprovalDecision, ApprovalDecisionViewModel>> ToViewModel()
+    {
+        return ap => ap.ToViewModel();
     }
 
     public static IReadOnlyCollection<ApprovalDecisionViewModel> ToViewModel(
