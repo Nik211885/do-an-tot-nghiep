@@ -1,5 +1,7 @@
-﻿using Application.BoundContext.ModerationContext.ViewModel;
+﻿using Application.BoundContext.ModerationContext.IntegrationEvent.Event;
+using Application.BoundContext.ModerationContext.ViewModel;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.EventBus;
 using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 using Core.Exception;

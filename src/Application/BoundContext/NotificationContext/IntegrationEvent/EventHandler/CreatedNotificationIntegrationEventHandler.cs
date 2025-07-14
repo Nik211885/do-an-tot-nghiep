@@ -1,44 +1,75 @@
-﻿/*
+﻿using Application.BoundContext.BookAuthoringContext.IntegrationEvent.Event;
+using Application.BoundContext.ModerationContext.IntegrationEvent.Event;
 using Application.BoundContext.NotificationContext.Command;
 using Application.BoundContext.NotificationContext.ViewModel;
 using Application.Interfaces.CQRS;
 using Application.Interfaces.EventBus;
+using Application.Interfaces.IdentityProvider;
 using Core.BoundContext.NotificationContext;
+using Microsoft.Extensions.Logging;
 
 namespace Application.BoundContext.NotificationContext.IntegrationEvent.EventHandler;
 
-public class CreatedNotificationIntegrationEventHandler(IFactoryHandler factoryHandler)
-    : IIntegrationEventHandler<ApprovalBookIntegrationEvent>,
-        IIntegrationEventHandler<RejectBookIntegrationEvent>
+public class CreatedNotificationIntegrationEventHandler(
+    ILogger<CreatedNotificationIntegrationEventHandler> logger,
+    IFactoryHandler factoryHandler,
+    IIdentityProviderServices identityProviderServices)
+    : IIntegrationEventHandler<SubmittedAndReviewedChapterVersionIntegrationEvent>,
+        IIntegrationEventHandler<ActivatedBookIntegrationEvent>,
+        IIntegrationEventHandler<ApprovedChapterIntegrationEvent>,
+        IIntegrationEventHandler<CreatedChapterApprovalIntegrationEvent>,
+        IIntegrationEventHandler<OpenedApprovalChapterIntegrationEvent>,
+        IIntegrationEventHandler<RejectedChapterIntegrationEvent>,
+        IIntegrationEventHandler<UnactivatedBookIntegrationEvent>
 {
+    private readonly ILogger<CreatedNotificationIntegrationEventHandler> _logger = logger;
     private readonly IFactoryHandler _factoryHandler = factoryHandler;
-    public async Task Handle(ApprovalBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    private readonly IIdentityProviderServices _identityProviderServices = identityProviderServices;
+    public async Task Handle(SubmittedAndReviewedChapterVersionIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        string title = @"
-                        Kiểm duyệt sách thành công
-                    ";
-        var message = @"Chúng tôi đã xem xét tác phầm của bạn,
-                    tác phầm hoàn toàn đạt các tiêu chí quy tắc cộng đồng 
-                     và đã được hiển thị lên trang chủ của chúng tôi
-                    Cảm ơn bạn rất nhiều vì đã chọn nền tảng của chúng tôi để 
-                    viết những tác phẩm của bạn, 
-                    Nếu bạn có vấn đề hay thắc mặc gì hãy liên hệ với chúng tôi";
-        var notificationCreate = new  CreateNotificationCommand(@event.ChapterUserId, NotificationSubject.ModerationBook, message, title, NotificationChanel.All);
-        await _factoryHandler.Handler<CreateNotificationCommand, NotificationViewModel>(notificationCreate, cancellationToken);
+        throw new NotImplementedException();
     }
 
-    public async Task Handle(RejectBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public async Task Handle(ActivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        string title = @"
-                        Kiểm duyệt sách thất bại
-                    ";
-        var message = @$"Chúng tôi đã xem xét tác phầm của bạn,
-                      Tác phẩm của bạn {@event.Note}
-                    Cảm ơn bạn rất nhiều vì đã chọn nền tảng của chúng tôi để 
-                    viết những tác phẩm của bạn, 
-                    Nếu bạn có vấn đề hay thắc mặc gì hãy liên hệ với chúng tôi";
-        var notificationCreate = new  CreateNotificationCommand(@event.ChapterUserId, NotificationSubject.ModerationBook, message, title, NotificationChanel.All);
-        await _factoryHandler.Handler<CreateNotificationCommand, NotificationViewModel>(notificationCreate, cancellationToken);
+        throw new NotImplementedException();
+    }
+
+    public async Task Handle(ApprovedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Handle(CreatedChapterApprovalIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Handle(OpenedApprovalChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Handle(RejectedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Handle(UnactivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task Handle(string message, Guid authorId, NotificationSubject subject, string title, NotificationChanel chanel)
+    {
+        var author = await _identityProviderServices.GetUserInfoAsync(authorId.ToString());
+        if (author is null || !author.EmailVerified)
+        {
+            _logger.LogInformation("Don't find user has id {@Id}", authorId);
+            return;
+        }
+
+        var createNotificationCommand = new CreateNotificationCommand(authorId, subject, message, title, chanel);
+        await _factoryHandler.Handler<CreateNotificationCommand,NotificationViewModel>(createNotificationCommand);
     }
 }
-*/

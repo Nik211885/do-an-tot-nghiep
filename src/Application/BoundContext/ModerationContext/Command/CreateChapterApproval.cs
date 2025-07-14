@@ -1,5 +1,7 @@
-﻿using Application.BoundContext.ModerationContext.ViewModel;
+﻿using Application.BoundContext.ModerationContext.IntegrationEvent.Event;
+using Application.BoundContext.ModerationContext.ViewModel;
 using Application.Interfaces.CQRS;
+using Application.Interfaces.EventBus;
 using Core.BoundContext.ModerationContext.BookApprovalAggregate;
 using Core.Exception;
 using Core.Interfaces.Repositories.ModerationContext;
@@ -17,7 +19,9 @@ public record CreateChapterApprovalCommand(Guid BookId,
 public class CreateChapterApprovalCommandHandler(
     ILogger<CreateChapterApprovalCommandHandler> logger,
     IChapterApprovalRepository chapterApprovalRepository,
-    IBookApprovalRepository bookApprovalRepository)
+    IBookApprovalRepository bookApprovalRepository,
+    IEventBus<CreatedChapterApprovalIntegrationEvent> eventBusCreated,
+    IEventBus<OpenedApprovalChapterIntegrationEvent> eventBusOpened)
     : ICommandHandler<CreateChapterApprovalCommand, ChapterApprovalViewModel>
 {
     private readonly ILogger<CreateChapterApprovalCommandHandler> _logger = logger;

@@ -6,11 +6,13 @@ public class RejectedChapterIntegrationEvent
     public Guid BookId { get; }
     public Guid ChapterId { get; }
     public string Note { get; }
+    public Guid AuthorId { get; }
 
-    public RejectedChapterIntegrationEvent(Guid bookId, Guid chapterId, string note)
+    public RejectedChapterIntegrationEvent(Guid bookId, Guid chapterId, string note, Guid authorId)
     {
         BookId = bookId;
         ChapterId = chapterId;
         Note = note;
+        AuthorId = authorId;
     }
 }
