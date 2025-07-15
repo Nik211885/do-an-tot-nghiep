@@ -42,6 +42,7 @@ public static class DependencyInjectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptionsExtension(configuration);
+        services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddScoped<IFactoryHandler, FactoryHandler>();
         services.AddDbContext();
         services.AddSingleton<ICheckClientAddressAppServices, CheckClientAddressAppServices>();
@@ -50,7 +51,6 @@ public static class DependencyInjectionExtension
         services.AddScoped<DispatcherDomainEventInterceptors>();
         services.AddTransient<IEmailSender, EmailSender>();
         services.AddScoped<IIdentityProviderServices, KeycloakServices>();
-        services.AddSingleton<IDbConnectionStringSelector, DbConnectionStringSelector>();
         services.AddRepository();
         services.AddSingleton<IEntityDbContextMapService, EntityDbContextMapService>();
         services.AddScoped(typeof(IValidationServices<>), typeof(ValidationServices<>));

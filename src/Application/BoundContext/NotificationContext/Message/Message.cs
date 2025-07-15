@@ -2,7 +2,7 @@
 
 public static class Message
 {
-    public static string SubmittedAndReviewedMessage = "";
+    public static string SubmittedAndReviewedMessage = "Gủi nội dung kiểm duyệt cho cuốn sách {0} có chương {1}";
     public static string ActivatedBook = "";
     public static string ApprovedChapter = "";
     public static string CreatedChapterApproval = "";

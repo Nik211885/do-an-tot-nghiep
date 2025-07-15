@@ -25,50 +25,43 @@ public class CreatedNotificationIntegrationEventHandler(
     private readonly ILogger<CreatedNotificationIntegrationEventHandler> _logger = logger;
     private readonly IFactoryHandler _factoryHandler = factoryHandler;
     private readonly IIdentityProviderServices _identityProviderServices = identityProviderServices;
-    public async Task Handle(SubmittedAndReviewedChapterVersionIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(SubmittedAndReviewedChapterVersionIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(ActivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(ActivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(ApprovedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(ApprovedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(CreatedChapterApprovalIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(CreatedChapterApprovalIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(OpenedApprovalChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(OpenedApprovalChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(RejectedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(RejectedChapterIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    public async Task Handle(UnactivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
+    public Task Handle(UnactivatedBookIntegrationEvent @event, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     private async Task Handle(string message, Guid authorId, NotificationSubject subject, string title, NotificationChanel chanel)
     {
-        var author = await _identityProviderServices.GetUserInfoAsync(authorId.ToString());
-        if (author is null || !author.EmailVerified)
-        {
-            _logger.LogInformation("Don't find user has id {@Id}", authorId);
-            return;
-        }
-
         var createNotificationCommand = new CreateNotificationCommand(authorId, subject, message, title, chanel);
         await _factoryHandler.Handler<CreateNotificationCommand,NotificationViewModel>(createNotificationCommand);
     }
